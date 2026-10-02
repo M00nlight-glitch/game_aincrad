@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sword Art Online: Aincrad Chronicles | Dark Souls Edition</title>
+<title>SAO: Aincrad Chronicles | Mastery Edition</title>
 <style>
   :root {
     --bg-dark: #0a0e1a; --bg-panel: rgba(14, 23, 42, 0.88);
@@ -11,7 +11,8 @@
     --cyan-dim: #1e3a5f; --cyan-bright: #00f0ff;
     --gold-crit: #fbbf24; --col-gold: #f59e0b;
     --legendary-gold: #ffd700; --elite-purple: #c084fc; --miniboss-red: #ff3366;
-    --donate-pink: #ff69b4; --admin-red: #ff4444;
+    --donate-pink: #ff69b4; --admin-red: #ff4444; --race-teal: #2dd4bf;
+    --male-blue: #60a5fa; --female-pink: #f472b6;
     --text-main: #e2e8f0; --text-dim: #94a3b8;
     --border-cyan: rgba(110, 231, 255, 0.35);
     --font-mono: 'Consolas', 'Courier New', 'Fira Code', 'Segoe UI Mono', monospace;
@@ -45,6 +46,10 @@
   @keyframes pulseCursor { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.2); opacity: 1; } }
   .player-name { font-size: 1.2rem; font-weight: 700; letter-spacing: 1.5px; color: #fff; text-shadow: 0 0 8px var(--cyan-neon); }
   .player-class-tag { font-size: 0.78rem; color: var(--cyan-neon); letter-spacing: 1px; opacity: 0.85; }
+  .race-tag { font-size: 0.78rem; color: var(--race-teal); letter-spacing: 1px; }
+  .gender-tag { font-size: 0.8rem; font-weight: bold; }
+  .gender-tag.male { color: var(--male-blue); }
+  .gender-tag.female { color: var(--female-pink); }
   .player-level-badge { background: linear-gradient(135deg, rgba(110, 231, 255, 0.2), rgba(30, 58, 138, 0.4)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 3px 10px; font-size: 0.9rem; font-weight: bold; border-radius: 3px; }
   .floor-badge { background: linear-gradient(135deg, rgba(217, 70, 239, 0.25), rgba(126, 34, 206, 0.4)); border: 1px solid #d946ef; color: #f0abfc; padding: 3px 10px; font-size: 0.82rem; font-weight: bold; border-radius: 3px; }
   .ach-badge { background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(180, 130, 0, 0.4)); border: 1px solid var(--legendary-gold); color: var(--legendary-gold); padding: 3px 10px; font-size: 0.82rem; font-weight: bold; border-radius: 3px; cursor: pointer; }
@@ -66,6 +71,7 @@
 
   .hud-right { display: flex; align-items: center; gap: 10px; }
   .currency-box { display: flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 3px; font-weight: 700; color: var(--col-gold); font-size: 0.92rem; }
+  .donate-currency-box { display: flex; align-items: center; gap: 6px; background: rgba(255, 105, 180, 0.15); border: 1px solid var(--donate-pink); padding: 5px 12px; border-radius: 3px; font-weight: 700; color: var(--donate-pink); font-size: 0.92rem; box-shadow: 0 0 10px rgba(255, 105, 180, 0.3); }
   .audio-btn { background: transparent; border: 1px solid var(--border-cyan); color: var(--cyan-neon); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
   .audio-btn:hover { background: rgba(110, 231, 255, 0.2); }
 
@@ -144,6 +150,8 @@
   .log-entry.donate { color: var(--donate-pink); font-weight: bold; text-shadow: 0 0 8px var(--donate-pink); }
   .log-entry.admin { color: var(--admin-red); font-weight: bold; text-shadow: 0 0 8px var(--admin-red); }
   .log-entry.boss-talk { color: #ff6b9d; font-weight: bold; font-style: italic; }
+  .log-entry.race { color: var(--race-teal); font-weight: bold; }
+  .log-entry.mastery { color: #fde047; font-weight: bold; background: rgba(253, 224, 71, 0.08); padding: 3px 6px; border-left: 3px solid #fde047; border-radius: 2px; }
 
   .quest-card { padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
   .quest-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
@@ -172,6 +180,9 @@
   .class-mini { background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(126,34,206,0.06)); border: 1px solid rgba(192,132,252,0.4); border-radius: 4px; padding: 8px 10px; }
   .class-mini-title { font-size: 0.85rem; font-weight: bold; color: #e9d5ff; margin-bottom: 3px; }
   .class-mini-desc { font-size: 0.78rem; color: #cbd5e1; line-height: 1.4; }
+  .race-mini { background: linear-gradient(135deg, rgba(45,212,191,0.12), rgba(13,148,136,0.06)); border: 1px solid rgba(45,212,191,0.5); border-radius: 4px; padding: 8px 10px; margin-top: 3px; }
+  .race-mini-title { font-size: 0.85rem; font-weight: bold; color: var(--race-teal); margin-bottom: 3px; }
+  .race-mini-desc { font-size: 0.78rem; color: #cbd5e1; line-height: 1.4; }
 
   .actions-panel { padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
   .actions-header { font-size: 0.85rem; color: var(--cyan-neon); letter-spacing: 1px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
@@ -203,6 +214,7 @@
   @keyframes donatePulse { 0%, 100% { box-shadow: 0 0 6px rgba(255, 105, 180, 0.4); } 50% { box-shadow: 0 0 14px rgba(255, 105, 180, 0.9); } }
   .sao-btn.btn-admin { border-color: var(--admin-red); background: linear-gradient(135deg, rgba(60, 15, 15, 0.9) 0%, rgba(35, 8, 8, 1) 100%); color: #ff8888; font-weight: 900; }
   .sao-btn.btn-admin:hover:not(:disabled) { border-color: #ff6666; box-shadow: 0 0 18px rgba(255, 68, 68, 0.7); color: #fff; }
+  .sao-btn.btn-race { border-color: var(--race-teal); background: linear-gradient(135deg, rgba(15, 60, 55, 0.9) 0%, rgba(8, 35, 30, 1) 100%); color: var(--race-teal); font-weight: 900; }
 
   .footer-bar { padding: 8px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; flex-shrink: 0; }
   .footer-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -211,16 +223,19 @@
 
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.88); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.active { opacity: 1; pointer-events: auto; }
-  .modal-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); border-radius: 5px; width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(15px) scale(0.97); transition: transform 0.2s; }
+  .modal-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); border-radius: 5px; width: 100%; max-width: 1000px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(15px) scale(0.97); transition: transform 0.2s; }
   .modal-window.donate-window { border-color: var(--donate-pink); box-shadow: 0 0 35px rgba(255, 105, 180, 0.4); }
   .modal-window.admin-window { border-color: var(--admin-red); box-shadow: 0 0 35px rgba(255, 68, 68, 0.4); }
+  .modal-window.race-window { border-color: var(--race-teal); box-shadow: 0 0 35px rgba(45, 212, 191, 0.4); }
   .modal-overlay.active .modal-window { transform: translateY(0) scale(1); }
   .modal-header { padding: 14px 18px; border-bottom: 1px solid rgba(110, 231, 255, 0.25); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
   .modal-window.donate-window .modal-header { border-bottom-color: var(--donate-pink); }
   .modal-window.admin-window .modal-header { border-bottom-color: var(--admin-red); }
+  .modal-window.race-window .modal-header { border-bottom-color: var(--race-teal); }
   .modal-title { font-size: 1.15rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
   .modal-window.donate-window .modal-title { color: var(--donate-pink); }
   .modal-window.admin-window .modal-title { color: var(--admin-red); }
+  .modal-window.race-window .modal-title { color: var(--race-teal); }
   .modal-close-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #94a3b8; width: 30px; height: 30px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
   .modal-close-btn:hover { border-color: #ef4444; color: #ef4444; }
   .modal-body { padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; }
@@ -241,13 +256,12 @@
   .item-desc { font-size: 0.8rem; color: var(--text-dim); }
   .item-stat-badge { font-size: 0.8rem; color: #4ade80; }
   .item-stat-badge.donate { color: var(--donate-pink); font-weight: bold; }
-  .item-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .item-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
   .mini-btn { padding: 6px 12px; font-size: 0.82rem; }
 
   .shop-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 8px; flex-wrap: wrap; }
   .shop-tab { padding: 8px 16px; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; font-weight: bold; border-radius: 3px; font-size: 0.88rem; }
   .shop-tab.active { background: rgba(110, 231, 255, 0.15); border-color: var(--cyan-neon); color: var(--cyan-bright); }
-  .shop-tab.donate-tab.active { background: rgba(255, 105, 180, 0.15); border-color: var(--donate-pink); color: var(--donate-pink); }
 
   .ach-category { margin-bottom: 8px; }
   .ach-category-title { font-size: 0.9rem; font-weight: bold; color: var(--legendary-gold); letter-spacing: 1.5px; padding-bottom: 5px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); margin-bottom: 8px; }
@@ -267,42 +281,75 @@
   .ach-progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #ffd700); transition: width 0.3s; }
   .ach-progress-text { font-size: 0.72rem; color: #94a3b8; }
 
-  /* SKILLS SHOP */
-  .skill-shop-item { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  /* SKILLS WITH MASTERY */
+  .skill-shop-item { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   .skill-shop-item.locked { opacity: 0.6; border-style: dashed; }
   .skill-shop-item.unlocked { border-color: #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(20, 60, 30, 0.05)); }
+  .skill-shop-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
   .skill-shop-info { flex: 1; }
   .skill-shop-name { font-size: 1rem; font-weight: bold; color: #fff; margin-bottom: 3px; }
   .skill-shop-name.unlocked { color: #4ade80; }
   .skill-shop-desc { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 4px; }
   .skill-shop-req { font-size: 0.78rem; color: #fbbf24; font-weight: bold; }
   .skill-shop-req.met { color: #4ade80; }
+  .mastery-bar { display: flex; align-items: center; gap: 8px; background: rgba(10, 14, 26, 0.7); border: 1px solid rgba(253, 224, 71, 0.3); border-radius: 3px; padding: 5px 8px; margin-top: 4px; }
+  .mastery-label { font-size: 0.78rem; color: #fde047; font-weight: bold; }
+  .mastery-stars { font-size: 0.9rem; letter-spacing: 2px; }
+  .mastery-stars span { color: #4b5563; }
+  .mastery-stars span.filled { color: #fde047; text-shadow: 0 0 5px #fde047; }
+  .mastery-progress-mini { flex: 1; height: 6px; background: rgba(10, 14, 26, 0.9); border-radius: 3px; overflow: hidden; }
+  .mastery-progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fde047); transition: width 0.3s; }
+  .mastery-text { font-size: 0.72rem; color: #fbbf24; min-width: 60px; text-align: right; }
 
   .donate-hero { text-align: center; padding: 14px; background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(60, 20, 50, 0.1)); border: 2px solid var(--donate-pink); border-radius: 6px; }
   .donate-hero-title { font-size: 1.4rem; font-weight: 900; color: var(--donate-pink); letter-spacing: 3px; text-shadow: 0 0 15px var(--donate-pink); }
   .donate-hero-sub { font-size: 0.85rem; color: #ffb6d9; margin-top: 4px; }
+  .donate-balance { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 105, 180, 0.1); border: 1px solid var(--donate-pink); border-radius: 4px; padding: 10px 14px; font-size: 1rem; font-weight: bold; color: var(--donate-pink); }
+
+  .race-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .race-card { background: rgba(15, 23, 42, 0.7); border: 2px solid rgba(45, 212, 191, 0.3); border-radius: 5px; padding: 14px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; text-align: center; transition: all 0.15s; }
+  .race-card:hover { border-color: var(--race-teal); background: rgba(15, 60, 55, 0.5); transform: translateY(-3px); box-shadow: 0 0 20px rgba(45, 212, 191, 0.5); }
+  .race-card.selected { border-color: var(--race-teal); background: rgba(45, 212, 191, 0.15); box-shadow: 0 0 25px rgba(45, 212, 191, 0.7); }
+  .race-icon { font-size: 2.4rem; }
+  .race-name { font-size: 1.05rem; font-weight: bold; color: var(--race-teal); letter-spacing: 1px; }
+  .race-desc { font-size: 0.78rem; color: var(--text-dim); min-height: 36px; }
+  .race-bonus { font-size: 0.85rem; color: #4ade80; font-weight: bold; padding-top: 6px; border-top: 1px solid rgba(45, 212, 191, 0.2); }
+
+  /* GENDER SELECTION */
+  .gender-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; margin-top: 10px; }
+  .gender-card { background: rgba(15, 23, 42, 0.7); border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 5px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; transition: all 0.15s; }
+  .gender-card:hover { transform: translateY(-3px); }
+  .gender-card.male:hover { border-color: var(--male-blue); box-shadow: 0 0 20px rgba(96, 165, 250, 0.5); }
+  .gender-card.female:hover { border-color: var(--female-pink); box-shadow: 0 0 20px rgba(244, 114, 182, 0.5); }
+  .gender-card.male.selected { border-color: var(--male-blue); background: rgba(96, 165, 250, 0.15); box-shadow: 0 0 25px rgba(96, 165, 250, 0.7); }
+  .gender-card.female.selected { border-color: var(--female-pink); background: rgba(244, 114, 182, 0.15); box-shadow: 0 0 25px rgba(244, 114, 182, 0.7); }
+  .gender-icon { font-size: 2.5rem; }
+  .gender-name { font-size: 1.05rem; font-weight: bold; letter-spacing: 1px; }
+  .gender-card.male .gender-name { color: var(--male-blue); }
+  .gender-card.female .gender-name { color: var(--female-pink); }
 
   .admin-form { display: flex; flex-direction: column; gap: 12px; }
   .admin-input { background: rgba(10, 14, 26, 0.9); border: 2px solid var(--admin-red); color: #fff; padding: 14px 18px; font-size: 1.5rem; letter-spacing: 8px; text-align: center; border-radius: 4px; outline: none; font-family: var(--font-mono); }
   .admin-input:focus { box-shadow: 0 0 20px rgba(255, 68, 68, 0.6); }
   .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+  .admin-section-title { font-size: 0.95rem; font-weight: bold; color: var(--admin-red); letter-spacing: 1.5px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 68, 68, 0.3); margin-top: 10px; margin-bottom: 6px; }
 
   .creation-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.97); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
   .creation-overlay.active { display: flex; }
-  .creation-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-radius: 6px; width: 100%; max-width: 1100px; padding: 24px; display: flex; flex-direction: column; gap: 16px; max-height: 95vh; overflow-y: auto; }
+  .creation-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-radius: 6px; width: 100%; max-width: 1200px; padding: 24px; display: flex; flex-direction: column; gap: 16px; max-height: 95vh; overflow-y: auto; }
   .creation-title { font-size: 1.7rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-align: center; text-shadow: 0 0 15px var(--cyan-neon); }
   .creation-subtitle { text-align: center; color: var(--cyan-neon); font-size: 0.92rem; letter-spacing: 1.5px; opacity: 0.85; margin-top: -12px; }
   .creation-section-label { font-size: 0.85rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 6px; }
   .creation-input { width: 100%; background: rgba(10, 14, 26, 0.9); border: 1px solid var(--border-cyan); color: #fff; padding: 11px 16px; font-size: 1.05rem; letter-spacing: 1.5px; border-radius: 4px; outline: none; font-family: var(--font-mono); margin-top: 8px; }
   .creation-input:focus { border-color: var(--cyan-bright); box-shadow: 0 0 10px var(--cyan-glow); }
-  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px; }
+  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 10px; }
   .class-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 5px; text-align: center; transition: all 0.15s; }
   .class-card:hover { border-color: var(--cyan-neon); background: rgba(20, 32, 58, 0.9); }
   .class-card.selected { border-color: var(--cyan-bright); background: rgba(110, 231, 255, 0.12); box-shadow: 0 0 15px var(--cyan-glow); }
   .class-icon { font-size: 1.8rem; }
   .class-name { font-size: 0.98rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
-  .class-desc { font-size: 0.75rem; color: var(--text-dim); min-height: 40px; }
-  .class-stats { display: flex; justify-content: space-around; gap: 4px; font-size: 0.72rem; padding-top: 5px; border-top: 1px solid rgba(110, 231, 255, 0.15); }
+  .class-desc { font-size: 0.72rem; color: var(--text-dim); min-height: 36px; }
+  .class-stats { display: flex; justify-content: space-around; gap: 4px; font-size: 0.7rem; padding-top: 5px; border-top: 1px solid rgba(110, 231, 255, 0.15); flex-wrap: wrap; }
   .class-stats span { color: var(--cyan-neon); }
   .color-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
   .color-swatch { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.15s; }
@@ -321,6 +368,8 @@
   .toast-box { position: fixed; bottom: 20px; right: 20px; background: rgba(14, 23, 42, 0.96); border: 1px solid var(--cyan-neon); box-shadow: 0 0 18px rgba(110, 231, 255, 0.35); padding: 12px 18px; border-radius: 4px; color: #fff; font-size: 0.92rem; font-weight: bold; z-index: 150; transform: translateY(50px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 380px; }
   .toast-box.show { transform: translateY(0); opacity: 1; }
   .toast-box.achievement { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(60, 45, 8, 0.98), rgba(40, 25, 5, 0.98)); box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); color: var(--legendary-gold); font-weight: 900; }
+  .toast-box.donate { border-color: var(--donate-pink); background: linear-gradient(135deg, rgba(60, 20, 40, 0.98), rgba(35, 10, 25, 0.98)); box-shadow: 0 0 25px rgba(255, 105, 180, 0.6); color: var(--donate-pink); font-weight: 900; }
+  .toast-box.mastery { border-color: #fde047; background: linear-gradient(135deg, rgba(60, 55, 8, 0.98), rgba(40, 35, 5, 0.98)); box-shadow: 0 0 25px rgba(253, 224, 71, 0.6); color: #fde047; font-weight: 900; }
 
   @media (max-width: 1100px) {
     html, body { overflow: auto; height: auto; }
@@ -333,19 +382,28 @@
 </head>
 <body>
 
+<!-- CHARACTER CREATION -->
 <div class="creation-overlay" id="creation-overlay">
   <div class="creation-window">
     <div>
       <div class="creation-title">СОЗДАНИЕ ПЕРСОНАЖА</div>
-      <div class="creation-subtitle">DARK SOULS EDITION • 10 КЛАССОВ</div>
+      <div class="creation-subtitle">10 КЛАССОВ • 8 РАС • МАСТЕРСТВО СКИЛЛОВ • DARK SOULS EDITION</div>
     </div>
     <div>
       <div class="creation-section-label">Имя игрока</div>
       <input type="text" class="creation-input" id="creation-name-input" maxlength="14" placeholder="Введите имя..." value="KIRITO">
     </div>
     <div>
-      <div class="creation-section-label">Класс / Архетип (10 классов в стиле Dark Souls)</div>
+      <div class="creation-section-label">Пол</div>
+      <div class="gender-grid" id="gender-grid"></div>
+    </div>
+    <div>
+      <div class="creation-section-label">Класс / Архетип</div>
       <div class="class-grid" id="class-grid"></div>
+    </div>
+    <div>
+      <div class="creation-section-label">Раса (уникальные баффы)</div>
+      <div class="race-grid" id="race-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));"></div>
     </div>
     <div>
       <div class="creation-section-label">Цвет маркера</div>
@@ -365,7 +423,11 @@
         <div class="player-cursor" id="player-cursor-el"></div>
         <div style="display:flex; flex-direction:column;">
           <span class="player-name" id="hud-name">KIRITO</span>
-          <span class="player-class-tag" id="hud-class">Мечник</span>
+          <span style="display:flex; gap:8px; align-items:center;">
+            <span class="gender-tag" id="hud-gender">♂</span>
+            <span class="player-class-tag" id="hud-class">Мечник</span>
+            <span class="race-tag" id="hud-race">🧑 Человек</span>
+          </span>
         </div>
         <span class="player-level-badge" id="hud-level">Lv. 1</span>
         <span class="floor-badge" id="hud-floor">Этаж 1</span>
@@ -392,9 +454,13 @@
     </div>
 
     <div class="hud-right">
-      <div class="currency-box">
+      <div class="currency-box" title="Col">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-6 0v5a3.5 3.5 0 0 0 6 0"/></svg>
-        <span id="hud-col">50 Col</span>
+        <span id="hud-col">500 Col</span>
+      </div>
+      <div class="donate-currency-box" title="Донат-кристаллы">
+        <span style="font-size:1.1rem;">💎</span>
+        <span id="hud-donate">0 ДК</span>
       </div>
       <button class="audio-btn" id="audio-toggle-btn">
         <svg id="audio-icon-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
@@ -437,7 +503,7 @@
       </div>
 
       <div class="log-panel" id="game-log">
-        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в Sword Art Online: Aincrad — Dark Souls Edition.</div>
+        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в SAO: Aincrad — Mastery Edition.</div>
       </div>
     </section>
 
@@ -486,6 +552,10 @@
           <div class="class-mini-title" id="class-ability-title">⚔️ КЛАСС</div>
           <div class="class-mini-desc" id="class-ability-desc">—</div>
         </div>
+        <div class="race-mini">
+          <div class="race-mini-title" id="race-ability-title">🧑 РАСА</div>
+          <div class="race-mini-desc" id="race-ability-desc">—</div>
+        </div>
       </div>
     </aside>
   </main>
@@ -500,8 +570,8 @@
 
   <footer class="sao-panel footer-bar">
     <div class="footer-buttons">
-      <button class="sao-btn footer-btn" id="btn-open-inventory">Инвентарь (<span id="inv-count-badge">0</span>)</button>
-      <button class="sao-btn footer-btn" id="btn-open-status">Статус</button>
+      <button class="sao-btn footer-btn" id="btn-open-inventory">🎒 Инв (<span id="inv-count-badge">0</span>)</button>
+      <button class="sao-btn footer-btn" id="btn-open-status">👤 Статус</button>
       <button class="sao-btn footer-btn btn-achievement" id="btn-open-achievements">🏆 Ачивки</button>
       <button class="sao-btn footer-btn btn-skill" id="btn-open-skills">📚 Скиллы</button>
       <button class="sao-btn footer-btn btn-donate" id="btn-open-donate">💎 Донат</button>
@@ -509,7 +579,7 @@
       <button class="sao-btn footer-btn" id="btn-save-game">💾</button>
       <button class="sao-btn footer-btn" id="btn-load-game">📂</button>
     </div>
-    <div class="version-tag">AINCRAD v3.0 • DARK SOULS EDITION</div>
+    <div class="version-tag">AINCRAD v3.2 • MASTERY & GENDER EDITION</div>
   </footer>
 </div>
 
@@ -518,9 +588,9 @@
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title">ИНВЕНТАРЬ</div><button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button></div>
     <div class="modal-body">
-      <div style="font-size:0.88rem; color:var(--cyan-neon); letter-spacing:1px;">ЭКИПИРОВАНО</div>
+      <div style="font-size:0.88rem; color:var(--cyan-neon);">ЭКИПИРОВАНО</div>
       <div class="items-list" id="equipped-items-list"></div>
-      <div style="font-size:0.88rem; color:var(--cyan-neon); letter-spacing:1px; margin-top:8px;">СУМКА</div>
+      <div style="font-size:0.88rem; color:var(--cyan-neon); margin-top:8px;">СУМКА</div>
       <div class="items-list" id="bag-items-list"></div>
     </div>
   </div>
@@ -533,26 +603,29 @@
     <div class="modal-body">
       <div class="shop-tabs">
         <button class="shop-tab active" id="tab-buy" onclick="switchShopTab('buy')">КУПИТЬ</button>
-        <button class="shop-tab" id="tab-sell" onclick="switchShopTab('sell')">ПРОДАТЬ (50%)</button>
+        <button class="shop-tab" id="tab-sell" onclick="switchShopTab('sell')">ПРОДАТЬ</button>
       </div>
       <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:#f59e0b; padding:4px 0;">
-        <span>Баланс:</span><span id="shop-player-col" style="font-weight:bold;">50 Col</span>
+        <span>Col:</span><span id="shop-player-col" style="font-weight:bold;">500</span>
+      </div>
+      <div id="sell-actions" style="display:none; gap:6px; flex-wrap:wrap;">
+        <button class="sao-btn mini-btn btn-item" onclick="sellAllInventory()">💰 Продать ВСЁ из сумки</button>
       </div>
       <div class="items-list" id="shop-items-container"></div>
     </div>
   </div>
 </div>
 
-<!-- SKILLS SHOP -->
+<!-- SKILLS -->
 <div class="modal-overlay" id="modal-skills">
   <div class="modal-window">
-    <div class="modal-header"><div class="modal-title">📚 СКИЛЛЫ (Разблокировка)</div><button class="modal-close-btn" onclick="closeModal('modal-skills')">✕</button></div>
+    <div class="modal-header"><div class="modal-title">📚 СКИЛЛЫ И МАСТЕРСТВО</div><button class="modal-close-btn" onclick="closeModal('modal-skills')">✕</button></div>
     <div class="modal-body">
       <div style="background:linear-gradient(135deg, rgba(168,85,247,0.15), rgba(126,34,206,0.08)); border:1px solid #c084fc; border-radius:4px; padding:12px;">
-        <div style="font-size:0.95rem; font-weight:bold; color:#e9d5ff;">Скиллы вашего класса: <span id="skills-class-name">—</span></div>
-        <div style="font-size:0.82rem; color:#cbd5e1; margin-top:4px;">Изучайте скиллы за Col. Требуется определённый уровень. Базовые 4 скилла доступны с начала игры.</div>
+        <div style="font-size:0.95rem; font-weight:bold; color:#e9d5ff;">Скиллы класса: <span id="skills-class-name">—</span></div>
+        <div style="font-size:0.82rem; color:#cbd5e1; margin-top:4px;">Изучайте скиллы за Col. Мастерство растёт при использовании: +15% урона и −5% MP за уровень.</div>
       </div>
-      <div id="skills-list-container"></div>
+      <div id="skills-list-container" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 </div>
@@ -571,7 +644,7 @@
     <div class="modal-header"><div class="modal-title">🏆 ДОСТИЖЕНИЯ</div><button class="modal-close-btn" onclick="closeModal('modal-achievements')">✕</button></div>
     <div class="modal-body">
       <div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(180,130,0,0.06)); border:1px solid #ffd700; border-radius:3px; padding:12px;">
-        <div style="font-size:1.05rem; font-weight:900; color:#ffd700; letter-spacing:1.5px;">ОТКРЫТО: <span id="ach-modal-progress">0 / 0</span></div>
+        <div style="font-size:1.05rem; font-weight:900; color:#ffd700;">ОТКРЫТО: <span id="ach-modal-progress">0 / 0</span></div>
         <div style="font-size:0.88rem; color:#fef3c7; margin-top:4px;">Бонусы: <span id="ach-modal-bonus">—</span></div>
       </div>
       <div id="achievements-container"></div>
@@ -586,7 +659,11 @@
     <div class="modal-body">
       <div class="donate-hero">
         <div class="donate-hero-title">💎 ЭКСКЛЮЗИВНОЕ ОРУЖИЕ</div>
-        <div class="donate-hero-sub">Только здесь — оружие, которого нет ни в одном магазине Айнкрада!</div>
+        <div class="donate-hero-sub">Только здесь — оружие, которого нет в обычных магазинах!</div>
+      </div>
+      <div class="donate-balance">
+        <span>Ваш баланс:</span>
+        <span>💎 <span id="donate-player-balance">0</span> ДК</span>
       </div>
       <div class="items-list" id="donate-items-container"></div>
     </div>
@@ -599,7 +676,7 @@
     <div class="modal-header"><div class="modal-title">🔧 ПАНЕЛЬ АДМИНА</div><button class="modal-close-btn" onclick="closeModal('modal-admin-login')">✕</button></div>
     <div class="modal-body">
       <div class="admin-form">
-        <div style="text-align:center; font-size:0.9rem; color:#ff8888;">Введите пароль для доступа</div>
+        <div style="text-align:center; font-size:0.9rem; color:#ff8888;">Введите пароль</div>
         <input type="password" class="admin-input" id="admin-password" maxlength="4" placeholder="••••" autocomplete="off">
         <div id="admin-error" style="color:#ff6666; text-align:center; font-weight:bold; min-height:1.2em;"></div>
         <button class="sao-btn btn-admin" style="padding:12px; font-size:1rem;" onclick="tryAdminLogin()">🔓 ВОЙТИ</button>
@@ -610,19 +687,29 @@
 
 <!-- ADMIN PANEL -->
 <div class="modal-overlay" id="modal-admin">
-  <div class="modal-window admin-window" style="max-width: 800px;">
+  <div class="modal-window admin-window" style="max-width: 1100px;">
     <div class="modal-header"><div class="modal-title">🔧 ПАНЕЛЬ АДМИНА</div><button class="modal-close-btn" onclick="closeModal('modal-admin')">✕</button></div>
     <div class="modal-body">
       <div style="text-align:center; padding:10px; background:linear-gradient(135deg, rgba(255,68,68,0.15), rgba(60,15,15,0.1)); border:2px solid var(--admin-red); border-radius:5px;">
         <div style="font-size:1.2rem; font-weight:900; color:#ff6666; letter-spacing:3px;">🔧 ADMIN ACCESS GRANTED</div>
-        <div style="font-size:0.8rem; color:#ff8888; margin-top:4px;">Используйте возможности осознанно</div>
       </div>
-      <div class="admin-grid" id="admin-buttons"></div>
+      <div id="admin-panel-content"></div>
     </div>
   </div>
 </div>
 
-<!-- NPC DIALOGUE (поддержка многофазного диалога) -->
+<!-- RACE CHANGE -->
+<div class="modal-overlay" id="modal-race-change">
+  <div class="modal-window race-window" style="max-width: 1000px;">
+    <div class="modal-header"><div class="modal-title">🧑 СМЕНА РАСЫ</div><button class="modal-close-btn" onclick="closeModal('modal-race-change')">✕</button></div>
+    <div class="modal-body">
+      <div style="text-align:center; font-size:0.9rem; color:var(--race-teal); margin-bottom:8px;">Стоимость: <b>10 ДК</b></div>
+      <div class="race-grid" id="race-change-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DIALOGUE -->
 <div class="modal-overlay" id="modal-dialogue">
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title" id="npc-name-title">NPC</div><button class="modal-close-btn" onclick="closeModal('modal-dialogue')">✕</button></div>
@@ -677,7 +764,10 @@ function playSound(type) {
   else if (type === 'hunt') [660, 880, 1100].forEach((f, i) => tone(f, 0.15, 'sine', 0.14, i * 0.06));
   else if (type === 'donate') [1046, 1318, 1568, 2093].forEach((f, i) => tone(f, 0.5, 'triangle', 0.22, i * 0.1));
   else if (type === 'admin') [523, 523, 784].forEach((f, i) => tone(f, 0.15, 'square', 0.18, i * 0.1));
+  else if (type === 'race') [440, 554, 659].forEach((f, i) => tone(f, 0.3, 'triangle', 0.15, i * 0.08));
+  else if (type === 'mastery') [659, 784, 988, 1318].forEach((f, i) => tone(f, 0.4, 'triangle', 0.2, i * 0.09));
 }
+
 const audioBtn = document.getElementById('audio-toggle-btn');
 const audioIconOn = document.getElementById('audio-icon-on');
 const audioIconOff = document.getElementById('audio-icon-off');
@@ -687,6 +777,32 @@ audioBtn.addEventListener('click', () => {
   audioIconOff.style.display = soundEnabled ? 'none' : 'block';
   showToast(soundEnabled ? 'Звук включён' : 'Звук отключён');
 });
+
+/* ═══════ RACES ═══════ */
+const RACES_DB = {
+  'human': { id: 'human', name: 'ЧЕЛОВЕК', icon: '🧑', desc: 'Универсальная раса.', bonusText: '+5% HP/MP/ATK/DEF/CRIT' },
+  'elf': { id: 'elf', name: 'ЭЛЬФ', icon: '🧝', desc: 'Древняя магическая раса.', bonusText: '+20% MP, +15% урон навыков' },
+  'dwarf': { id: 'dwarf', name: 'ГНОМ', icon: '⚒️', desc: 'Крепкие воины гор.', bonusText: '+25% HP, +15% DEF' },
+  'dragonkin': { id: 'dragonkin', name: 'ДРАКОНИД', icon: '🐉', desc: 'Потомки драконов.', bonusText: '+20% ATK, +10% крит' },
+  'halfelf': { id: 'halfelf', name: 'ПОЛУЭЛЬФ', icon: '🌙', desc: 'Наполовину эльф.', bonusText: '+10% MP, +15% EXP' },
+  'undead_race': { id: 'undead_race', name: 'НЕЖИТЬ', icon: '💀', desc: 'Восставшие из мёртвых.', bonusText: '+25% урона, -10% HP' },
+  'angel': { id: 'angel', name: 'АНГЕЛ', icon: '🌟', desc: 'Небесные создания.', bonusText: '+20% лечения, реген 2% HP/ход' },
+  'demon': { id: 'demon', name: 'ДЕМОН', icon: '😈', desc: 'Порождения тьмы.', bonusText: '+20% крит-урон, +25% Col' }
+};
+function getRaceBonus(raceId) {
+  const b = { hp: 1, mp: 1, atk: 1, def: 1, crit: 0, critDmg: 0, skillDmg: 1, healMult: 1, expMult: 1, colMult: 1, regenPct: 0 };
+  switch (raceId) {
+    case 'human': b.hp = 1.05; b.mp = 1.05; b.atk = 1.05; b.def = 1.05; b.crit = 5; break;
+    case 'elf': b.mp = 1.2; b.skillDmg = 1.15; break;
+    case 'dwarf': b.hp = 1.25; b.def = 1.15; break;
+    case 'dragonkin': b.atk = 1.2; b.crit = 10; break;
+    case 'halfelf': b.mp = 1.1; b.expMult = 1.15; break;
+    case 'undead_race': b.atk = 1.25; b.hp = 0.9; break;
+    case 'angel': b.healMult = 1.2; b.regenPct = 0.02; break;
+    case 'demon': b.critDmg = 0.2; b.colMult = 1.25; break;
+  }
+  return b;
+}
 
 /* ═══════ ITEMS ═══════ */
 const ITEMS_DB = {};
@@ -705,19 +821,17 @@ Object.assign(ITEMS_DB, {
   'mat_crystal': { id: 'mat_crystal', name: 'Кристалл маны', type: 'valuable', price: 150, desc: 'Редкий материал.' },
   'mat_dragon_scale': { id: 'mat_dragon_scale', name: 'Драконья чешуя', type: 'valuable', price: 500, legendary: true, desc: 'Бесподобный материал.' }
 });
-
-// Донат-оружие (только в донат-магазине!)
 Object.assign(ITEMS_DB, {
-  'don_w_guardian': { id: 'don_w_guardian', name: '💎 Меч Хранителя', type: 'weapon', atk: 350, price: 5000, donate: true, desc: 'Оружие вечных стражей Айнкрада. +350 ATK.' },
-  'don_w_void': { id: 'don_w_void', name: '💎 Клинок Пустоты', type: 'weapon', atk: 500, price: 12000, donate: true, desc: 'Выкован из чистой пустоты. +500 ATK.' },
-  'don_w_cosmic': { id: 'don_w_cosmic', name: '💎 Космический Разрушитель', type: 'weapon', atk: 800, price: 25000, donate: true, desc: 'Оружие из другой реальности. +800 ATK.' },
-  'don_w_gods': { id: 'don_w_gods', name: '💎 Оружие Богов', type: 'weapon', atk: 1200, price: 50000, donate: true, desc: 'Легендарное оружие, отобранное у самого Кардинала. +1200 ATK.' },
-  'don_w_admin': { id: 'don_w_admin', name: '💎 Клинок Разработчика', type: 'weapon', atk: 9999, price: 200000, donate: true, desc: 'Оружие с правами администратора. +9999 ATK.' },
-  'don_a_guardian': { id: 'don_a_guardian', name: '💎 Броня Хранителя', type: 'armor', def: 250, price: 5000, donate: true, desc: 'Непробиваемая защита. +250 DEF.' },
-  'don_a_void': { id: 'don_a_void', name: '💎 Плащ Пустоты', type: 'armor', def: 400, price: 12000, donate: true, desc: 'Сливается с тенью. +400 DEF.' },
-  'don_a_gods': { id: 'don_a_gods', name: '💎 Броня Богов', type: 'armor', def: 800, price: 30000, donate: true, desc: 'Защита уровня божеств. +800 DEF.' },
-  'don_p_crystal': { id: 'don_p_crystal', name: '💎 Донат-кристалл', type: 'consumable', fullHeal: true, price: 500, donate: true, desc: 'Мгновенно восстанавливает 100% HP/MP.' },
-  'don_p_kit': { id: 'don_p_kit', name: '💎 Набор выживания', type: 'consumable', healHp: 2000, price: 800, donate: true, desc: '+2000 HP мгновенно.' }
+  'don_w_guardian': { id: 'don_w_guardian', name: '💎 Меч Хранителя', type: 'weapon', atk: 350, donatePrice: 50, donate: true, desc: '+350 ATK.' },
+  'don_w_void': { id: 'don_w_void', name: '💎 Клинок Пустоты', type: 'weapon', atk: 500, donatePrice: 150, donate: true, desc: '+500 ATK.' },
+  'don_w_cosmic': { id: 'don_w_cosmic', name: '💎 Космический Разрушитель', type: 'weapon', atk: 800, donatePrice: 400, donate: true, desc: '+800 ATK.' },
+  'don_w_gods': { id: 'don_w_gods', name: '💎 Оружие Богов', type: 'weapon', atk: 1200, donatePrice: 1000, donate: true, desc: '+1200 ATK.' },
+  'don_w_admin': { id: 'don_w_admin', name: '💎 Клинок Разработчика', type: 'weapon', atk: 9999, donatePrice: 5000, donate: true, desc: '+9999 ATK.' },
+  'don_a_guardian': { id: 'don_a_guardian', name: '💎 Броня Хранителя', type: 'armor', def: 250, donatePrice: 50, donate: true, desc: '+250 DEF.' },
+  'don_a_void': { id: 'don_a_void', name: '💎 Плащ Пустоты', type: 'armor', def: 400, donatePrice: 150, donate: true, desc: '+400 DEF.' },
+  'don_a_gods': { id: 'don_a_gods', name: '💎 Броня Богов', type: 'armor', def: 800, donatePrice: 300, donate: true, desc: '+800 DEF.' },
+  'don_p_crystal': { id: 'don_p_crystal', name: '💎 Донат-кристалл', type: 'consumable', fullHeal: true, donatePrice: 5, donate: true, desc: '100% HP/MP.' },
+  'don_p_kit': { id: 'don_p_kit', name: '💎 Набор выживания', type: 'consumable', healHp: 2000, donatePrice: 10, donate: true, desc: '+2000 HP.' }
 });
 
 const WEAPONS_BY_FLOOR = {
@@ -756,8 +870,7 @@ const ENEMY_TEMPLATES = {
   ],
   2: [
     { name: 'Скелет-лучник', hp: 110, atk: 20, def: 5, exp: 55, col: 35, svg: `<circle cx="12" cy="8" r="6" stroke="#94a3b8" stroke-width="2" fill="none"/><line x1="12" y1="14" x2="12" y2="20" stroke="#94a3b8" stroke-width="2"/>` },
-    { name: 'Призрак', hp: 140, atk: 24, def: 6, exp: 90, col: 65, svg: `<path d="M12 2a8 8 0 0 0-8 8v10l4-2 4 2 4-2 4 2V10a8 8 0 0 0-8-8z" fill="rgba(168,85,247,0.3)" stroke="#c084fc" stroke-width="2"/>` },
-    { name: 'Дух-мститель', hp: 175, atk: 28, def: 8, exp: 130, col: 90, svg: `<path d="M12 2c-5 0-8 4-8 9v9l3-2 3 2 2-2 2 2 3-2 3 2v-9c0-5-3-9-8-9z" fill="rgba(217,70,239,0.3)" stroke="#d946ef" stroke-width="2"/>` }
+    { name: 'Призрак', hp: 140, atk: 24, def: 6, exp: 90, col: 65, svg: `<path d="M12 2a8 8 0 0 0-8 8v10l4-2 4 2 4-2 4 2V10a8 8 0 0 0-8-8z" fill="rgba(168,85,247,0.3)" stroke="#c084fc" stroke-width="2"/>` }
   ],
   3: [
     { name: 'Гоблин-воин', hp: 220, atk: 34, def: 10, exp: 180, col: 130, svg: `<path d="M8 4l4 6 4-6 3 8-7 10-7-10z" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="2"/>` },
@@ -820,8 +933,7 @@ function generateEnemy(floor, playerLevel) {
     { name: 'Быстрый', icon: '💨', apply: (e) => { e.atk = Math.round(e.atk * 1.15); e.exp = Math.round(e.exp * 1.2); } },
     { name: 'Древний', icon: '⏳', apply: (e) => { e.hp = Math.round(e.hp * 1.3); e.atk = Math.round(e.atk * 1.2); e.def = Math.round(e.def * 1.2); } },
     { name: 'Проклятый', icon: '💀', apply: (e) => { e.atk = Math.round(e.atk * 1.4); e.hp = Math.round(e.hp * 0.85); } },
-    { name: 'Бронированный', icon: '⚙️', apply: (e) => { e.def = Math.round(e.def * 1.8); } },
-    { name: 'Ядовитый', icon: '☠️', apply: (e) => { e.atk = Math.round(e.atk * 1.2); e.col = Math.round(e.col * 1.3); } }
+    { name: 'Бронированный', icon: '⚙️', apply: (e) => { e.def = Math.round(e.def * 1.8); } }
   ];
   const modCount = Math.random() < 0.3 ? 2 : (Math.random() < 0.6 ? 1 : 0);
   const shuffled = [...MODIFIERS].sort(() => Math.random() - 0.5);
@@ -830,13 +942,11 @@ function generateEnemy(floor, playerLevel) {
   const minibossChance = [0.03, 0.03, 0.05, 0.05, 0.08, 0.08, 0.12, 0.12, 0.17, 0.17][Math.min(floor - 1, 9)];
   const roll = Math.random();
   if (roll < minibossChance) {
-    enemy.tier = 'miniboss';
-    enemy.name = `${base.name} ${NAME_SUFFIXES[Math.floor(Math.random() * NAME_SUFFIXES.length)]}`;
+    enemy.tier = 'miniboss'; enemy.name = `${base.name} ${NAME_SUFFIXES[Math.floor(Math.random() * NAME_SUFFIXES.length)]}`;
     enemy.hp = Math.round(enemy.hp * 2.5); enemy.atk = Math.round(enemy.atk * 1.7); enemy.def = Math.round(enemy.def * 1.5);
     enemy.exp = Math.round(enemy.exp * 3); enemy.col = Math.round(enemy.col * 4);
   } else if (roll < minibossChance + eliteChance) {
-    enemy.tier = 'elite';
-    enemy.name = `${NAME_PREFIXES[Math.floor(Math.random() * NAME_PREFIXES.length)]} ${base.name}`;
+    enemy.tier = 'elite'; enemy.name = `${NAME_PREFIXES[Math.floor(Math.random() * NAME_PREFIXES.length)]} ${base.name}`;
     enemy.hp = Math.round(enemy.hp * 1.6); enemy.atk = Math.round(enemy.atk * 1.35); enemy.def = Math.round(enemy.def * 1.2);
     enemy.exp = Math.round(enemy.exp * 2); enemy.col = Math.round(enemy.col * 2.5);
   }
@@ -854,59 +964,153 @@ function generateBoss(floor) {
   return { ...b, hp: b.hp, maxHp: b.hp, isBoss: true, floor: floor, tier: 'boss', modifiers: [], dropTable: [{ id: 'p_crystal_heal', chance: 1.0 }, ...(WEAPONS_BY_FLOOR[floor] || []).map(w => ({ id: w.id, chance: 1.0 })), ...(ARMORS_BY_FLOOR[floor] || []).map(a => ({ id: a.id, chance: 0.7 }))] };
 }
 
-/* ═══════ CLASSES (Dark Souls style) ═══════ */
+/* ═══════ CLASSES с 10 скиллами ═══════ */
 const CLASSES_DB = {
-  'swordsman': { id: 'swordsman', name: 'МЕЧНИК', icon: '⚔️', desc: 'Сбалансированный мастер клинка.', hp: 140, mp: 60, atk: 13, def: 4, crit: 12, passiveName: 'Мастерство клинка', passiveDesc: '+15% урона от обычных атак.', activeName: 'Двойной разрез', activeDesc: 'Два удара по 85% ATK.', activeCost: 15, skillIds: ['slash', 'sonic', 'starburst'] },
-  'knight': { id: 'knight', name: 'РЫЦАРЬ', icon: '⚜️', desc: 'Тяжёлый доспех, высокая защита и самоотхил.', hp: 180, mp: 50, atk: 12, def: 12, crit: 8, passiveName: 'Стойкость рыцаря', passiveDesc: '+25% DEF, +15% max HP. Регенерация 3% HP каждый ход.', activeName: 'Святой удар', activeDesc: 'Мощный удар 200% ATK + лечение 10% HP.', activeCost: 18, skillIds: ['slash', 'holy_strike', 'starburst'] },
-  'pyromancer': { id: 'pyromancer', name: 'ПИРОМАНТ', icon: '🔥', desc: 'Мастер огненной магии и хаоса.', hp: 120, mp: 130, atk: 16, def: 4, crit: 15, passiveName: 'Пламя изнутри', passiveDesc: '+35% урона огненных навыков, +40 max MP.', activeName: 'Огненный шторм', activeDesc: '270% ATK, игнорирует 50% DEF, поджигает.', activeCost: 28, skillIds: ['fireball', 'chaos_flame', 'great_chaos'] },
-  'cleric': { id: 'cleric', name: 'КЛИРИК', icon: '⛪', desc: 'Святая магия: исцеление и молнии.', hp: 135, mp: 110, atk: 11, def: 7, crit: 10, passiveName: 'Благословение', passiveDesc: '+20% лечения, +25 max MP.', activeName: 'Исцеление', activeDesc: 'Восстанавливает 40% max HP.', activeCost: 22, skillIds: ['lightning', 'heal', 'wrath_gods'] },
-  'hunter': { id: 'hunter', name: 'ОХОТНИК', icon: '🏹', desc: 'Меткий стрелок с высоким критом.', hp: 115, mp: 75, atk: 15, def: 3, crit: 22, passiveName: 'Меткий глаз', passiveDesc: '+20% крит-шанс, ×2.1 крит-урон.', activeName: 'Снайперский выстрел', activeDesc: '300% ATK с гарантированным критом.', activeCost: 20, skillIds: ['power_shot', 'triple_shot', 'rain_arrows'] },
-  'thief': { id: 'thief', name: 'ВОР', icon: '🗡️', desc: 'Быстрый и ловкий, много Col.', hp: 105, mp: 65, atk: 14, def: 2, crit: 20, passiveName: 'Хитрость', passiveDesc: '+30% Col и +15% EXP.', activeName: 'Кража здоровья', activeDesc: '180% ATK, лечит 50% урона.', activeCost: 15, skillIds: ['backstab', 'pickpocket', 'shadow_kill'] },
-  'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый защитник.', hp: 220, mp: 40, atk: 9, def: 14, crit: 6, passiveName: 'Каменная кожа', passiveDesc: '+30% max HP, +20% DEF.', activeName: 'Щитовая стойка', activeDesc: 'Утроенная защита, +15% HP.', activeCost: 12, skillIds: ['bash', 'bulwark', 'earthquake'] },
-  'assassin': { id: 'assassin', name: 'АССАСИН', icon: '🩸', desc: 'Смертоносный убийца с теневой магией.', hp: 95, mp: 80, atk: 17, def: 2, crit: 28, passiveName: 'Смертельный фокус', passiveDesc: 'Крит-урон ×2.85.', activeName: 'Теневой удар', activeDesc: 'Гарантированный крит.', activeCost: 20, skillIds: ['slash', 'shadow_step', 'assassinate'] },
-  'mage': { id: 'mage', name: 'МАГ', icon: '✨', desc: 'Мастер стихийной магии.', hp: 110, mp: 140, atk: 14, def: 3, crit: 14, passiveName: 'Магический резонанс', passiveDesc: '+30% урона навыков, +50 max MP.', activeName: 'Огненный шар', activeDesc: '220% ATK, игнор. 50% DEF.', activeCost: 25, skillIds: ['ice_lance', 'chain_lightning', 'meteor'] },
-  'undead': { id: 'undead', name: 'НЕЖИТЬ', icon: '💀', desc: 'Проклятый, но возрождающийся из мёртвых.', hp: 150, mp: 70, atk: 15, def: 6, crit: 12, passiveName: 'Проклятие нежити', passiveDesc: 'Один раз за бой возрождается с 50% HP при смерти.', activeName: 'Жизнеотвод', activeDesc: '250% ATK, лечит 30% урона.', activeCost: 20, skillIds: ['dark_hand', 'lifedrain', 'death_curse'] }
+  'swordsman': { id: 'swordsman', name: 'МЕЧНИК', icon: '⚔️', desc: 'Сбалансированный мастер клинка.', hp: 140, mp: 60, atk: 13, def: 4, crit: 12, passiveName: 'Мастерство клинка', passiveDesc: '+15% урона атак.', activeName: 'Двойной разрез', activeDesc: '2×85% ATK.', activeCost: 15,
+    skillIds: ['slash', 'sonic', 'starburst', 'sw_1', 'sw_2', 'sw_3', 'sw_4', 'sw_5', 'sw_6', 'sw_7'] },
+  'knight': { id: 'knight', name: 'РЫЦАРЬ', icon: '⚜️', desc: 'Тяжёлый доспех, регенерация.', hp: 180, mp: 50, atk: 12, def: 12, crit: 8, passiveName: 'Стойкость', passiveDesc: '+25% DEF, регенерация 3% HP/ход.', activeName: 'Святой удар', activeDesc: '200% ATK + heal 10%.', activeCost: 18,
+    skillIds: ['holy_strike', 'slash', 'kn_1', 'kn_2', 'kn_3', 'kn_4', 'kn_5', 'kn_6', 'kn_7', 'kn_8'] },
+  'pyromancer': { id: 'pyromancer', name: 'ПИРОМАНТ', icon: '🔥', desc: 'Мастер огня.', hp: 120, mp: 130, atk: 16, def: 4, crit: 15, passiveName: 'Пламя изнутри', passiveDesc: '+35% огня, +40 MP.', activeName: 'Огненный шторм', activeDesc: '270% ATK.', activeCost: 28,
+    skillIds: ['fireball', 'chaos_flame', 'py_1', 'py_2', 'py_3', 'py_4', 'py_5', 'py_6', 'great_chaos', 'py_7'] },
+  'cleric': { id: 'cleric', name: 'КЛИРИК', icon: '⛪', desc: 'Святая магия.', hp: 135, mp: 110, atk: 11, def: 7, crit: 10, passiveName: 'Благословение', passiveDesc: '+20% лечения.', activeName: 'Исцеление', activeDesc: '40% max HP.', activeCost: 22,
+    skillIds: ['lightning', 'heal', 'cl_1', 'cl_2', 'cl_3', 'cl_4', 'cl_5', 'cl_6', 'cl_7', 'cl_8'] },
+  'hunter': { id: 'hunter', name: 'ОХОТНИК', icon: '🏹', desc: 'Меткий стрелок.', hp: 115, mp: 75, atk: 15, def: 3, crit: 22, passiveName: 'Меткий глаз', passiveDesc: '+20% крит-шанс.', activeName: 'Снайперский выстрел', activeDesc: '300% ATK (крит).', activeCost: 20,
+    skillIds: ['power_shot', 'triple_shot', 'hu_1', 'hu_2', 'hu_3', 'hu_4', 'hu_5', 'hu_6', 'rain_arrows', 'hu_7'] },
+  'thief': { id: 'thief', name: 'ВОР', icon: '🗡️', desc: 'Быстрый, много Col.', hp: 105, mp: 65, atk: 14, def: 2, crit: 20, passiveName: 'Хитрость', passiveDesc: '+30% Col, +15% EXP.', activeName: 'Кража здоровья', activeDesc: '180% ATK, лечит 50%.', activeCost: 15,
+    skillIds: ['backstab', 'pickpocket', 'th_1', 'th_2', 'th_3', 'th_4', 'th_5', 'th_6', 'shadow_kill', 'th_7'] },
+  'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый.', hp: 220, mp: 40, atk: 9, def: 14, crit: 6, passiveName: 'Каменная кожа', passiveDesc: '+30% HP, +20% DEF.', activeName: 'Щитовая стойка', activeDesc: '×3 DEF, +15% HP.', activeCost: 12,
+    skillIds: ['bash', 'bulwark', 'tk_1', 'tk_2', 'tk_3', 'tk_4', 'tk_5', 'tk_6', 'earthquake', 'tk_7'] },
+  'assassin': { id: 'assassin', name: 'АССАСИН', icon: '🩸', desc: 'Убийца с тенью.', hp: 95, mp: 80, atk: 17, def: 2, crit: 28, passiveName: 'Смертельный фокус', passiveDesc: '×2.85 крит.', activeName: 'Теневой удар', activeDesc: 'Гарантированный крит.', activeCost: 20,
+    skillIds: ['slash', 'shadow_step', 'as_1', 'as_2', 'as_3', 'as_4', 'as_5', 'as_6', 'assassinate', 'as_7'] },
+  'mage': { id: 'mage', name: 'МАГ', icon: '✨', desc: 'Мастер стихий.', hp: 110, mp: 140, atk: 14, def: 3, crit: 14, passiveName: 'Резонанс', passiveDesc: '+30% урона навыков.', activeName: 'Огненный шар', activeDesc: '220%, игнор 50% DEF.', activeCost: 25,
+    skillIds: ['ice_lance', 'chain_lightning', 'mg_1', 'mg_2', 'mg_3', 'mg_4', 'mg_5', 'mg_6', 'meteor', 'mg_7'] },
+  'undead': { id: 'undead', name: 'НЕЖИТЬ', icon: '💀', desc: 'Возрождается.', hp: 150, mp: 70, atk: 15, def: 6, crit: 12, passiveName: 'Проклятие', passiveDesc: '1 возрождение за бой.', activeName: 'Жизнеотвод', activeDesc: '250% ATK + heal.', activeCost: 20,
+    skillIds: ['dark_hand', 'lifedrain', 'un_1', 'un_2', 'un_3', 'un_4', 'un_5', 'un_6', 'death_curse', 'un_7'] }
 };
 
-/* ═══════ SKILLS DATABASE ═══════ */
+/* ═══════ SKILLS (расширенная БД — у каждого класса 10) ═══════ */
 const SKILLS_DB = {
-  // Базовые (стоят 0 — сразу доступны)
+  // Общие
   'slash': { id: 'slash', name: '⚡ Разрез', desc: '150% ATK', mpCost: 12, reqLevel: 1, reqCol: 0, dmgMult: 1.5, bonusCrit: 5, icon: '⚡' },
   'sonic': { id: 'sonic', name: '💫 Звуковой Прыжок', desc: '220% ATK', mpCost: 22, reqLevel: 3, reqCol: 300, dmgMult: 2.2, bonusCrit: 20, icon: '💫' },
   'starburst': { id: 'starburst', name: '🌟 Starburst Stream', desc: '350% ATK', mpCost: 40, reqLevel: 8, reqCol: 1500, dmgMult: 3.5, bonusCrit: 35, icon: '🌟' },
-  // Рыцарь
-  'holy_strike': { id: 'holy_strike', name: '⚜️ Святой удар', desc: '200% ATK + лечение', mpCost: 18, reqLevel: 3, reqCol: 400, dmgMult: 2.0, bonusCrit: 10, healPct: 0.1, icon: '⚜️' },
-  // Пиромант
-  'fireball': { id: 'fireball', name: '🔥 Огненный шар', desc: '220% ATK, игнор 50% DEF', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, bonusCrit: 10, ignoreDefHalf: true, icon: '🔥' },
-  'chaos_flame': { id: 'chaos_flame', name: '💥 Пламя хаоса', desc: '280% ATK + дебафф DEF', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, bonusCrit: 15, defDebuff: 5, icon: '💥' },
-  'great_chaos': { id: 'great_chaos', name: '🌀 Великий Хаос', desc: '500% ATK, огромный урон', mpCost: 60, reqLevel: 15, reqCol: 3500, dmgMult: 5.0, bonusCrit: 30, icon: '🌀' },
-  // Клирик
+  
+  // МЕЧНИК (sw_)
+  'sw_1': { id: 'sw_1', name: '🌀 Вихрь клинков', desc: '190% ATK', mpCost: 20, reqLevel: 4, reqCol: 500, dmgMult: 1.9, bonusCrit: 15, icon: '🌀' },
+  'sw_2': { id: 'sw_2', name: '🩸 Кровавый крест', desc: '230% + кровотечение', mpCost: 30, reqLevel: 6, reqCol: 900, dmgMult: 2.3, bleed: 3, icon: '🩸' },
+  'sw_3': { id: 'sw_3', name: '⚔️ Рассечение', desc: '260% + −DEF', mpCost: 32, reqLevel: 9, reqCol: 1600, dmgMult: 2.6, defDebuff: 4, icon: '⚔️' },
+  'sw_4': { id: 'sw_4', name: '🔥 Пламенный клинок', desc: '300% ATK', mpCost: 38, reqLevel: 12, reqCol: 2400, dmgMult: 3.0, bonusCrit: 25, icon: '🔥' },
+  'sw_5': { id: 'sw_5', name: '💥 Мастер клинка', desc: '380% ATK', mpCost: 45, reqLevel: 15, reqCol: 3200, dmgMult: 3.8, bonusCrit: 40, icon: '💥' },
+  'sw_6': { id: 'sw_6', name: '☠️ Смертельный удар', desc: '450% ATK', mpCost: 55, reqLevel: 18, reqCol: 4500, dmgMult: 4.5, bonusCrit: 50, icon: '☠️' },
+  'sw_7': { id: 'sw_7', name: '🌟 Финальный разрез', desc: '550% ATK', mpCost: 70, reqLevel: 22, reqCol: 7000, dmgMult: 5.5, bonusCrit: 60, ignoreDefHalf: true, icon: '🌟' },
+
+  // РЫЦАРЬ (kn_)
+  'kn_1': { id: 'kn_1', name: '🛡️ Щит веры', desc: 'Лечит 25% HP, ×2 DEF', mpCost: 20, reqLevel: 4, reqCol: 450, isHeal: true, healPct: 0.25, icon: '🛡️' },
+  'kn_2': { id: 'kn_2', name: '⚜️ Клятва рыцаря', desc: '180% + heal 15%', mpCost: 25, reqLevel: 6, reqCol: 900, dmgMult: 1.8, healPct: 0.15, icon: '⚜️' },
+  'kn_3': { id: 'kn_3', name: '✨ Очищение', desc: 'Лечит 35% + снимает дебафф', mpCost: 28, reqLevel: 9, reqCol: 1500, isHeal: true, healPct: 0.35, icon: '✨' },
+  'kn_4': { id: 'kn_4', name: '🔥 Божественная кара', desc: '280% + heal 20%', mpCost: 35, reqLevel: 12, reqCol: 2400, dmgMult: 2.8, healPct: 0.2, icon: '🔥' },
+  'kn_5': { id: 'kn_5', name: '💚 Регенерация', desc: 'Лечит 50% max HP', mpCost: 40, reqLevel: 15, reqCol: 3200, isHeal: true, healPct: 0.5, icon: '💚' },
+  'kn_6': { id: 'kn_6', name: '🌟 Защита Света', desc: '×3 DEF + heal 25%', mpCost: 42, reqLevel: 18, reqCol: 4500, isHeal: true, healPct: 0.25, icon: '🌟' },
+  'kn_7': { id: 'kn_7', name: '⚡ Гнев Небес', desc: '400% + heal 25%', mpCost: 55, reqLevel: 22, reqCol: 6500, dmgMult: 4.0, healPct: 0.25, bonusCrit: 30, icon: '⚡' },
+  'kn_8': { id: 'kn_8', name: '☀️ Завет Хранителя', desc: '500% + heal 40%', mpCost: 75, reqLevel: 28, reqCol: 9000, dmgMult: 5.0, healPct: 0.4, bonusCrit: 40, icon: '☀️' },
+
+  // ПИРОМАНТ (py_)
+  'py_1': { id: 'py_1', name: '🔥 Испепеление', desc: '250% ATK', mpCost: 30, reqLevel: 4, reqCol: 500, dmgMult: 2.5, bonusCrit: 12, icon: '🔥' },
+  'py_2': { id: 'py_2', name: '💥 Огненная стена', desc: '280% + −DEF', mpCost: 38, reqLevel: 7, reqCol: 1100, dmgMult: 2.8, defDebuff: 5, icon: '💥' },
+  'py_3': { id: 'py_3', name: '🌧️ Дождь огня', desc: '320% + оглушение', mpCost: 42, reqLevel: 10, reqCol: 1800, dmgMult: 3.2, stun: 1, icon: '🌧️' },
+  'py_4': { id: 'py_4', name: '🔥 Адское пламя', desc: '360% + кровотечение', mpCost: 48, reqLevel: 13, reqCol: 2600, dmgMult: 3.6, bleed: 4, icon: '🔥' },
+  'py_5': { id: 'py_5', name: '💥 Великий огонь', desc: '420% ATK', mpCost: 55, reqLevel: 16, reqCol: 3800, dmgMult: 4.2, bonusCrit: 35, icon: '💥' },
+  'py_6': { id: 'py_6', name: '🐦 Феникс', desc: '380% + heal 30%', mpCost: 58, reqLevel: 20, reqCol: 5200, dmgMult: 3.8, healPct: 0.3, icon: '🐦' },
+  'py_7': { id: 'py_7', name: '☄️ Апокалипсис', desc: '650% ATK', mpCost: 80, reqLevel: 25, reqCol: 8500, dmgMult: 6.5, ignoreDefHalf: true, bonusCrit: 55, icon: '☄️' },
+  'great_chaos': { id: 'great_chaos', name: '🌀 Великий Хаос', desc: '500% ATK', mpCost: 60, reqLevel: 15, reqCol: 3500, dmgMult: 5.0, bonusCrit: 30, icon: '🌀' },
+  'fireball': { id: 'fireball', name: '🔥 Огненный шар', desc: '220%, игнор 50% DEF', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, bonusCrit: 10, ignoreDefHalf: true, icon: '🔥' },
+  'chaos_flame': { id: 'chaos_flame', name: '💥 Пламя хаоса', desc: '280% + DEF-дебафф', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, bonusCrit: 15, defDebuff: 5, icon: '💥' },
+
+  // КЛИРИК (cl_)
+  'cl_1': { id: 'cl_1', name: '🛡️ Щит Света', desc: 'Лечит 30% max HP', mpCost: 25, reqLevel: 4, reqCol: 450, isHeal: true, healPct: 0.3, icon: '🛡️' },
+  'cl_2': { id: 'cl_2', name: '✨ Благословение', desc: 'Лечит 35% + регенерация', mpCost: 28, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.35, icon: '✨' },
+  'cl_3': { id: 'cl_3', name: '🔥 Святая кара', desc: '240% ATK', mpCost: 30, reqLevel: 9, reqCol: 1500, dmgMult: 2.4, bonusCrit: 15, icon: '🔥' },
+  'cl_4': { id: 'cl_4', name: '💚 Массовое исцеление', desc: 'Лечит 45% max HP', mpCost: 40, reqLevel: 12, reqCol: 2400, isHeal: true, healPct: 0.45, icon: '💚' },
+  'cl_5': { id: 'cl_5', name: '🌟 Воскрешение', desc: 'Лечит 60% max HP', mpCost: 50, reqLevel: 15, reqCol: 3500, isHeal: true, healPct: 0.6, icon: '🌟' },
+  'cl_6': { id: 'cl_6', name: '⚡ Гнев Богов', desc: '350% + heal 30%', mpCost: 55, reqLevel: 18, reqCol: 4500, dmgMult: 3.5, healPct: 0.3, bonusCrit: 25, icon: '⚡' },
+  'cl_7': { id: 'cl_7', name: '☀️ Судный день', desc: '450% ATK', mpCost: 65, reqLevel: 22, reqCol: 6500, dmgMult: 4.5, bonusCrit: 40, ignoreDefHalf: true, icon: '☀️' },
+  'cl_8': { id: 'cl_8', name: '🙏 Десница Господа', desc: '550% + полное heal', mpCost: 85, reqLevel: 28, reqCol: 9000, dmgMult: 5.5, healPct: 1.0, icon: '🙏' },
   'lightning': { id: 'lightning', name: '⚡ Молния', desc: '200% ATK', mpCost: 20, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 15, icon: '⚡' },
-  'heal': { id: 'heal', name: '💚 Исцеление', desc: 'Восстанавливает 40% HP', mpCost: 22, reqLevel: 3, reqCol: 400, isHeal: true, healPct: 0.4, icon: '💚' },
-  'wrath_gods': { id: 'wrath_gods', name: '☀️ Гнев Богов', desc: '400% ATK + лечение 25%', mpCost: 45, reqLevel: 12, reqCol: 2500, dmgMult: 4.0, bonusCrit: 20, healPct: 0.25, icon: '☀️' },
-  // Охотник
+  'heal': { id: 'heal', name: '💚 Исцеление', desc: '40% max HP', mpCost: 22, reqLevel: 3, reqCol: 400, isHeal: true, healPct: 0.4, icon: '💚' },
+
+  // ОХОТНИК (hu_)
+  'hu_1': { id: 'hu_1', name: '🏹 Двойной выстрел', desc: '2×120% ATK', mpCost: 25, reqLevel: 4, reqCol: 500, dmgMult: 1.2, multiHits: 2, bonusCrit: 20, icon: '🏹' },
+  'hu_2': { id: 'hu_2', name: '🎯 Взрывная стрела', desc: '260% + оглушение', mpCost: 30, reqLevel: 6, reqCol: 900, dmgMult: 2.6, stun: 1, icon: '🎯' },
+  'hu_3': { id: 'hu_3', name: '❄️ Ледяная стрела', desc: '250% + заморозка', mpCost: 32, reqLevel: 9, reqCol: 1500, dmgMult: 2.5, freeze: 1, icon: '❄️' },
+  'hu_4': { id: 'hu_4', name: '☠️ Ядовитая стрела', desc: '280% + кровотечение', mpCost: 35, reqLevel: 12, reqCol: 2400, dmgMult: 2.8, bleed: 4, icon: '☠️' },
+  'hu_5': { id: 'hu_5', name: '🌟 Снайперский выстрел', desc: '400% ATK (гарант. крит)', mpCost: 45, reqLevel: 15, reqCol: 3500, dmgMult: 4.0, bonusCrit: 100, icon: '🌟' },
+  'hu_6': { id: 'hu_6', name: '💨 Ураган стрел', desc: '4×100% ATK', mpCost: 50, reqLevel: 18, reqCol: 4500, dmgMult: 1.0, multiHits: 4, bonusCrit: 25, icon: '💨' },
+  'hu_7': { id: 'hu_7', name: '💀 Убийственный выстрел', desc: '550% ATK', mpCost: 65, reqLevel: 24, reqCol: 7500, dmgMult: 5.5, bonusCrit: 60, icon: '💀' },
   'power_shot': { id: 'power_shot', name: '🏹 Мощный выстрел', desc: '180% ATK', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.8, bonusCrit: 25, icon: '🏹' },
-  'triple_shot': { id: 'triple_shot', name: '🎯 Тройной выстрел', desc: '3 удара по 80% ATK', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 0.8, multiHits: 3, bonusCrit: 15, icon: '🎯' },
+  'triple_shot': { id: 'triple_shot', name: '🎯 Тройной выстрел', desc: '3×80% ATK', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 0.8, multiHits: 3, bonusCrit: 15, icon: '🎯' },
   'rain_arrows': { id: 'rain_arrows', name: '🌧️ Дождь стрел', desc: '450% ATK', mpCost: 45, reqLevel: 12, reqCol: 2500, dmgMult: 4.5, bonusCrit: 30, icon: '🌧️' },
-  // Вор
-  'backstab': { id: 'backstab', name: '🗡️ Удар в спину', desc: '200% ATK, +30% крит', mpCost: 18, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 30, icon: '🗡️' },
-  'pickpocket': { id: 'pickpocket', name: '💰 Карманник', desc: '100% ATK + украсть Col', mpCost: 10, reqLevel: 3, reqCol: 250, dmgMult: 1.0, stealCol: true, icon: '💰' },
+
+  // ВОР (th_)
+  'th_1': { id: 'th_1', name: '☠️ Отравление', desc: '180% + сильное кровотечение', mpCost: 22, reqLevel: 4, reqCol: 450, dmgMult: 1.8, bleed: 5, icon: '☠️' },
+  'th_2': { id: 'th_2', name: '💨 Ослепление', desc: '200% + оглушение', mpCost: 25, reqLevel: 6, reqCol: 900, dmgMult: 2.0, stun: 2, icon: '💨' },
+  'th_3': { id: 'th_3', name: '💰 Кража маны', desc: '150% + восстановить MP', mpCost: 15, reqLevel: 9, reqCol: 1500, dmgMult: 1.5, mpSteal: 30, icon: '💰' },
+  'th_4': { id: 'th_4', name: '🌀 Ловкость', desc: 'Лечит 25%, +крит', mpCost: 20, reqLevel: 12, reqCol: 2400, isHeal: true, healPct: 0.25, icon: '🌀' },
+  'th_5': { id: 'th_5', name: '💨 Дымовая завеса', desc: 'Побег гарантирован', mpCost: 12, reqLevel: 15, reqCol: 3200, dmgMult: 0.5, icon: '💨' },
+  'th_6': { id: 'th_6', name: '⚡ Паралич', desc: '250% + оглушение 2х', mpCost: 35, reqLevel: 18, reqCol: 4200, dmgMult: 2.5, stun: 2, icon: '⚡' },
+  'th_7': { id: 'th_7', name: '☠️ Смертельная кража', desc: '450% + кража Col×3', mpCost: 55, reqLevel: 24, reqCol: 7000, dmgMult: 4.5, stealCol: true, icon: '☠️' },
+  'backstab': { id: 'backstab', name: '🗡️ Удар в спину', desc: '200%, +30% крит', mpCost: 18, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 30, icon: '🗡️' },
+  'pickpocket': { id: 'pickpocket', name: '💰 Карманник', desc: '100% + украсть Col', mpCost: 10, reqLevel: 3, reqCol: 250, dmgMult: 1.0, stealCol: true, icon: '💰' },
   'shadow_kill': { id: 'shadow_kill', name: '🌑 Убийство тени', desc: '380% ATK', mpCost: 40, reqLevel: 10, reqCol: 2000, dmgMult: 3.8, bonusCrit: 40, icon: '🌑' },
-  // Танк
-  'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% ATK + оглушение', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },
-  'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: 'Лечит 25% HP, ×3 DEF', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
-  'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% ATK + оглушение 2х', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
-  // Ассасин
-  'shadow_step': { id: 'shadow_step', name: '💨 Теневой шаг', desc: '250% ATK, +25% крит', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.5, bonusCrit: 25, icon: '💨' },
+
+  // ТАНК (tk_)
+  'tk_1': { id: 'tk_1', name: '⚙️ Провокация', desc: '150% + −ATK врага', mpCost: 18, reqLevel: 4, reqCol: 450, dmgMult: 1.5, atkDebuffPct: 0.2, atkDebuffTurns: 3, icon: '⚙️' },
+  'tk_2': { id: 'tk_2', name: '🛡️ Железная стена', desc: 'Лечит 30% + ×2 DEF', mpCost: 25, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.3, icon: '🛡️' },
+  'tk_3': { id: 'tk_3', name: '💥 Отражение', desc: '200% ATK', mpCost: 28, reqLevel: 9, reqCol: 1500, dmgMult: 2.0, bonusCrit: 10, icon: '💥' },
+  'tk_4': { id: 'tk_4', name: '🔨 Ломающий щит', desc: '180% + −DEF', mpCost: 25, reqLevel: 12, reqCol: 2400, dmgMult: 1.8, defDebuff: 8, icon: '🔨' },
+  'tk_5': { id: 'tk_5', name: '⛰️ Незыблемость', desc: 'Лечит 40% max HP', mpCost: 35, reqLevel: 15, reqCol: 3200, isHeal: true, healPct: 0.4, icon: '⛰️' },
+  'tk_6': { id: 'tk_6', name: '🐏 Таран', desc: '350% + оглушение', mpCost: 45, reqLevel: 18, reqCol: 4500, dmgMult: 3.5, stun: 2, icon: '🐏' },
+  'tk_7': { id: 'tk_7', name: '🗿 Стена Титанов', desc: 'Лечит 60% + ×3 DEF', mpCost: 55, reqLevel: 24, reqCol: 7000, isHeal: true, healPct: 0.6, icon: '🗿' },
+  'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% + оглушение', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },
+  'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: '25% HP + ×3 DEF', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
+  'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% + оглушение 2х', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
+
+  // АССАСИН (as_)
+  'as_1': { id: 'as_1', name: '☠️ Ядовитый клинок', desc: '200% + кровь 5х', mpCost: 22, reqLevel: 4, reqCol: 500, dmgMult: 2.0, bleed: 5, icon: '☠️' },
+  'as_2': { id: 'as_2', name: '🎯 Убийственный инстинкт', desc: '220%, +40% крит', mpCost: 28, reqLevel: 6, reqCol: 900, dmgMult: 2.2, bonusCrit: 40, icon: '🎯' },
+  'as_3': { id: 'as_3', name: '💨 Прыжок тени', desc: '260% ATK', mpCost: 30, reqLevel: 9, reqCol: 1500, dmgMult: 2.6, bonusCrit: 30, icon: '💨' },
+  'as_4': { id: 'as_4', name: '🩸 Кровавый ритуал', desc: '320% + heal 30%', mpCost: 35, reqLevel: 12, reqCol: 2400, dmgMult: 3.2, lifesteal: 0.3, icon: '🩸' },
+  'as_5': { id: 'as_5', name: '👻 Призрачный удар', desc: '360% + игнор DEF', mpCost: 42, reqLevel: 15, reqCol: 3200, dmgMult: 3.6, ignoreDef: true, bonusCrit: 45, icon: '👻' },
+  'as_6': { id: 'as_6', name: '⚔️ Тысяча порезов', desc: '5×100% ATK', mpCost: 50, reqLevel: 18, reqCol: 4500, dmgMult: 1.0, multiHits: 5, bonusCrit: 30, icon: '⚔️' },
+  'as_7': { id: 'as_7', name: '☠️ Ночная казнь', desc: '700% ATK', mpCost: 70, reqLevel: 24, reqCol: 7500, dmgMult: 7.0, bonusCrit: 70, icon: '☠️' },
+  'shadow_step': { id: 'shadow_step', name: '💨 Теневой шаг', desc: '250%, +25% крит', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.5, bonusCrit: 25, icon: '💨' },
   'assassinate': { id: 'assassinate', name: '☠️ Казнь', desc: '500% ATK', mpCost: 50, reqLevel: 15, reqCol: 3000, dmgMult: 5.0, bonusCrit: 50, icon: '☠️' },
-  // Маг
-  'ice_lance': { id: 'ice_lance', name: '❄️ Ледяное копьё', desc: '220% ATK, заморозка 1х', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, freeze: 1, icon: '❄️' },
-  'chain_lightning': { id: 'chain_lightning', name: '⚡ Цепная молния', desc: '280% ATK, оглушение 1х', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, stun: 1, icon: '⚡' },
-  'meteor': { id: 'meteor', name: '☄️ Метеор', desc: '600% ATK, игнорирует DEF', mpCost: 70, reqLevel: 18, reqCol: 5000, dmgMult: 6.0, ignoreDef: true, icon: '☄️' },
-  // Нежить
-  'dark_hand': { id: 'dark_hand', name: '🤚 Тёмная рука', desc: '200% ATK, лечит 20% урона', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, lifesteal: 0.2, icon: '🤚' },
-  'lifedrain': { id: 'lifedrain', name: '💚 Жизнеотвод', desc: '250% ATK, лечит 40% урона', mpCost: 28, reqLevel: 8, reqCol: 1200, dmgMult: 2.5, lifesteal: 0.4, icon: '💚' },
-  'death_curse': { id: 'death_curse', name: '💀 Проклятие смерти', desc: '380% ATK + кровотечение', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.8, bleed: 3, icon: '💀' }
+
+  // МАГ (mg_)
+  'mg_1': { id: 'mg_1', name: '🔥 Огненный шар', desc: '230% ATK', mpCost: 25, reqLevel: 4, reqCol: 500, dmgMult: 2.3, bonusCrit: 12, icon: '🔥' },
+  'mg_2': { id: 'mg_2', name: '❄️ Ледяная буря', desc: '270% + заморозка 2х', mpCost: 35, reqLevel: 6, reqCol: 900, dmgMult: 2.7, freeze: 2, icon: '❄️' },
+  'mg_3': { id: 'mg_3', name: '💥 Огненный взрыв', desc: '300% + −DEF', mpCost: 38, reqLevel: 9, reqCol: 1500, dmgMult: 3.0, defDebuff: 5, icon: '💥' },
+  'mg_4': { id: 'mg_4', name: '🌀 Гравитация', desc: '340% + оглушение', mpCost: 42, reqLevel: 12, reqCol: 2400, dmgMult: 3.4, stun: 1, icon: '🌀' },
+  'mg_5': { id: 'mg_5', name: '⚡ Молния Титанов', desc: '420% ATK', mpCost: 50, reqLevel: 15, reqCol: 3200, dmgMult: 4.2, bonusCrit: 35, icon: '⚡' },
+  'mg_6': { id: 'mg_6', name: '🕳️ Чёрная дыра', desc: '550% + игнор DEF', mpCost: 60, reqLevel: 18, reqCol: 4500, dmgMult: 5.5, ignoreDef: true, bonusCrit: 40, icon: '🕳️' },
+  'mg_7': { id: 'mg_7', name: '💀 Армагеддон', desc: '800% ATK', mpCost: 85, reqLevel: 25, reqCol: 9000, dmgMult: 8.0, ignoreDef: true, bonusCrit: 60, icon: '💀' },
+  'ice_lance': { id: 'ice_lance', name: '❄️ Ледяное копьё', desc: '220%, заморозка', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, freeze: 1, icon: '❄️' },
+  'chain_lightning': { id: 'chain_lightning', name: '⚡ Цепная молния', desc: '280%, оглушение', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, stun: 1, icon: '⚡' },
+  'meteor': { id: 'meteor', name: '☄️ Метеор', desc: '600%, игнор DEF', mpCost: 70, reqLevel: 18, reqCol: 5000, dmgMult: 6.0, ignoreDef: true, icon: '☄️' },
+
+  // НЕЖИТЬ (un_)
+  'un_1': { id: 'un_1', name: '🩸 Вампиризм', desc: '220% + heal 25%', mpCost: 25, reqLevel: 4, reqCol: 450, dmgMult: 2.2, lifesteal: 0.25, icon: '🩸' },
+  'un_2': { id: 'un_2', name: '🧟 Плоть мёртвых', desc: 'Лечит 30% max HP', mpCost: 22, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.3, icon: '🧟' },
+  'un_3': { id: 'un_3', name: '😱 Крик банши', desc: '200% + оглушение', mpCost: 28, reqLevel: 9, reqCol: 1500, dmgMult: 2.0, stun: 2, icon: '😱' },
+  'un_4': { id: 'un_4', name: '💀 Призыв скелета', desc: '2×150% ATK', mpCost: 35, reqLevel: 12, reqCol: 2400, dmgMult: 1.5, multiHits: 2, bonusCrit: 20, icon: '💀' },
+  'un_5': { id: 'un_5', name: '⚰️ Жатва душ', desc: '300% + heal 40%', mpCost: 42, reqLevel: 15, reqCol: 3200, dmgMult: 3.0, lifesteal: 0.4, icon: '⚰️' },
+  'un_6': { id: 'un_6', name: '☠️ Воскрешение', desc: 'Лечит 60% + иммунитет', mpCost: 50, reqLevel: 18, reqCol: 4500, isHeal: true, healPct: 0.6, icon: '☠️' },
+  'un_7': { id: 'un_7', name: '👑 Обряд смерти', desc: '600% + heal 50%', mpCost: 70, reqLevel: 24, reqCol: 7500, dmgMult: 6.0, lifesteal: 0.5, bonusCrit: 50, icon: '👑' },
+  'dark_hand': { id: 'dark_hand', name: '🤚 Тёмная рука', desc: '200%, лечит 20%', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, lifesteal: 0.2, icon: '🤚' },
+  'lifedrain': { id: 'lifedrain', name: '💚 Жизнеотвод', desc: '250%, лечит 40%', mpCost: 28, reqLevel: 8, reqCol: 1200, dmgMult: 2.5, lifesteal: 0.4, icon: '💚' },
+  'death_curse': { id: 'death_curse', name: '💀 Проклятие смерти', desc: '380% + кровь', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.8, bleed: 3, icon: '💀' },
+
+  // Рыцарь базовый
+  'holy_strike': { id: 'holy_strike', name: '⚜️ Святой удар', desc: '200% + heal 10%', mpCost: 18, reqLevel: 3, reqCol: 400, dmgMult: 2.0, bonusCrit: 10, healPct: 0.1, icon: '⚜️' }
 };
 
 /* ═══════ ACHIEVEMENTS ═══════ */
@@ -915,29 +1119,28 @@ const ACHIEVEMENTS = [
   { id: 'kill_50', category: 'Убийства', icon: '⚔️', name: 'Боец', desc: 'Убить 50 монстров', target: 50, type: 'killsTotal', reward: { atk: 8 }, rewardText: '+8 ATK' },
   { id: 'kill_200', category: 'Убийства', icon: '⚔️', name: 'Воин', desc: 'Убить 200 монстров', target: 200, type: 'killsTotal', reward: { atk: 20 }, rewardText: '+20 ATK' },
   { id: 'kill_500', category: 'Убийства', icon: '⚔️', name: 'Ветеран', desc: 'Убить 500 монстров', target: 500, type: 'killsTotal', reward: { atk: 50, crit: 3 }, rewardText: '+50 ATK, +3% крит' },
-  { id: 'kill_1000', category: 'Убийства', icon: '⚔️', name: 'Легенда', desc: 'Убить 1000 монстров', target: 1000, type: 'killsTotal', reward: { atk: 100, def: 20, crit: 5 }, rewardText: '+100 ATK, +20 DEF, +5% крит' },
   { id: 'elite_5', category: 'Элиты', icon: '💜', name: 'Охотник на элит', desc: 'Убить 5 элитных', target: 5, type: 'eliteKills', reward: { atk: 10, crit: 2 }, rewardText: '+10 ATK, +2% крит' },
   { id: 'elite_25', category: 'Элиты', icon: '💜', name: 'Гроза элит', desc: 'Убить 25 элитных', target: 25, type: 'eliteKills', reward: { atk: 30, def: 15, crit: 4 }, rewardText: '+30 ATK, +15 DEF, +4% крит' },
   { id: 'miniboss_1', category: 'Мини-боссы', icon: '🔥', name: 'Первая кровь', desc: 'Убить мини-босса', target: 1, type: 'minibossKills', reward: { atk: 15, hp: 100 }, rewardText: '+15 ATK, +100 HP' },
   { id: 'miniboss_10', category: 'Мини-боссы', icon: '🔥', name: 'Гроза мини-боссов', desc: 'Убить 10 мини-боссов', target: 10, type: 'minibossKills', reward: { atk: 40, def: 20, crit: 3 }, rewardText: '+40 ATK, +20 DEF, +3% крит' },
   { id: 'boss_first', category: 'Боссы', icon: '👑', name: 'Первая победа', desc: 'Победить босса этажа', target: 1, type: 'bossKills', reward: { atk: 20, hp: 100 }, rewardText: '+20 ATK, +100 HP' },
   { id: 'boss_5', category: 'Боссы', icon: '👑', name: 'Беати-проходчик', desc: 'Победить 5 боссов', target: 5, type: 'bossKills', reward: { atk: 50, def: 30, hp: 300 }, rewardText: '+50 ATK, +30 DEF, +300 HP' },
-  { id: 'boss_10', category: 'Боссы', icon: '👑', name: 'Покоритель Айнкрада', desc: 'Победить всех 10 боссов', target: 10, type: 'bossKills', reward: { atk: 200, def: 100, crit: 10, hp: 1000 }, rewardText: 'Огромные бонусы' },
+  { id: 'boss_10', category: 'Боссы', icon: '👑', name: 'Покоритель', desc: 'Победить всех 10 боссов', target: 10, type: 'bossKills', reward: { atk: 200, def: 100, crit: 10, hp: 1000 }, rewardText: 'Огромные бонусы' },
   { id: 'floor_3', category: 'Этажи', icon: '🗼', name: 'Альпинист', desc: 'Достичь 3-го этажа', target: 3, type: 'highestFloor', reward: { atk: 15, hp: 100 }, rewardText: '+15 ATK, +100 HP' },
   { id: 'floor_5', category: 'Этажи', icon: '🗼', name: 'Покоритель высот', desc: 'Достичь 5-го этажа', target: 5, type: 'highestFloor', reward: { atk: 40, def: 20, hp: 200 }, rewardText: '+40 ATK, +20 DEF, +200 HP' },
-  { id: 'floor_10', category: 'Этажи', icon: '🗼', name: 'Вершина Айнкрада', desc: 'Достичь 10-го этажа', target: 10, type: 'highestFloor', reward: { atk: 150, def: 80, crit: 8, hp: 800 }, rewardText: 'Максимальный бонус' },
+  { id: 'floor_10', category: 'Этажи', icon: '🗼', name: 'Вершина', desc: 'Достичь 10-го этажа', target: 10, type: 'highestFloor', reward: { atk: 150, def: 80, crit: 8, hp: 800 }, rewardText: 'Максимальный бонус' },
   { id: 'lvl_5', category: 'Развитие', icon: '⭐', name: 'Опытный', desc: 'Достичь 5 уровня', target: 5, type: 'level', reward: { hp: 100, mp: 20 }, rewardText: '+100 HP, +20 MP' },
-  { id: 'lvl_10', category: 'Развитие', icon: '⭐', name: 'Мастер', desc: 'Достичь 10 уровня', target: 10, type: 'level', reward: { atk: 30, def: 15, hp: 200, mp: 50 }, rewardText: '+30 ATK, +15 DEF, +200 HP, +50 MP' },
-  { id: 'lvl_25', category: 'Развитие', icon: '⭐', name: 'Грандмастер', desc: 'Достичь 25 уровня', target: 25, type: 'level', reward: { atk: 100, def: 60, crit: 5, hp: 500, mp: 100 }, rewardText: '+100 ATK, +60 DEF, +5% крит' },
+  { id: 'lvl_10', category: 'Развитие', icon: '⭐', name: 'Мастер', desc: 'Достичь 10 уровня', target: 10, type: 'level', reward: { atk: 30, def: 15, hp: 200, mp: 50 }, rewardText: '+30 ATK, +15 DEF' },
+  { id: 'lvl_25', category: 'Развитие', icon: '⭐', name: 'Грандмастер', desc: 'Достичь 25 уровня', target: 25, type: 'level', reward: { atk: 100, def: 60, crit: 5, hp: 500, mp: 100 }, rewardText: '+100 ATK, +60 DEF' },
   { id: 'col_1000', category: 'Богатство', icon: '💰', name: 'Богач', desc: 'Накопить 1000 Col', target: 1000, type: 'totalCol', reward: { colBonus: 100 }, rewardText: '+100 Col' },
   { id: 'col_10000', category: 'Богатство', icon: '💰', name: 'Магнат', desc: 'Накопить 10000 Col', target: 10000, type: 'totalCol', reward: { colBonus: 1000 }, rewardText: '+1000 Col' }
 ];
 const DYNAMIC_ACH_TEMPLATES = [
   { icon: '⚡', name: 'Скорость света', desc: 'Критический удар', reward: { atk: 5 }, rewardText: '+5 ATK' },
   { icon: '🎯', name: 'Снайпер', desc: 'Точное попадание', reward: { crit: 1 }, rewardText: '+1% крит' },
-  { icon: '🛡️', name: 'Непробиваемый', desc: 'Выжить в тяжёлом бою', reward: { def: 3 }, rewardText: '+3 DEF' },
+  { icon: '🛡️', name: 'Непробиваемый', desc: 'Выжить', reward: { def: 3 }, rewardText: '+3 DEF' },
   { icon: '🍀', name: 'Любимец Кардинала', desc: 'Удача', reward: { hp: 50 }, rewardText: '+50 HP' },
-  { icon: '🔥', name: 'Огненный клинок', desc: 'Сжечь врага', reward: { atk: 4 }, rewardText: '+4 ATK' }
+  { icon: '🔥', name: 'Огненный клинок', desc: 'Сжечь', reward: { atk: 4 }, rewardText: '+4 ATK' }
 ];
 const DYNAMIC_NAMES_1 = ['Легенда', 'Тень', 'Проклятие', 'Дар', 'Клинок', 'Мудрость', 'Гнев', 'Судьба'];
 const DYNAMIC_NAMES_2 = ['Айнкрада', 'Кардинала', 'Бездны', 'Звёзд', 'Войны', 'Титанов', 'Небес'];
@@ -945,25 +1148,25 @@ const DYNAMIC_NAMES_2 = ['Айнкрада', 'Кардинала', 'Бездны
 /* ═══════ ZONES ═══════ */
 const ZONES_DB = {};
 const FLOORS_DATA = [
-  { n: 1, cityName: 'Городок Начал', wildName: 'Лес 1-го Этажа', dungeonName: 'Лабиринт 1-го Этажа', wildDesc: 'Лес со слаймами и волками.', dungeonDesc: 'Мрачные коридоры.' },
-  { n: 2, cityName: 'Урбас', wildName: 'Плато Урбаса', dungeonName: 'Катакомбы Урбаса', wildDesc: 'Плато с призраками.', dungeonDesc: 'Тёмные катакомбы.' },
-  { n: 3, cityName: 'Цима', wildName: 'Лес Цимы', dungeonName: 'Логово Оборотней', wildDesc: 'Лес с гоблинами.', dungeonDesc: 'Пещера оборотней.' },
-  { n: 4, cityName: 'Руины Гондоры', wildName: 'Руины Гондоры', dungeonName: 'Подземелья Гондоры', wildDesc: 'Пыльные руины.', dungeonDesc: 'Древние катакомбы.' },
-  { n: 5, cityName: 'Страна Роз', wildName: 'Розовые поля', dungeonName: 'Зачарованный лес', wildDesc: 'Поля с эльфами.', dungeonDesc: 'Магический лес.' },
-  { n: 6, cityName: 'Городок Стигий', wildName: 'Пустоши Стигия', dungeonName: 'Замок Стигия', wildDesc: 'Земли вампиров.', dungeonDesc: 'Замок тьмы.' },
-  { n: 7, cityName: 'Вольтера', wildName: 'Пустыня Вольтеры', dungeonName: 'Гробница Фараона', wildDesc: 'Пустыня с червями.', dungeonDesc: 'Древняя гробница.' },
-  { n: 8, cityName: 'Ледяная Гавань', wildName: 'Ледяные пики', dungeonName: 'Пещера Имира', wildDesc: 'Вечная мерзлота.', dungeonDesc: 'Ледяные чертоги.' },
-  { n: 9, cityName: 'Гранит', wildName: 'Вулкан Гранит', dungeonName: 'Сердце Вулкана', wildDesc: 'Лавовые реки.', dungeonDesc: 'Огненные чертоги.' },
-  { n: 10, cityName: 'Цитадель Кардинала', wildName: 'Небесные сады', dungeonName: 'Зал Кардинала', wildDesc: 'Небесные сады.', dungeonDesc: 'Сердце системы.' }
+  { n: 1, cityName: 'Городок Начал', wildName: 'Лес 1-го Этажа', dungeonName: 'Лабиринт', wildDesc: 'Лес со слаймами.', dungeonDesc: 'Мрачные коридоры.' },
+  { n: 2, cityName: 'Урбас', wildName: 'Плато Урбаса', dungeonName: 'Катакомбы', wildDesc: 'Плато.', dungeonDesc: 'Тёмно.' },
+  { n: 3, cityName: 'Цима', wildName: 'Лес Цимы', dungeonName: 'Логово', wildDesc: 'Лес.', dungeonDesc: 'Пещера.' },
+  { n: 4, cityName: 'Гондора', wildName: 'Руины', dungeonName: 'Подземелья', wildDesc: 'Руины.', dungeonDesc: 'Катакомбы.' },
+  { n: 5, cityName: 'Страна Роз', wildName: 'Поля', dungeonName: 'Зачарованный лес', wildDesc: 'Поля.', dungeonDesc: 'Лес.' },
+  { n: 6, cityName: 'Стигий', wildName: 'Пустоши', dungeonName: 'Замок', wildDesc: 'Пустоши.', dungeonDesc: 'Замок.' },
+  { n: 7, cityName: 'Вольтера', wildName: 'Пустыня', dungeonName: 'Гробница', wildDesc: 'Пустыня.', dungeonDesc: 'Гробница.' },
+  { n: 8, cityName: 'Ледяная Гавань', wildName: 'Пики', dungeonName: 'Пещера Имира', wildDesc: 'Мерзлота.', dungeonDesc: 'Пещера.' },
+  { n: 9, cityName: 'Гранит', wildName: 'Вулкан', dungeonName: 'Сердце Вулкана', wildDesc: 'Лава.', dungeonDesc: 'Огонь.' },
+  { n: 10, cityName: 'Цитадель', wildName: 'Небесные сады', dungeonName: 'Зал Кардинала', wildDesc: 'Сады.', dungeonDesc: 'Сердце.' }
 ];
 FLOORS_DATA.forEach(f => {
-  ZONES_DB[`town_f${f.n}`] = { id: `town_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • AINCRAD`, name: f.cityName, isSafe: true, desc: f.cityName + ' — город этажа ' + f.n + '.', shopId: f.n };
+  ZONES_DB[`town_f${f.n}`] = { id: `town_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • AINCRAD`, name: f.cityName, isSafe: true, desc: f.cityName + '.', shopId: f.n };
   ZONES_DB[`wild_f${f.n}`] = { id: `wild_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • ПОЛЕ`, name: f.wildName, isSafe: false, desc: f.wildDesc, zoneType: 'wild' };
   ZONES_DB[`dungeon_f${f.n}`] = { id: `dungeon_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • ПОДЗЕМЕЛЬЕ`, name: f.dungeonName, isSafe: false, desc: f.dungeonDesc, zoneType: 'dungeon', bossId: BOSSES_DB[f.n] ? BOSSES_DB[f.n].id : null };
 });
 
 /* ═══════ STATE ═══════ */
-let characterProfile = { name: 'KIRITO', classId: 'swordsman', color: '#22c55e' };
+let characterProfile = { name: 'KIRITO', classId: 'swordsman', raceId: 'human', gender: 'male', color: '#22c55e' };
 let player = null;
 let combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
 let currentShopTab = 'buy';
@@ -972,18 +1175,19 @@ let adminAuthenticated = false;
 function makeFreshPlayer() {
   const cls = CLASSES_DB[characterProfile.classId];
   const unlockedSkills = {};
-  // Базовые скиллы доступны сразу (reqCol === 0)
   (cls.skillIds || []).forEach(sid => {
     if (SKILLS_DB[sid] && SKILLS_DB[sid].reqCol === 0) unlockedSkills[sid] = true;
   });
-  // Также всегда даём 'slash' как базовую атаку
   if (SKILLS_DB['slash']) unlockedSkills['slash'] = true;
+  const skillMastery = {};
+  Object.keys(unlockedSkills).forEach(sid => { skillMastery[sid] = { level: 0, exp: 0 }; });
 
   return {
-    name: characterProfile.name, classId: characterProfile.classId, color: characterProfile.color,
+    name: characterProfile.name, classId: characterProfile.classId, raceId: characterProfile.raceId || 'human',
+    gender: characterProfile.gender || 'male', color: characterProfile.color,
     level: 1, hp: cls.hp, maxHp: cls.hp, mp: cls.mp, maxMp: cls.mp,
     baseAtk: cls.atk, baseDef: cls.def, baseCrit: cls.crit,
-    exp: 0, maxExp: 100, col: 500,
+    exp: 0, maxExp: 100, col: 500, donateCurrency: 0,
     killsCount: 0, eliteKills: 0, minibossKills: 0, bossKills: 0, totalColEarned: 0,
     currentZone: 'town_f1', highestFloor: 1,
     equippedWeapon: 'w_rusty', equippedArmor: 'a_cloth',
@@ -992,46 +1196,49 @@ function makeFreshPlayer() {
     unlockedFloors: { 1: true }, bossesDefeated: {},
     achievements: {}, dynamicAchievements: [],
     achievementBonuses: { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 },
-    unlockedSkills: unlockedSkills, // ← Скиллы, которые открыты
-    heathcliffDialogDone: false,    // ← Диалог с финальным боссом
-    heathcliffDialogPhase: 0
+    unlockedSkills: unlockedSkills,
+    skillMastery: skillMastery,
+    heathcliffDialogDone: false
   };
 }
 
 /* ═══════ COMPUTED ═══════ */
 function getClass() { return CLASSES_DB[player.classId]; }
+function getRace() { return RACES_DB[player.raceId || 'human']; }
+function getRaceBonusData() { return getRaceBonus(player.raceId || 'human'); }
 function getAchBonus() { return { atk: 0, def: 0, hp: 0, mp: 0, crit: 0, ...player.achievementBonuses }; }
-function getTotalAtk() { const w = ITEMS_DB[player.equippedWeapon] || { atk: 0 }; return player.baseAtk + (w.atk || 0) + getAchBonus().atk; }
-function getTotalDef() {
-  const a = ITEMS_DB[player.equippedArmor] || { def: 0 };
-  let t = player.baseDef + (a.def || 0) + getAchBonus().def;
-  if (player.classId === 'tank') t = Math.round(t * 1.2);
-  if (player.classId === 'knight') t = Math.round(t * 1.25);
-  return t;
+
+function getSkillMastery(sid) {
+  if (!player.skillMastery) player.skillMastery = {};
+  if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 };
+  return player.skillMastery[sid];
 }
-function getTotalCrit() {
-  let c = player.baseCrit + getAchBonus().crit;
-  if (player.classId === 'hunter') c += 20;
-  return c;
+function getMasteryDmgBonus(sid) { return getSkillMastery(sid).level * 0.15; }
+function getMasteryCostReduction(sid) { return Math.min(0.5, getSkillMastery(sid).level * 0.05); }
+function getEffectiveMpCost(sid) {
+  const sk = SKILLS_DB[sid];
+  if (!sk) return 0;
+  return Math.max(1, Math.round(sk.mpCost * (1 - getMasteryCostReduction(sid))));
 }
-function getTotalMaxHp() {
-  let hp = player.maxHp + getAchBonus().hp;
-  if (player.classId === 'tank') hp = Math.round(hp * 1.3);
-  if (player.classId === 'knight') hp = Math.round(hp * 1.15);
-  return hp;
+function addMasteryExp(sid) {
+  const m = getSkillMastery(sid);
+  if (m.level >= 5) return;
+  m.exp++;
+  if (m.exp >= 10) {
+    m.exp = 0;
+    m.level++;
+    playSound('mastery');
+    addLog(`⭐ [МАСТЕРСТВО] ${SKILLS_DB[sid].name} → ур. ${m.level}!`, 'mastery');
+    showToast(`⭐ Мастерство: ${SKILLS_DB[sid].name} ур. ${m.level}`);
+  }
 }
-function getTotalMaxMp() {
-  let mp = player.maxMp + getAchBonus().mp;
-  if (player.classId === 'mage') mp += 50;
-  if (player.classId === 'pyromancer') mp += 40;
-  if (player.classId === 'cleric') mp += 25;
-  return mp;
-}
-function getCritMultiplier() {
-  if (player.classId === 'assassin') return 2.85;
-  if (player.classId === 'hunter') return 2.1;
-  return 1.9;
-}
+
+function getTotalAtk() { const w = ITEMS_DB[player.equippedWeapon] || { atk: 0 }; const rb = getRaceBonusData(); return Math.round((player.baseAtk + (w.atk || 0) + getAchBonus().atk) * rb.atk); }
+function getTotalDef() { const a = ITEMS_DB[player.equippedArmor] || { def: 0 }; const rb = getRaceBonusData(); let t = player.baseDef + (a.def || 0) + getAchBonus().def; if (player.classId === 'tank') t = Math.round(t * 1.2); if (player.classId === 'knight') t = Math.round(t * 1.25); return Math.round(t * rb.def); }
+function getTotalCrit() { let c = player.baseCrit + getAchBonus().crit; if (player.classId === 'hunter') c += 20; return c + getRaceBonusData().crit; }
+function getTotalMaxHp() { const rb = getRaceBonusData(); let hp = player.maxHp + getAchBonus().hp; if (player.classId === 'tank') hp = Math.round(hp * 1.3); if (player.classId === 'knight') hp = Math.round(hp * 1.15); return Math.round(hp * rb.hp); }
+function getTotalMaxMp() { const rb = getRaceBonusData(); let mp = player.maxMp + getAchBonus().mp; if (player.classId === 'mage') mp += 50; if (player.classId === 'pyromancer') mp += 40; if (player.classId === 'cleric') mp += 25; return Math.round(mp * rb.mp); }
+function getCritMultiplier() { let m = 1.9; if (player.classId === 'assassin') m = 2.85; else if (player.classId === 'hunter') m = 2.1; return m + getRaceBonusData().critDmg; }
 function calculateDamage(atk, def, isCrit = false) {
   const v = 0.88 + Math.random() * (1.12 - 0.88);
   let dmg = (v * atk) - (def * 0.5);
@@ -1039,18 +1246,19 @@ function calculateDamage(atk, def, isCrit = false) {
   return Math.max(1, Math.round(dmg));
 }
 function getCurrentFloor() { return ZONES_DB[player.currentZone].floor || 1; }
-function computeSkillDmg(mult) {
+function computeSkillDmg(mult, sid) {
   let m = mult;
   if (player.classId === 'mage') m *= 1.3;
   if (player.classId === 'pyromancer') m *= 1.35;
-  return getTotalAtk() * m;
+  if (sid) m *= (1 + getMasteryDmgBonus(sid));
+  return getTotalAtk() * m * getRaceBonusData().skillDmg;
 }
 function isSkillUnlocked(skillId) {
-  if (skillId === 'slash') return true; // Базовая атака всегда доступна
+  if (skillId === 'slash') return true;
   return player.unlockedSkills && player.unlockedSkills[skillId];
 }
 
-/* ═══════ ACHIEVEMENTS LOGIC ═══════ */
+/* ═══════ ACHIEVEMENTS ═══════ */
 function getAchProgressValue(ach) {
   switch (ach.type) {
     case 'killsTotal': return player.killsCount;
@@ -1137,6 +1345,15 @@ function updateHUD() {
   if (player.mp > maxMp) player.mp = maxMp;
   document.getElementById('hud-name').textContent = player.name;
   document.getElementById('hud-class').textContent = getClass().name;
+  document.getElementById('hud-race').textContent = `${getRace().icon} ${getRace().name}`;
+  const genderEl = document.getElementById('hud-gender');
+  if (player.gender === 'female') {
+    genderEl.textContent = '♀';
+    genderEl.className = 'gender-tag female';
+  } else {
+    genderEl.textContent = '♂';
+    genderEl.className = 'gender-tag male';
+  }
   document.getElementById('hud-level').textContent = `Lv. ${player.level}`;
   document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}`;
   document.getElementById('player-cursor-el').style.background = player.color;
@@ -1153,6 +1370,7 @@ function updateHUD() {
   document.getElementById('hud-exp-bar').style.width = `${Math.max(0, Math.min(100, (player.exp / player.maxExp) * 100))}%`;
   document.getElementById('hud-exp-text').textContent = `${player.exp} / ${player.maxExp}`;
   document.getElementById('hud-col').textContent = `${player.col} Col`;
+  document.getElementById('hud-donate').textContent = `${player.donateCurrency || 0} ДК`;
   document.getElementById('stat-atk').textContent = `${getTotalAtk()}`;
   document.getElementById('stat-def').textContent = `${getTotalDef()}`;
   document.getElementById('stat-crit').textContent = `${getTotalCrit().toFixed(1)}%`;
@@ -1164,7 +1382,10 @@ function updateHUD() {
   document.getElementById('inv-count-badge').textContent = player.inventory.reduce((s, i) => s + i.count, 0);
   const cls = getClass();
   document.getElementById('class-ability-title').textContent = `${cls.icon} ${cls.passiveName}`;
-  document.getElementById('class-ability-desc').innerHTML = `<b>Пассивно:</b> ${cls.passiveDesc}<br><b>Активно — ${cls.activeName}:</b> ${cls.activeDesc}`;
+  document.getElementById('class-ability-desc').innerHTML = `<b>Пассивно:</b> ${cls.passiveDesc}<br><b>Активно:</b> ${cls.activeName} — ${cls.activeDesc}`;
+  const race = getRace();
+  document.getElementById('race-ability-title').textContent = `${race.icon} ${race.name}`;
+  document.getElementById('race-ability-desc').innerHTML = `<b>Бафф:</b> ${race.bonusText}`;
   updateHUDAchBadge();
   updateQuestDisplay();
 }
@@ -1244,7 +1465,7 @@ function renderExplorationButtons() {
 
   if (z.isSafe) {
     c.appendChild(createActionButton('🔥 Отдохнуть', 'btn-item', restAtCampfire));
-    c.appendChild(createActionButton(`🛒 Магазин`, 'btn-item', openShop));
+    c.appendChild(createActionButton('🛒 Магазин', 'btn-item', openShop));
     if (z.floor === 1) {
       c.appendChild(createActionButton('💬 Арго', '', () => talkNpc('argo')));
       c.appendChild(createActionButton('💬 Кляйн', '', () => talkNpc('klein')));
@@ -1255,13 +1476,8 @@ function renderExplorationButtons() {
   } else if (z.bossId) {
     c.appendChild(createActionButton('⚔️ НАЙТИ ВРАГА', 'btn-hunt', huntForEnemy));
     if (!player.bossesDefeated[z.bossId]) {
-      // Финальный босс 10 этажа → сначала диалог
-      if (z.floor === 10) {
-        c.appendChild(createActionButton(`💬 Диалог с Heathcliff`, 'btn-boss', () => startHeathcliffDialog()));
-        c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
-      } else {
-        c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
-      }
+      if (z.floor === 10) c.appendChild(createActionButton(`💬 Диалог с Heathcliff`, 'btn-boss', () => startHeathcliffDialog()));
+      c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
     } else {
       const nf = z.floor + 1;
       if (nf <= 10 && !player.unlockedFloors[nf]) {
@@ -1288,16 +1504,14 @@ function huntForEnemy() {
   addLog(`[ПОИСК] Вы исследуете окрестности...`, 'system');
   disableCombatButtons(true);
   setTimeout(() => {
-    // Уменьшил шанс находки — теперь 4% (было 12%)
     if (Math.random() < 0.04) {
       const col = (15 + Math.floor(Math.random() * 25)) * z.floor;
       player.col += col; player.totalColEarned += col;
       playSound('heal');
-      addLog(`[НАХОДКА] +${col} Col. Врагов не обнаружено.`, 'quest');
-      showToast(`+${col} Col (врагов нет)`);
+      addLog(`[НАХОДКА] +${col} Col.`, 'quest');
+      showToast(`+${col} Col`);
       updateHUD(); checkAchievements();
-      disableCombatButtons(false);
-      renderExplorationButtons();
+      disableCombatButtons(false); renderExplorationButtons();
       return;
     }
     const enemy = generateEnemy(z.floor, player.level);
@@ -1312,20 +1526,21 @@ function renderCombatButtons() {
   t.textContent = `БОЙ: ${combatState.enemy.name.toUpperCase()}`;
   c.appendChild(createActionButton('⚔️ Атака', 'btn-attack', playerActionAttack));
 
-  // Классовая способность
   const cls = getClass();
   const cb = createActionButton(`${cls.icon} ${cls.activeName} (${cls.activeCost}MP)`, 'btn-class', playerActionClassAbility);
   cb.disabled = player.mp < cls.activeCost;
   c.appendChild(cb);
 
-  // Скиллы класса — только разблокированные
   const skillIds = cls.skillIds || [];
   skillIds.forEach(sid => {
     if (!isSkillUnlocked(sid)) return;
     const sk = SKILLS_DB[sid];
     if (!sk) return;
-    const btn = createActionButton(`${sk.icon} ${sk.name} (${sk.mpCost}MP)`, 'btn-skill', () => playerActionSkillUse(sid));
-    btn.disabled = player.mp < sk.mpCost;
+    const cost = getEffectiveMpCost(sid);
+    const mLevel = getSkillMastery(sid).level;
+    const stars = '⭐'.repeat(mLevel);
+    const btn = createActionButton(`${sk.icon} ${sk.name} (${cost}MP)${stars ? ' ' + stars : ''}`, 'btn-skill', () => playerActionSkillUse(sid));
+    btn.disabled = player.mp < cost;
     c.appendChild(btn);
   });
 
@@ -1338,7 +1553,7 @@ function renderCombatButtons() {
 
 function changeZone(zid) {
   player.currentZone = zid;
-  addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}. Нажмите «Найти врага» для поиска монстров.`, 'system');
+  addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}. Нажмите «Найти врага».`, 'system');
   saveGameAuto(); renderZone(); updateHUD();
 }
 function restAtCampfire() {
@@ -1356,6 +1571,7 @@ function startCombatWithEnemy(enemy) {
   combatState.isDefending = false;
   combatState.defendTurns = 0;
   combatState.hasteActive = false;
+  combatState.undeadUsed = false;
   combatState.enemy = { ...enemy, maxHp: enemy.hp, baseAtk: enemy.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0, atkDebuffPct: 0, atkDebuffTurns: 0 };
   const e = combatState.enemy;
   const card = document.getElementById('enemy-card-container');
@@ -1387,6 +1603,7 @@ function startBossFight(floor) {
   combatState.isDefending = false;
   combatState.defendTurns = 0;
   combatState.hasteActive = false;
+  combatState.undeadUsed = false;
   combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0, atkDebuffPct: 0, atkDebuffTurns: 0 };
   const e = combatState.enemy;
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
@@ -1430,6 +1647,7 @@ function updateDebuffDisplay() {
   if (e.stunnedTurns > 0) addTag(`💫 Огл. ${e.stunnedTurns}х`);
   if (e.atkDebuffTurns > 0) addTag(`📢 ATK -${Math.round(e.atkDebuffPct*100)}%`);
 }
+
 function playerActionAttack() {
   if (!combatState.active) return;
   combatState.isDefending = false;
@@ -1445,6 +1663,7 @@ function playerActionAttack() {
   updateEnemyHpBar();
   if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
 }
+
 function playerActionClassAbility() {
   if (!combatState.active) return;
   const cls = getClass();
@@ -1484,7 +1703,6 @@ function playerActionClassAbility() {
     enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     triggerScreenShake();
     spawnFloatingNumber(`⚜️ -${dmg}`, 'floating-crit');
-    spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
     logMsg = `⚜️ СВЯТОЙ УДАР: ${dmg} + ${heal} HP!`;
   } else if (player.classId === 'pyromancer') {
     const effDef = Math.max(0, enemy.def * 0.5);
@@ -1494,7 +1712,7 @@ function playerActionClassAbility() {
     spawnFloatingNumber(`🔥 -${dmg}`, 'floating-crit');
     logMsg = `🔥 ОГНЕННЫЙ ШТОРМ: ${dmg}!`;
   } else if (player.classId === 'cleric') {
-    const heal = Math.round(getTotalMaxHp() * 0.4);
+    const heal = Math.round(getTotalMaxHp() * 0.4 * getRaceBonusData().healMult);
     player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
     logMsg = `⛪ ИСЦЕЛЕНИЕ: +${heal} HP!`;
@@ -1510,14 +1728,14 @@ function playerActionClassAbility() {
     enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     triggerScreenShake();
     spawnFloatingNumber(`🗡️ -${dmg}`, 'floating-crit');
-    logMsg = `🗡️ КРАЖА ЗДОРОВЬЯ: ${dmg} урона, +${heal} HP!`;
+    logMsg = `🗡️ КРАЖА: ${dmg}, +${heal} HP!`;
   } else if (player.classId === 'undead') {
     const dmg = calculateDamage(computeSkillDmg(2.5), enemy.def, false);
     const heal = Math.round(dmg * 0.3);
     enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     triggerScreenShake();
     spawnFloatingNumber(`💀 -${dmg}`, 'floating-crit');
-    logMsg = `💀 ЖИЗНЕОТВОД: ${dmg} урона, +${heal} HP!`;
+    logMsg = `💀 ЖИЗНЕОТВОД: ${dmg}, +${heal} HP!`;
   }
 
   addLog(`[КЛАСС] ${logMsg}`, 'class-skill');
@@ -1525,56 +1743,52 @@ function playerActionClassAbility() {
   if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
 }
 
-/* ═══════ УНИВЕРСАЛЬНОЕ ИСПОЛЬЗОВАНИЕ СКИЛЛА ИЗ SKILLS_DB ═══════ */
 function playerActionSkillUse(skillId) {
   if (!combatState.active) return;
   const sk = SKILLS_DB[skillId];
   if (!sk) return;
   if (!isSkillUnlocked(skillId)) { showToast('Скилл не изучен!'); return; }
-  if (player.mp < sk.mpCost) { showToast('Мало MP!'); return; }
-  player.mp -= sk.mpCost;
+  const cost = getEffectiveMpCost(skillId);
+  if (player.mp < cost) { showToast('Мало MP!'); return; }
+  player.mp -= cost;
   combatState.isDefending = false;
   playSound('skill');
   const enemy = combatState.enemy;
 
-  // Лечение (без урона)
+  // +1 мастерство за использование
+  addMasteryExp(skillId);
+
   if (sk.isHeal) {
-    const heal = Math.round(getTotalMaxHp() * sk.healPct);
+    const heal = Math.round(getTotalMaxHp() * sk.healPct * getRaceBonusData().healMult);
     player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
     addLog(`[СКИЛЛ] ${sk.name}: +${heal} HP!`, 'class-skill');
-    updateHUD();
-    enemyTurn();
-    return;
+    updateHUD(); enemyTurn(); return;
   }
 
-  // Мультиудар
   if (sk.multiHits) {
     let total = 0;
     for (let i = 0; i < sk.multiHits; i++) {
       const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
-      const dmg = calculateDamage(computeSkillDmg(sk.dmgMult), enemy.def, isCrit);
+      const dmg = calculateDamage(computeSkillDmg(sk.dmgMult, skillId), enemy.def, isCrit);
       total += dmg;
       setTimeout(() => { spawnFloatingNumber(`-${dmg}`, isCrit ? 'floating-crit' : 'floating-dmg'); triggerScreenShake(); }, i * 150);
     }
     enemy.hp -= total;
-    addLog(`[СКИЛЛ] ${sk.name}: ${sk.multiHits} удара, всего ${total}!`, 'class-skill');
+    addLog(`[СКИЛЛ] ${sk.name}: ${sk.multiHits}×, всего ${total}!`, 'class-skill');
   } else {
     const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
     let effDef = enemy.def;
     if (sk.ignoreDef) effDef = 0;
     else if (sk.ignoreDefHalf) effDef = Math.max(0, effDef * 0.5);
     if (enemy.defDebuff) effDef = Math.max(0, effDef - enemy.defDebuff);
-
-    let atkBase = computeSkillDmg(sk.dmgMult);
+    let atkBase = computeSkillDmg(sk.dmgMult, skillId);
     if (combatState.hasteActive) { atkBase *= 1.5; combatState.hasteActive = false; }
     const dmg = calculateDamage(atkBase, effDef, isCrit);
     enemy.hp -= dmg;
     triggerScreenShake();
-
-    // Эффекты
     if (sk.healPct) {
-      const heal = Math.round(getTotalMaxHp() * sk.healPct);
+      const heal = Math.round(getTotalMaxHp() * sk.healPct * getRaceBonusData().healMult);
       player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
       spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
     }
@@ -1592,7 +1806,11 @@ function playerActionSkillUse(skillId) {
       player.col += stolen; player.totalColEarned += stolen;
       spawnFloatingNumber(`+${stolen} Col`, 'floating-mp');
     }
-
+    if (sk.mpSteal) {
+      const mpGain = Math.min(getTotalMaxMp() - player.mp, sk.mpSteal);
+      player.mp += mpGain;
+      spawnFloatingNumber(`+${mpGain} MP`, 'floating-mp');
+    }
     if (isCrit) { playSound('crit'); spawnFloatingNumber(`КРИТ! -${dmg}`, 'floating-crit'); addLog(`[${sk.name}] КРИТ ${dmg}!`, 'crit'); }
     else { spawnFloatingNumber(`-${dmg}`, 'floating-dmg'); addLog(`[${sk.name}] ${dmg}.`, 'player-action'); }
   }
@@ -1651,24 +1869,25 @@ function enemyTurn() {
     combatState.isDefending = false;
     if (combatState.defendTurns > 0) combatState.defendTurns--;
 
-    // Пассивка рыцаря: +3% HP каждый ход
     if (player.classId === 'knight') {
       const heal = Math.round(getTotalMaxHp() * 0.03);
+      player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    }
+    const rb = getRaceBonusData();
+    if (rb.regenPct > 0) {
+      const heal = Math.round(getTotalMaxHp() * rb.regenPct);
       player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
     }
 
     updateHUD();
     if (player.hp <= 0) {
-      // Пассивка нежити: возрождение 1 раз за бой
       if (player.classId === 'undead' && !combatState.undeadUsed) {
         combatState.undeadUsed = true;
         player.hp = Math.round(getTotalMaxHp() * 0.5);
         playSound('legendary');
-        addLog(`💀 [НЕЖИТЬ] Проклятие активировано! Возрождение с ${player.hp} HP!`, 'legendary');
+        addLog(`💀 [НЕЖИТЬ] Возрождение с ${player.hp} HP!`, 'legendary');
         spawnFloatingNumber(`ВОЗРОЖДЕНИЕ`, 'floating-crit');
-        updateHUD();
-        endEnemyTurn();
-        return;
+        updateHUD(); endEnemyTurn(); return;
       }
       player.hp = 0; updateHUD(); handlePlayerDeath();
     }
@@ -1677,14 +1896,28 @@ function enemyTurn() {
 }
 function endEnemyTurn() { disableCombatButtons(false); renderCombatButtons(); }
 function disableCombatButtons(d) { document.querySelectorAll('#actions-container button').forEach(b => b.disabled = d); }
+
 function handleVictory() {
   const e = combatState.enemy;
   playSound('levelup');
   addLog(`[ПОБЕДА] ${e.name} повержен!`, 'victory');
-  const expMult = player.classId === 'thief' ? 1.15 : 1;
-  const colMult = player.classId === 'thief' ? 1.3 : 1;
+  const rb = getRaceBonusData();
+  let expMult = player.classId === 'thief' ? 1.15 : 1;
+  let colMult = player.classId === 'thief' ? 1.3 : 1;
+  expMult *= rb.expMult;
+  colMult *= rb.colMult;
   const expGain = Math.round(e.exp * expMult), colGain = Math.round(e.col * colMult);
   player.exp += expGain; player.col += colGain; player.totalColEarned += colGain; player.killsCount++;
+
+  let dkGain = 0;
+  if (e.isBoss) { dkGain = 5; }
+  else if (e.tier === 'miniboss') { dkGain = 10; }
+  else if (e.tier === 'elite') { dkGain = 2; }
+  if (dkGain > 0) {
+    player.donateCurrency = (player.donateCurrency || 0) + dkGain;
+    addLog(`💎 [ДОНАТ] +${dkGain} ДК!`, 'donate');
+  }
+
   if (e.tier === 'elite') { player.eliteKills++; addLog(`💜 [ЭЛИТА] +${expGain} EXP, +${colGain} Col`, 'elite'); }
   else if (e.tier === 'miniboss') { player.minibossKills++; addLog(`🔥 [МИНИ-БОСС] +${expGain} EXP, +${colGain} Col`, 'miniboss'); }
   else if (e.isBoss) { player.bossKills++; }
@@ -1703,18 +1936,6 @@ function handleVictory() {
   endCombat();
   updateHUD();
   saveGameAuto();
-
-  // Шанс на "засаду" — следующий враг сразу (25%)
-  if (!e.isBoss && Math.random() < 0.25) {
-    const z = ZONES_DB[player.currentZone];
-    if (z && z.zoneType && !z.isSafe) {
-      setTimeout(() => {
-        const nextEnemy = generateEnemy(z.floor, player.level);
-        addLog(`⚔️ [ЗАСАДА] Из тени появляется ещё один враг!`, 'danger');
-        startCombatWithEnemy(nextEnemy);
-      }, 800);
-    }
-  }
 }
 function endCombat() {
   combatState.active = false; combatState.enemy = null;
@@ -1741,16 +1962,16 @@ function checkLevelUp() {
 /* ═══════ QUESTS ═══════ */
 const QUESTS_DB = [
   { id: 0, title: 'Зачистка окраин', desc: 'Убейте 5 слаймов.', targetType: 'Слайм', targetCount: 5, expReward: 90, colReward: 60, itemRewards: [{ id: 'p_hp_small', count: 2 }], rewardDesc: '+90 EXP, +60 Col' },
-  { id: 1, title: 'Охота на кабанов', desc: 'Убейте 4 кабанов.', targetType: 'Кабан', targetCount: 4, expReward: 180, colReward: 120, itemRewards: [{ id: 'mat_ore', count: 1 }], rewardDesc: '+180 EXP, +120 Col' },
-  { id: 2, title: 'Босс 1-го Этажа', desc: 'Победите Illfang!', targetType: 'boss_illfang', targetCount: 1, expReward: 500, colReward: 400, itemRewards: [{ id: 'p_hp_large', count: 2 }], rewardDesc: '+500 EXP' },
+  { id: 1, title: 'Охота на кабанов', desc: 'Убейте 4 кабанов.', targetType: 'Кабан', targetCount: 4, expReward: 180, colReward: 120, itemRewards: [{ id: 'mat_ore', count: 1 }], rewardDesc: '+180 EXP' },
+  { id: 2, title: 'Босс 1 этажа', desc: 'Победите Illfang!', targetType: 'boss_illfang', targetCount: 1, expReward: 500, colReward: 400, itemRewards: [{ id: 'p_hp_large', count: 2 }], rewardDesc: '+500 EXP' },
   { id: 3, title: 'Король-бык', desc: 'Победите Asterius!', targetType: 'boss_asterius', targetCount: 1, expReward: 900, colReward: 700, itemRewards: [{ id: 'w_broadsword', count: 1 }], rewardDesc: '+900 EXP' },
   { id: 4, title: 'Злой Трент', desc: 'Победите Nerius!', targetType: 'boss_nerius', targetCount: 1, expReward: 1400, colReward: 1000, itemRewards: [{ id: 'p_hp_giant', count: 1 }], rewardDesc: '+1400 EXP' },
   { id: 5, title: 'Гиппокампус', desc: 'Победите Wythege!', targetType: 'boss_wythege', targetCount: 1, expReward: 2000, colReward: 1500, itemRewards: [{ id: 'mat_crystal', count: 2 }], rewardDesc: '+2000 EXP' },
   { id: 6, title: 'Пожиратель', desc: 'Победите Sandcrawler!', targetType: 'boss_sandcrawler', targetCount: 1, expReward: 3000, colReward: 2200, itemRewards: [{ id: 'p_crystal_heal', count: 1 }], rewardDesc: '+3000 EXP' },
   { id: 7, title: 'Жнец', desc: 'Победите Emerald Reaper!', targetType: 'boss_emerald_reaper', targetCount: 1, expReward: 4200, colReward: 3200, itemRewards: [{ id: 'mat_dragon_scale', count: 1 }], rewardDesc: '+4200 EXP' },
-  { id: 8, title: 'Проклятое Зеркало', desc: 'Победите Cursed Mirror!', targetType: 'boss_cursed_mirror', targetCount: 1, expReward: 6000, colReward: 4500, itemRewards: [{ id: 'p_hp_giant', count: 3 }], rewardDesc: '+6000 EXP' },
+  { id: 8, title: 'Зеркало', desc: 'Победите Cursed Mirror!', targetType: 'boss_cursed_mirror', targetCount: 1, expReward: 6000, colReward: 4500, itemRewards: [{ id: 'p_hp_giant', count: 3 }], rewardDesc: '+6000 EXP' },
   { id: 9, title: 'Ледяной Гигант', desc: 'Победите Frost Giant!', targetType: 'boss_frost_giant', targetCount: 1, expReward: 9000, colReward: 7000, itemRewards: [{ id: 'mat_dragon_scale', count: 2 }], rewardDesc: '+9000 EXP' },
-  { id: 10, title: 'Инфернальный Дракон', desc: 'Победите Infernal Dragon!', targetType: 'boss_infernal_dragon', targetCount: 1, expReward: 15000, colReward: 11000, itemRewards: [{ id: 'mat_dragon_scale', count: 3 }], rewardDesc: '+15000 EXP' },
+  { id: 10, title: 'Дракон', desc: 'Победите Infernal Dragon!', targetType: 'boss_infernal_dragon', targetCount: 1, expReward: 15000, colReward: 11000, itemRewards: [{ id: 'mat_dragon_scale', count: 3 }], rewardDesc: '+15000 EXP' },
   { id: 11, title: 'ФИНАЛ: Heathcliff', desc: 'Победите Heathcliff!', targetType: 'boss_heathcliff', targetCount: 1, expReward: 50000, colReward: 50000, itemRewards: [{ id: 'p_crystal_heal', count: 5 }], rewardDesc: '+50000 EXP' }
 ];
 function checkQuestProgress(kid) {
@@ -1795,13 +2016,12 @@ document.getElementById('quest-header-toggle').addEventListener('click', () => {
   playSound('click');
 });
 
-/* ═══════ SKILLS SHOP UI ═══════ */
+/* ═══════ SKILLS UI ═══════ */
 function openSkillsModal() {
   const cls = getClass();
   document.getElementById('skills-class-name').textContent = cls.name;
   const container = document.getElementById('skills-list-container');
   container.innerHTML = '';
-
   const skillIds = cls.skillIds || [];
   skillIds.forEach(sid => {
     const sk = SKILLS_DB[sid];
@@ -1810,19 +2030,33 @@ function openSkillsModal() {
     const levelOk = player.level >= sk.reqLevel;
     const colOk = player.col >= sk.reqCol;
     const canBuy = !unlocked && levelOk && colOk;
+    const m = getSkillMastery(sid);
+    const mStars = [0,1,2,3,4,5].map(i => i < m.level ? '<span class="filled">⭐</span>' : '<span>⭐</span>').join('');
+    const mPct = (m.exp / 10) * 100;
+    const cost = getEffectiveMpCost(sid);
+    const dmgBonus = Math.round(getMasteryDmgBonus(sid) * 100);
 
     const div = document.createElement('div');
     div.className = `skill-shop-item ${unlocked ? 'unlocked' : 'locked'}`;
     div.innerHTML = `
-      <div class="skill-shop-info">
-        <div class="skill-shop-name ${unlocked ? 'unlocked' : ''}">${sk.icon} ${sk.name}</div>
-        <div class="skill-shop-desc">${sk.desc} • MP: ${sk.mpCost}</div>
-        <div class="skill-shop-req ${levelOk ? 'met' : ''}">Уровень: ${sk.reqLevel} ${levelOk ? '✓' : '✗'}</div>
-        <div class="skill-shop-req ${colOk ? 'met' : ''}">Цена: ${sk.reqCol} Col ${colOk ? '✓' : '✗'}</div>
+      <div class="skill-shop-top">
+        <div class="skill-shop-info">
+          <div class="skill-shop-name ${unlocked ? 'unlocked' : ''}">${sk.icon} ${sk.name}</div>
+          <div class="skill-shop-desc">${sk.desc} • MP: ${cost}</div>
+          <div class="skill-shop-req ${levelOk ? 'met' : ''}">Уровень: ${sk.reqLevel} ${levelOk ? '✓' : '✗'}</div>
+          <div class="skill-shop-req ${colOk ? 'met' : ''}">Цена: ${sk.reqCol} Col ${colOk ? '✓' : '✗'}</div>
+          ${unlocked && m.level > 0 ? `<div style="font-size:0.78rem; color:#fde047; margin-top:3px;">Мастерство: +${dmgBonus}% урона, −${Math.round(getMasteryCostReduction(sid)*100)}% MP</div>` : ''}
+        </div>
+        <div>${unlocked ? '<div style="color:#4ade80; font-weight:bold;">✓ ИЗУЧЕНО</div>' : `<button class="sao-btn mini-btn ${canBuy ? 'btn-item' : ''}" ${canBuy ? '' : 'disabled'} onclick="learnSkill('${sid}')">Изучить</button>`}</div>
       </div>
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        ${unlocked ? '<div style="color:#4ade80; font-weight:bold; font-size:1.1rem;">✓ ИЗУЧЕНО</div>' : `<button class="sao-btn mini-btn ${canBuy ? 'btn-item' : ''}" ${canBuy ? '' : 'disabled'} onclick="learnSkill('${sid}')">Изучить</button>`}
-      </div>
+      ${unlocked ? `
+        <div class="mastery-bar">
+          <span class="mastery-label">Мастерство:</span>
+          <span class="mastery-stars">${mStars}</span>
+          <div class="mastery-progress-mini"><div class="mastery-progress-fill" style="width:${m.level >= 5 ? 100 : mPct}%"></div></div>
+          <span class="mastery-text">${m.level >= 5 ? 'MAX' : m.exp + '/10'}</span>
+        </div>
+      ` : ''}
     `;
     container.appendChild(div);
   });
@@ -1836,18 +2070,19 @@ function learnSkill(sid) {
   if (player.col < sk.reqCol) { showToast(`Нужно ${sk.reqCol} Col`); return; }
   player.col -= sk.reqCol;
   player.unlockedSkills[sid] = true;
+  if (!player.skillMastery) player.skillMastery = {};
+  player.skillMastery[sid] = { level: 0, exp: 0 };
   playSound('levelup');
   addLog(`📚 [СКИЛЛ] Изучен: ${sk.name}!`, 'quest');
-  showToast(`Изучен скилл: ${sk.name}`);
-  openSkillsModal();
-  updateHUD();
-  saveGameAuto();
+  showToast(`Изучен: ${sk.name}`);
+  openSkillsModal(); updateHUD(); saveGameAuto();
 }
 
 /* ═══════ DONATE ═══════ */
 function openDonateModal() {
   const c = document.getElementById('donate-items-container');
   c.innerHTML = '';
+  document.getElementById('donate-player-balance').textContent = player.donateCurrency || 0;
   const donateItems = Object.values(ITEMS_DB).filter(i => i.donate);
   donateItems.forEach(item => {
     const card = document.createElement('div');
@@ -1861,7 +2096,7 @@ function openDonateModal() {
           <span class="item-tag">${item.type.toUpperCase()}</span>
         </div>
         <div class="item-desc">${item.desc}</div>
-        <div class="item-stat-badge donate">${stats} • ${item.price} Col</div>
+        <div class="item-stat-badge donate">${stats} • 💎 ${item.donatePrice} ДК</div>
       </div>
       <div class="item-actions">
         <button class="sao-btn mini-btn btn-donate" onclick="buyDonateItem('${item.id}')">💎 Купить</button>
@@ -1875,11 +2110,11 @@ function openDonateModal() {
 function buyDonateItem(id) {
   const item = ITEMS_DB[id];
   if (!item) return;
-  if (player.col < item.price) { showToast('Мало Col!'); return; }
-  player.col -= item.price;
+  if ((player.donateCurrency || 0) < item.donatePrice) { showToast(`Нужно ${item.donatePrice} ДК!`); return; }
+  player.donateCurrency -= item.donatePrice;
   addItemToInventory(id, 1);
   playSound('donate');
-  addLog(`💎 [ДОНАТ] Куплено: ${item.name}!`, 'donate');
+  addLog(`💎 [ДОНАТ] Куплено: ${item.name} (-${item.donatePrice} ДК)!`, 'donate');
   showToast(`💎 Куплено: ${item.name}`);
   openDonateModal();
   updateHUD();
@@ -1905,133 +2140,134 @@ function tryAdminLogin() {
     playSound('defeat');
   }
 }
-document.getElementById('admin-password').addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') tryAdminLogin();
-});
+document.getElementById('admin-password').addEventListener('keypress', (e) => { if (e.key === 'Enter') tryAdminLogin(); });
+
 function openAdminPanel() {
   if (!adminAuthenticated) { openAdminLogin(); return; }
-  const c = document.getElementById('admin-buttons');
+  const c = document.getElementById('admin-panel-content');
   c.innerHTML = '';
-  const actions = [
+  const addSection = (title) => { const t = document.createElement('div'); t.className = 'admin-section-title'; t.textContent = title; c.appendChild(t); };
+  const addGrid = (buttons) => {
+    const grid = document.createElement('div');
+    grid.className = 'admin-grid';
+    buttons.forEach(b => {
+      const btn = document.createElement('button');
+      btn.className = 'sao-btn btn-admin';
+      btn.style.padding = '10px';
+      btn.innerHTML = b.label;
+      btn.onclick = () => { playSound('admin'); b.fn(); };
+      grid.appendChild(btn);
+    });
+    c.appendChild(grid);
+  };
+
+  addSection('💰 ЭКОНОМИКА');
+  addGrid([
     { label: '💰 +10 000 Col', fn: () => { player.col += 10000; player.totalColEarned += 10000; addLog('🔧 [АДМИН] +10 000 Col', 'admin'); updateHUD(); } },
+    { label: '💰 +1 000 000 Col', fn: () => { player.col += 1000000; player.totalColEarned += 1000000; addLog('🔧 [АДМИН] +1M Col', 'admin'); updateHUD(); } },
+    { label: '💎 +100 ДК', fn: () => { player.donateCurrency += 100; addLog('🔧 [АДМИН] +100 ДК', 'admin'); updateHUD(); } },
+    { label: '💎 +10000 ДК', fn: () => { player.donateCurrency += 10000; addLog('🔧 [АДМИН] +10000 ДК', 'admin'); updateHUD(); } }
+  ]);
+
+  addSection('⭐ ПРОКАЧКА');
+  addGrid([
     { label: '⭐ +10 000 000 EXP', fn: () => { player.exp += 10000000; addLog('🔧 [АДМИН] +10M EXP', 'admin'); checkLevelUp(); updateHUD(); } },
-    { label: '⚔️ +100 ATK', fn: () => { player.baseAtk += 100; addLog('🔧 [АДМИН] +100 ATK', 'admin'); updateHUD(); } },
-    { label: '🛡️ +100 DEF', fn: () => { player.baseDef += 100; addLog('🔧 [АДМИН] +100 DEF', 'admin'); updateHUD(); } },
-    { label: '❤️ Полное HP', fn: () => { player.hp = getTotalMaxHp(); addLog('🔧 [АДМИН] Полное HP', 'admin'); updateHUD(); } },
-    { label: '💧 Полное MP', fn: () => { player.mp = getTotalMaxMp(); addLog('🔧 [АДМИН] Полное MP', 'admin'); updateHUD(); } },
-    { label: '🗼 Открыть все этажи', fn: () => { for (let i = 1; i <= 10; i++) player.unlockedFloors[i] = true; player.highestFloor = 10; addLog('🔧 [АДМИН] Все этажи открыты', 'admin'); updateHUD(); checkAchievements(); } },
-    { label: '📚 Все скиллы класса', fn: () => {
-      const cls = getClass();
-      (cls.skillIds || []).forEach(sid => player.unlockedSkills[sid] = true);
-      addLog('🔧 [АДМИН] Все скиллы разблокированы', 'admin');
-    } },
-    { label: '🏆 Все ачивки', fn: () => {
-      ACHIEVEMENTS.forEach(ach => {
-        if (!player.achievements[ach.id] || !player.achievements[ach.id].unlocked) {
-          player.achievements[ach.id] = { unlocked: true, progress: ach.target };
-          if (ach.reward) {
-            for (const [key, amount] of Object.entries(ach.reward)) {
-              if (key === 'colBonus') { player.col += amount; player.totalColEarned += amount; }
-              else if (key === 'hp') { player.achievementBonuses.hp += amount; }
-              else if (key === 'mp') { player.achievementBonuses.mp += amount; }
-              else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amount;
-            }
-          }
-        }
-      });
-      addLog('🔧 [АДМИН] Все ачивки получены', 'admin');
-      updateHUDAchBadge(); updateHUD();
-    } },
-    { label: '⚡ Убить врага в бою', fn: () => {
-      if (combatState.active && combatState.enemy) {
-        combatState.enemy.hp = 0;
-        addLog('🔧 [АДМИН] Мгновенное убийство', 'admin');
-        handleVictory();
-      } else showToast('Нет активного боя');
-    } },
-    { label: '💎 Всё донат-оружие', fn: () => {
-      ['don_w_guardian','don_w_void','don_w_cosmic','don_w_gods','don_w_admin','don_a_guardian','don_a_void','don_a_gods'].forEach(id => addItemToInventory(id, 1));
-      addLog('🔧 [АДМИН] Всё донат-оружие выдано', 'admin');
-    } },
-    { label: '🔓 Разблокировать Heathcliff диалог', fn: () => {
-      player.heathcliffDialogDone = false;
-      player.unlockedFloors[10] = true;
-      addLog('🔧 [АДМИН] Диалог с Heathcliff доступен', 'admin');
-    } },
-    { label: '💾 Сохранить игру', fn: () => saveGame(false) },
-    { label: '🚪 Выйти из админки', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } }
-  ];
-  actions.forEach(a => {
-    const b = document.createElement('button');
-    b.className = 'sao-btn btn-admin';
-    b.style.padding = '10px';
-    b.textContent = a.label;
-    b.onclick = () => { playSound('admin'); a.fn(); };
-    c.appendChild(b);
-  });
+    { label: '🎯 +10 уровней', fn: () => { for (let i = 0; i < 10; i++) player.exp += player.maxExp; addLog('🔧 [АДМИН] +10 уровней', 'admin'); checkLevelUp(); updateHUD(); } },
+    { label: '⚔️ +1000 ATK', fn: () => { player.baseAtk += 1000; addLog('🔧 [АДМИН] +1000 ATK', 'admin'); updateHUD(); } },
+    { label: '🛡️ +1000 DEF', fn: () => { player.baseDef += 1000; addLog('🔧 [АДМИН] +1000 DEF', 'admin'); updateHUD(); } },
+    { label: '💥 +20% крит', fn: () => { player.baseCrit += 20; addLog('🔧 [АДМИН] +20% крит', 'admin'); updateHUD(); } }
+  ]);
+
+  addSection('🎒 ПРЕДМЕТЫ');
+  addGrid([
+    { label: '💎 Всё донат-оружие', fn: () => { ['don_w_guardian','don_w_void','don_w_cosmic','don_w_gods','don_w_admin','don_a_guardian','don_a_void','don_a_gods'].forEach(id => addItemToInventory(id, 1)); addLog('🔧 [АДМИН] Всё донат-оружие', 'admin'); } },
+    { label: '🔫 Всё обычное оружие', fn: () => { for (let i = 1; i <= 10; i++) WEAPONS_BY_FLOOR[i].forEach(w => addItemToInventory(w.id, 1)); addLog('🔧 [АДМИН] Всё оружие', 'admin'); } },
+    { label: '🛡️ Вся броня', fn: () => { for (let i = 1; i <= 10; i++) ARMORS_BY_FLOOR[i].forEach(a => addItemToInventory(a.id, 1)); addLog('🔧 [АДМИН] Вся броня', 'admin'); } },
+    { label: '🧪 50 зелий', fn: () => { addItemToInventory('p_hp_giant', 50); addItemToInventory('p_crystal_heal', 20); addLog('🔧 [АДМИН] Зелья', 'admin'); } }
+  ]);
+
+  addSection('🗼 ПРОГРЕСС');
+  addGrid([
+    { label: '🗼 Все этажи', fn: () => { for (let i = 1; i <= 10; i++) player.unlockedFloors[i] = true; player.highestFloor = 10; addLog('🔧 [АДМИН] Все этажи', 'admin'); updateHUD(); checkAchievements(); } },
+    { label: '📚 Все скиллы', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { player.unlockedSkills[sid] = true; if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; }); addLog('🔧 [АДМИН] Все скиллы', 'admin'); } },
+    { label: '⭐ Мастерство 5 ур. (все)', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; player.skillMastery[sid].level = 5; player.skillMastery[sid].exp = 0; }); addLog('🔧 [АДМИН] Всё мастерство на 5', 'admin'); } },
+    { label: '🏆 Все ачивки', fn: () => { ACHIEVEMENTS.forEach(ach => { if (!player.achievements[ach.id] || !player.achievements[ach.id].unlocked) { player.achievements[ach.id] = { unlocked: true, progress: ach.target }; if (ach.reward) { for (const [key, amount] of Object.entries(ach.reward)) { if (key === 'colBonus') { player.col += amount; player.totalColEarned += amount; } else if (key === 'hp') player.achievementBonuses.hp += amount; else if (key === 'mp') player.achievementBonuses.mp += amount; else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amount; } } } }); addLog('🔧 [АДМИН] Все ачивки', 'admin'); updateHUDAchBadge(); updateHUD(); } }
+  ]);
+
+  addSection('⚔️ БОЙ И МИР');
+  addGrid([
+    { label: '⚡ Убить врага', fn: () => { if (combatState.active && combatState.enemy) { combatState.enemy.hp = 0; addLog('🔧 [АДМИН] Убийство', 'admin'); handleVictory(); } else showToast('Нет боя'); } },
+    { label: '🛡️ Бессмертие', fn: () => { player.maxHp += 100000; player.hp = player.maxHp; addLog('🔧 [АДМИН] Бессмертие', 'admin'); updateHUD(); } },
+    { label: '🏛️ В город', fn: () => changeZone(`town_f${getCurrentFloor()}`) },
+    { label: '💀 В подземелье', fn: () => changeZone(`dungeon_f${getCurrentFloor()}`) },
+    { label: '🧑 Сменить расу', fn: () => { closeModal('modal-admin'); openRaceChangeModal(); } },
+    { label: '💬 Heathcliff диалог', fn: () => { closeModal('modal-admin'); startHeathcliffDialog(); } }
+  ]);
+
+  addSection('⚙️ СИСТЕМА');
+  addGrid([
+    { label: '💾 Сохранить', fn: () => saveGame(false) },
+    { label: '📂 Загрузить', fn: () => { closeModal('modal-admin'); loadGame(); } },
+    { label: '🚪 Выйти', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } },
+    { label: '☠️ Убить себя', fn: () => { player.hp = 0; addLog('🔧 [АДМИН] Самоубийство', 'admin'); updateHUD(); handlePlayerDeath(); } }
+  ]);
+
   openModal('modal-admin');
 }
 
-/* ═══════ HEATHCLIFF DIALOG (многофазный) ═══════ */
-const HEATHCLIFF_DIALOG = [
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«...Итак, ты добрался до меня, Кирито. Я ждал этого момента очень долго. Знаешь ли ты, кто я на самом деле?»`,
-    choices: [
-      { text: '«Ты — лидер гильдии Рыцарей Крови»', next: 1, effect: 'neutral' },
-      { text: '«Ты — финальный босс Айнкрада»', next: 1, effect: 'neutral' },
-      { text: '«Ты — Akihiko Kayaba, создатель SAO»', next: 2, effect: 'smart' }
-    ]
-  },
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«Хм... Ты не так прост, как я думал. Да, я действительно стою за всем этим. Но зачем, по-твоему, я создал этот мир?»`,
-    choices: [
-      { text: '«Чтобы убивать людей ради развлечения»', next: 3, effect: 'aggressive' },
-      { text: '«Чтобы воплотить свою мечту — замок в небе»', next: 3, effect: 'wise' },
-      { text: '«Чтобы найти достойного противника — настоящего мечника»', next: 3, effect: 'smart' }
-    ]
-  },
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«...Ты меня удивил. Мало кто догадывается об этом так быстро. Но знай: настоящий поединок ещё впереди.»`,
-    choices: [
-      { text: '«Я готов. Дай мне сразиться с тобой!»', next: 4, effect: 'aggressive' },
-      { text: '«Отпусти всех — и я не буду сражаться»', next: 4, effect: 'wise' }
-    ]
-  },
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«Каждый из нас стремился к чему-то своему. Я — к свободе, ты — к победе. Но в этом мире лишь один сможет вернуться домой. И это будем я — либо ты.»`,
-    choices: [
-      { text: '«Тогда доставай меч. Один из нас падёт»', next: 5, effect: 'aggressive' },
-      { text: '«Есть третий путь. Мы можем объединиться»', next: 5, effect: 'wise' }
-    ]
-  },
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«Ты действительно необычный игрок, Кирито. Даже сейчас, стоя на грани смерти, ты не сдаёшься. Это достойно уважения.»`,
-    choices: [
-      { text: '«Я не сдамся. Никогда.»', next: 6, effect: 'aggressive' },
-      { text: '«Покажи мне свою истинную силу.»', next: 6, effect: 'neutral' }
-    ]
-  },
-  {
-    name: 'Heathcliff the Paladin',
-    text: `«Хорошо. Тогда — последний бой. Используй всё, что у тебя есть. Покажи мне, на что способен настоящий Проходчик!»`,
-    choices: [
-      { text: '⚔️ «НАЧАТЬ БОЙ!»', next: -1, effect: 'start_battle' },
-      { text: '💬 «Ещё немного поговорим»', next: 0, effect: 'restart' }
-    ]
-  }
-];
-
-function startHeathcliffDialog() {
-  player.heathcliffDialogPhase = 0;
-  showDialogPhase(0);
-  openModal('modal-dialogue');
-  playSound('boss_talk');
+/* ═══════ RACE CHANGE ═══════ */
+function openRaceChangeModal() {
+  const c = document.getElementById('race-change-grid');
+  c.innerHTML = '';
+  Object.values(RACES_DB).forEach(race => {
+    const card = document.createElement('div');
+    card.className = `race-card ${player.raceId === race.id ? 'selected' : ''}`;
+    card.innerHTML = `<div class="race-icon">${race.icon}</div><div class="race-name">${race.name}</div><div class="race-desc">${race.desc}</div><div class="race-bonus">${race.bonusText}</div>`;
+    card.onclick = () => {
+      if (player.raceId === race.id) { showToast('Уже эта раса'); return; }
+      if ((player.donateCurrency || 0) < 10) { showToast('Нужно 10 ДК!'); return; }
+      player.donateCurrency -= 10;
+      player.raceId = race.id;
+      playSound('race');
+      addLog(`🧑 [РАСА] Смена на «${race.name}»!`, 'race');
+      showToast(`Раса: ${race.name}`);
+      closeModal('modal-race-change'); updateHUD(); saveGameAuto();
+    };
+    c.appendChild(card);
+  });
+  openModal('modal-race-change');
 }
+
+/* ═══════ HEATHCLIFF DIALOG ═══════ */
+const HEATHCLIFF_DIALOG = [
+  { name: 'Heathcliff', text: `«...Итак, ты добрался до меня. Знаешь, кто я на самом деле?»`, choices: [
+    { text: '«Ты — лидер Рыцарей Крови»', next: 1 },
+    { text: '«Ты — финальный босс»', next: 1 },
+    { text: '«Ты — Akihiko Kayaba, создатель SAO»', next: 2 }
+  ]},
+  { name: 'Heathcliff', text: `«Хм... Ты не так прост. Но зачем я создал Айнкрад?»`, choices: [
+    { text: '«Чтобы убивать ради развлечения»', next: 3 },
+    { text: '«Чтобы воплотить мечту»', next: 3 },
+    { text: '«Чтобы найти достойного противника»', next: 3 }
+  ]},
+  { name: 'Heathcliff', text: `«...Ты меня удивил. Настоящий поединок ещё впереди.»`, choices: [
+    { text: '«Я готов!»', next: 4 },
+    { text: '«Отпусти всех»', next: 4 }
+  ]},
+  { name: 'Heathcliff', text: `«Каждый из нас стремился к своему. Но лишь один сможет вернуться домой.»`, choices: [
+    { text: '«Доставай меч»', next: 5 },
+    { text: '«Объединимся»', next: 5 }
+  ]},
+  { name: 'Heathcliff', text: `«Ты необычный игрок. Даже на грани смерти не сдаёшься.»`, choices: [
+    { text: '«Я не сдамся»', next: 6 },
+    { text: '«Покажи силу»', next: 6 }
+  ]},
+  { name: 'Heathcliff', text: `«Хорошо. Последний бой. Покажи, на что способен настоящий Проходчик!»`, choices: [
+    { text: '⚔️ «НАЧАТЬ БОЙ!»', next: -1, start: true },
+    { text: '💬 «Ещё поговорим»', next: 0 }
+  ]}
+];
+function startHeathcliffDialog() { showDialogPhase(0); openModal('modal-dialogue'); }
 function showDialogPhase(phaseIdx) {
   const phase = HEATHCLIFF_DIALOG[phaseIdx];
   if (!phase) { closeModal('modal-dialogue'); return; }
@@ -2049,27 +2285,21 @@ function showDialogPhase(phaseIdx) {
     btn.innerHTML = choice.text;
     btn.onclick = () => {
       playSound('click');
-      if (choice.effect === 'start_battle') {
+      if (choice.start) {
         player.heathcliffDialogDone = true;
         closeModal('modal-dialogue');
-        addLog(`💬 [Heathcliff]: «Тогда — начнём!»`, 'boss-talk');
-        // Финальный босс усилен +30% HP и +20% ATK
+        addLog(`💬 [Heathcliff]: «Начнём!»`, 'boss-talk');
         const boss = generateBoss(10);
         boss.hp = Math.round(boss.hp * 1.3);
         boss.maxHp = boss.hp;
         boss.atk = Math.round(boss.atk * 1.2);
         boss.name = 'Heathcliff the Paladin (Истинная форма)';
         startBossFightCustom(boss);
-      } else if (choice.effect === 'restart') {
-        showDialogPhase(0);
-      } else {
-        showDialogPhase(choice.next);
-      }
+      } else { showDialogPhase(choice.next); }
     };
     choicesDiv.appendChild(btn);
   });
-  // Если это финальная фаза — скрыть кнопку "Закрыть" (только выбор)
-  document.getElementById('npc-close-btn').style.display = (phase.choices.length > 0) ? 'none' : 'inline-block';
+  document.getElementById('npc-close-btn').style.display = 'none';
 }
 function startBossFightCustom(boss) {
   if (!boss) return;
@@ -2077,6 +2307,7 @@ function startBossFightCustom(boss) {
   combatState.isDefending = false;
   combatState.defendTurns = 0;
   combatState.hasteActive = false;
+  combatState.undeadUsed = false;
   combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0, atkDebuffPct: 0, atkDebuffTurns: 0 };
   const e = combatState.enemy;
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
@@ -2223,9 +2454,15 @@ function useItem(id) {
   if (used) { playSound('heal'); removeItemFromInventory(id, 1); renderInventoryModal(); updateHUD(); }
 }
 
-/* ═══════ SHOP ═══════ */
+/* ═══════ SHOP (с массовой продажей) ═══════ */
 function openShop() { document.getElementById('shop-title').textContent = `МАГАЗИН ЭТАЖА ${getCurrentFloor()}`; switchShopTab('buy'); openModal('modal-shop'); }
-function switchShopTab(t) { currentShopTab = t; document.getElementById('tab-buy').className = `shop-tab ${t === 'buy' ? 'active' : ''}`; document.getElementById('tab-sell').className = `shop-tab ${t === 'sell' ? 'active' : ''}`; renderShopItems(); }
+function switchShopTab(t) {
+  currentShopTab = t;
+  document.getElementById('tab-buy').className = `shop-tab ${t === 'buy' ? 'active' : ''}`;
+  document.getElementById('tab-sell').className = `shop-tab ${t === 'sell' ? 'active' : ''}`;
+  document.getElementById('sell-actions').style.display = t === 'sell' ? 'flex' : 'none';
+  renderShopItems();
+}
 function getShopStock(floor) {
   const stock = [];
   if (floor <= 2) stock.push('p_hp_small', 'p_mp_small');
@@ -2239,7 +2476,7 @@ function getShopStock(floor) {
 function renderShopItems() {
   const c = document.getElementById('shop-items-container');
   c.innerHTML = '';
-  document.getElementById('shop-player-col').textContent = `${player.col} Col`;
+  document.getElementById('shop-player-col').textContent = `${player.col}`;
   if (currentShopTab === 'buy') {
     getShopStock(getCurrentFloor()).forEach(id => {
       const item = ITEMS_DB[id];
@@ -2251,19 +2488,70 @@ function renderShopItems() {
     });
   } else {
     if (player.inventory.length === 0) { c.innerHTML = `<div style="color:var(--text-dim); padding:8px;">Нет предметов.</div>`; return; }
+    // Итоговая стоимость всего
+    let totalValue = 0;
+    player.inventory.forEach(inv => {
+      const item = ITEMS_DB[inv.id];
+      if (item) totalValue += Math.max(1, Math.floor(item.price * 0.5)) * inv.count;
+    });
+    const totalDiv = document.createElement('div');
+    totalDiv.style.cssText = 'background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.4); border-radius:3px; padding:8px; font-size:0.85rem; color:#f59e0b; font-weight:bold;';
+    totalDiv.innerHTML = `Итого продать всё за: <span style="color:#fde047;">${totalValue} Col</span>`;
+    c.appendChild(totalDiv);
+
     player.inventory.forEach(inv => {
       const item = ITEMS_DB[inv.id];
       if (!item) return;
       const price = Math.max(1, Math.floor(item.price * 0.5));
       const card = document.createElement('div');
       card.className = 'item-card';
-      card.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.8rem; color:#94a3b8;">x${inv.count}</span></div><div class="item-desc">Скупка: ${price} Col.</div></div><div class="item-actions"><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price})">Продать (+${price})</button></div>`;
+      card.innerHTML = `
+        <div class="item-main">
+          <div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.8rem; color:#94a3b8;">x${inv.count}</span></div>
+          <div class="item-desc">Скупка: ${price} Col за шт. Всего: ${price * inv.count} Col</div>
+        </div>
+        <div class="item-actions">
+          <button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 1)">×1</button>
+          <button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 5)">×5</button>
+          <button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, ${inv.count})">Всё</button>
+        </div>
+      `;
       c.appendChild(card);
     });
   }
 }
 function buyShopItem(id) { const item = ITEMS_DB[id]; if (!item) return; if (player.col < item.price) { showToast('Мало Col!'); return; } player.col -= item.price; addItemToInventory(id, 1); playSound('click'); addLog(`[МАГАЗИН] Куплено: ${item.name}.`, 'system'); showToast(`Куплено: ${item.name}`); renderShopItems(); updateHUD(); }
-function sellShopItem(id, price) { const item = ITEMS_DB[id]; if (!item) return; removeItemFromInventory(id, 1); player.col += price; playSound('click'); addLog(`[МАГАЗИН] Продано: ${item.name}.`, 'quest'); showToast(`+${price} Col`); renderShopItems(); updateHUD(); }
+function sellShopItem(id, price, quantity) {
+  const item = ITEMS_DB[id];
+  if (!item) return;
+  const inv = player.inventory.find(i => i.id === id);
+  if (!inv) return;
+  const actualQty = Math.min(quantity, inv.count);
+  const totalGain = price * actualQty;
+  removeItemFromInventory(id, actualQty);
+  player.col += totalGain;
+  playSound('click');
+  addLog(`[МАГАЗИН] Продано: ${item.name} ×${actualQty} (+${totalGain} Col)`, 'quest');
+  showToast(`+${totalGain} Col`);
+  renderShopItems(); updateHUD();
+}
+function sellAllInventory() {
+  if (player.inventory.length === 0) { showToast('Инвентарь пуст'); return; }
+  let totalGain = 0, countSold = 0;
+  player.inventory.forEach(inv => {
+    const item = ITEMS_DB[inv.id];
+    if (!item) return;
+    const price = Math.max(1, Math.floor(item.price * 0.5));
+    totalGain += price * inv.count;
+    countSold += inv.count;
+  });
+  player.col += totalGain;
+  player.inventory = [];
+  playSound('levelup');
+  addLog(`💰 [МАГАЗИН] Всё продано! +${totalGain} Col за ${countSold} предметов.`, 'quest');
+  showToast(`Продано всё: +${totalGain} Col`);
+  renderShopItems(); updateHUD();
+}
 
 /* ═══════ NPC ═══════ */
 function talkNpc(id) {
@@ -2271,8 +2559,8 @@ function talkNpc(id) {
   const s = document.getElementById('npc-speech-text');
   document.getElementById('npc-choices').innerHTML = '';
   document.getElementById('npc-close-btn').style.display = 'inline-block';
-  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«Жми <b>Найти врага</b> в поле или подземелье! Скиллы теперь изучаются за Col — начни с дешёвых. На 10 этаже Heathcliff ждёт тебя...»`; }
-  else { t.textContent = 'Кляйн'; s.innerHTML = `«Слушай, теперь у нас 10 классов! Пиромант, рыцарь, клирик — попробуй разные! Скиллы покупаются за Col, изучай по мере прокачки.»`; }
+  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«Слушай, у каждого класса теперь 10 скиллов! Мастерство растёт при использовании — качай любимые! А массовая продажа в магазине сэкономит время!»`; }
+  else { t.textContent = 'Кляйн'; s.innerHTML = `«На вкладке ПРОДАТЬ можешь жать ×5 или Всё — экономит часы! И да, выбирай пол при создании — косметика, но приятно.»`; }
   playSound('click'); openModal('modal-dialogue');
 }
 
@@ -2280,9 +2568,12 @@ function talkNpc(id) {
 function renderStatusModal() {
   const c = document.getElementById('status-modal-content');
   const cls = getClass();
+  const race = getRace();
   const ab = getAchBonus();
   const unlockedCount = Object.keys(player.unlockedSkills || {}).filter(k => player.unlockedSkills[k]).length;
   const totalSkills = (cls.skillIds || []).length;
+  const genderIcon = player.gender === 'female' ? '♀' : '♂';
+  const genderColor = player.gender === 'female' ? 'var(--female-pink)' : 'var(--male-blue)';
   let fp = '';
   for (let n = 1; n <= 10; n++) {
     const bd = player.bossesDefeated[BOSSES_DB[n]?.id];
@@ -2293,28 +2584,33 @@ function renderStatusModal() {
   }
   c.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(110,231,255,0.2); padding-bottom:10px;">
-      <div><div style="font-size:1.35rem; font-weight:bold; color:#fff;">${player.name}</div><div style="font-size:0.9rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • Этаж ${getCurrentFloor()}</div></div>
+      <div>
+        <div style="font-size:1.35rem; font-weight:bold; color:#fff;">
+          <span style="color:${genderColor}; font-size:1.2rem;">${genderIcon}</span> ${player.name}
+        </div>
+        <div style="font-size:0.9rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • ${race.icon} ${race.name} • Этаж ${getCurrentFloor()}</div>
+      </div>
       <div style="display:flex; gap:8px;"><div class="player-level-badge">Lv. ${player.level}</div><div class="ach-badge">🏆 ${getTotalAchievementsUnlocked()}</div></div>
     </div>
     <div class="stats-grid">
       <div class="stat-box"><span class="stat-label">HP</span><span class="stat-val" style="color:#4ade80;">${player.hp} / ${getTotalMaxHp()}</span></div>
       <div class="stat-box"><span class="stat-label">MP</span><span class="stat-val" style="color:#60a5fa;">${player.mp} / ${getTotalMaxMp()}</span></div>
-      <div class="stat-box"><span class="stat-label">ATK</span><span class="stat-val atk">${getTotalAtk()} (+${ab.atk})</span></div>
-      <div class="stat-box"><span class="stat-label">DEF</span><span class="stat-val def">${getTotalDef()} (+${ab.def})</span></div>
+      <div class="stat-box"><span class="stat-label">ATK</span><span class="stat-val atk">${getTotalAtk()}</span></div>
+      <div class="stat-box"><span class="stat-label">DEF</span><span class="stat-val def">${getTotalDef()}</span></div>
       <div class="stat-box"><span class="stat-label">КРИТ</span><span class="stat-val crit">${getTotalCrit().toFixed(1)}%</span></div>
-      <div class="stat-box"><span class="stat-label">COL</span><span class="stat-val" style="color:#f59e0b;">${player.col}</span></div>
+      <div class="stat-box"><span class="stat-label">Col</span><span class="stat-val" style="color:#f59e0b;">${player.col}</span></div>
+      <div class="stat-box" style="grid-column: span 2;"><span class="stat-label">💎 Донат-кристаллы</span><span class="stat-val" style="color:var(--donate-pink);">${player.donateCurrency || 0} ДК</span></div>
+    </div>
+    <div style="background:linear-gradient(135deg, rgba(45,212,191,0.12), rgba(13,148,136,0.06)); border:1px solid rgba(45,212,191,0.5); border-radius:4px; padding:10px;">
+      <div style="font-size:0.9rem; font-weight:bold; color:var(--race-teal);">${race.icon} ${race.name}</div>
+      <div style="font-size:0.82rem; color:#cbd5e1; margin-top:3px;">${race.bonusText}</div>
     </div>
     <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">ЭТАЖИ</div>
     <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:1rem;">${fp}</div>
-    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">СКИЛЛЫ КЛАССА</div>
+    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">СКИЛЛЫ</div>
     <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:0.88rem; color:#cbd5e1;">Изучено: <b>${unlockedCount} / ${totalSkills}</b></div>
-    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">СТАТИСТИКА</div>
-    <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:0.88rem; line-height:1.7; color:#cbd5e1;">
-      <div>• Всего убито: <b>${player.killsCount}</b></div>
-      <div>• 💜 Элит: <b>${player.eliteKills}</b> • 🔥 Мини-боссов: <b>${player.minibossKills}</b> • 👑 Боссов: <b>${player.bossKills}</b></div>
-      <div>• Заработано: <b>${player.totalColEarned} Col</b></div>
-    </div>
     <button class="sao-btn btn-skill" style="padding:12px; font-size:1rem;" onclick="closeModal('modal-status'); openSkillsModal();">📚 ИЗУЧИТЬ СКИЛЛЫ</button>
+    <button class="sao-btn btn-race" style="padding:12px; font-size:1rem;" onclick="closeModal('modal-status'); openRaceChangeModal();">🧑 СМЕНИТЬ РАСУ (10 ДК)</button>
   `;
 }
 
@@ -2334,7 +2630,7 @@ function confirmPermadeath() {
 }
 
 /* ═══════ SAVE/LOAD ═══════ */
-const SAVE_KEY = 'sao_aincrad_rpg_save_v7';
+const SAVE_KEY = 'sao_aincrad_rpg_save_v9';
 function saveGame(isAuto = false) {
   if (!player) return;
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile })); if (!isAuto) { playSound('click'); showToast('Сохранено!'); addLog(`[СИСТЕМА] Прогресс сохранён.`, 'system'); } } catch (e) { showToast('Ошибка!'); }
@@ -2353,7 +2649,10 @@ function loadGame() {
     if (!player.unlockedFloors) player.unlockedFloors = { 1: true };
     if (!player.bossesDefeated) player.bossesDefeated = {};
     if (!player.unlockedSkills) player.unlockedSkills = { slash: true };
-    if (player.heathcliffDialogDone === undefined) player.heathcliffDialogDone = false;
+    if (!player.skillMastery) player.skillMastery = {};
+    if (!player.raceId) player.raceId = 'human';
+    if (!player.gender) player.gender = 'male';
+    if (player.donateCurrency === undefined) player.donateCurrency = 0;
     if (combatState.active) endCombat();
     playSound('heal'); addLog(`[СИСТЕМА] Загружено. ${player.name}!`, 'system');
     renderZone(); updateHUD();
@@ -2376,16 +2675,45 @@ document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('c
 
 /* ═══════ CHARACTER CREATION ═══════ */
 let selectedClass = 'swordsman';
+let selectedRace = 'human';
+let selectedGender = 'male';
 let selectedColor = '#22c55e';
-const COLORS_DB = [{ id: 'green', val: '#22c55e' }, { id: 'cyan', val: '#6ee7ff' }, { id: 'gold', val: '#fbbf24' }, { id: 'red', val: '#ef4444' }, { id: 'purple', val: '#a855f7' }, { id: 'white', val: '#ffffff' }];
+const COLORS_DB = [{ id: 'green', val: '#22c55e' }, { id: 'cyan', val: '#6ee7ff' }, { id: 'gold', val: '#fbbf24' }, { id: 'red', val: '#ef4444' }, { id: 'purple', val: '#a855f7' }, { id: 'white', val: '#ffffff' }, { id: 'blue', val: '#60a5fa' }, { id: 'pink', val: '#f472b6' }];
+
+function renderGenderOptions() {
+  const g = document.getElementById('gender-grid');
+  g.innerHTML = '';
+  const genders = [
+    { id: 'male', name: 'МУЖСКОЙ', icon: '♂' },
+    { id: 'female', name: 'ЖЕНСКИЙ', icon: '♀' }
+  ];
+  genders.forEach(gender => {
+    const card = document.createElement('div');
+    card.className = `gender-card ${gender.id} ${gender.id === selectedGender ? 'selected' : ''}`;
+    card.innerHTML = `<div class="gender-icon">${gender.icon}</div><div class="gender-name">${gender.name}</div>`;
+    card.onclick = () => { selectedGender = gender.id; playSound('race'); renderGenderOptions(); };
+    g.appendChild(card);
+  });
+}
 function renderClassOptions() {
   const g = document.getElementById('class-grid');
   g.innerHTML = '';
   Object.values(CLASSES_DB).forEach(cls => {
     const card = document.createElement('div');
     card.className = `class-card ${cls.id === selectedClass ? 'selected' : ''}`;
-    card.innerHTML = `<div class="class-icon">${cls.icon}</div><div class="class-name">${cls.name}</div><div class="class-desc">${cls.desc}</div><div class="class-stats"><span>HP ${cls.hp}</span><span>ATK ${cls.atk}</span><span>DEF ${cls.def}</span><span>CRIT ${cls.crit}%</span></div>`;
+    card.innerHTML = `<div class="class-icon">${cls.icon}</div><div class="class-name">${cls.name}</div><div class="class-desc">${cls.desc}</div><div class="class-stats"><span>HP ${cls.hp}</span><span>ATK ${cls.atk}</span><span>DEF ${cls.def}</span><span>CRIT ${cls.crit}%</span><span>Скиллов: ${cls.skillIds.length}</span></div>`;
     card.onclick = () => { selectedClass = cls.id; playSound('click'); renderClassOptions(); };
+    g.appendChild(card);
+  });
+}
+function renderRaceOptions() {
+  const g = document.getElementById('race-grid');
+  g.innerHTML = '';
+  Object.values(RACES_DB).forEach(race => {
+    const card = document.createElement('div');
+    card.className = `race-card ${race.id === selectedRace ? 'selected' : ''}`;
+    card.innerHTML = `<div class="race-icon">${race.icon}</div><div class="race-name">${race.name}</div><div class="race-desc">${race.desc}</div><div class="race-bonus">${race.bonusText}</div>`;
+    card.onclick = () => { selectedRace = race.id; playSound('race'); renderRaceOptions(); };
     g.appendChild(card);
   });
 }
@@ -2403,9 +2731,9 @@ function renderColorOptions() {
 function openCharacterCreation(isPerma = false) {
   document.getElementById('creation-overlay').classList.add('active');
   document.getElementById('creation-name-input').value = isPerma ? '' : 'KIRITO';
-  selectedClass = 'swordsman'; selectedColor = '#22c55e';
+  selectedClass = 'swordsman'; selectedRace = 'human'; selectedGender = 'male'; selectedColor = '#22c55e';
   document.getElementById('creation-error').textContent = '';
-  renderClassOptions(); renderColorOptions();
+  renderGenderOptions(); renderClassOptions(); renderRaceOptions(); renderColorOptions();
 }
 document.getElementById('creation-start-btn').addEventListener('click', () => {
   const name = document.getElementById('creation-name-input').value.trim();
@@ -2413,16 +2741,18 @@ document.getElementById('creation-start-btn').addEventListener('click', () => {
   if (!name || name.length < 2) { err.textContent = '⚠ Введите имя'; playSound('defeat'); return; }
   if (name.length > 14) { err.textContent = '⚠ Макс. 14 символов'; return; }
   err.textContent = '';
-  characterProfile = { name, classId: selectedClass, color: selectedColor };
+  characterProfile = { name, classId: selectedClass, raceId: selectedRace, gender: selectedGender, color: selectedColor };
   player = makeFreshPlayer();
   document.getElementById('creation-overlay').classList.remove('active');
   const log = document.getElementById('game-log');
   log.innerHTML = '';
   const cls = CLASSES_DB[selectedClass];
-  addLog(`[СИСТЕМА] Добро пожаловать, ${player.name}!`, 'system');
-  addLog(`[КЛАСС] ${cls.name}. Способность: «${cls.activeName}».`, 'system');
-  addLog(`[СКИЛЛЫ] Начните с базовой атаки. Изучайте скиллы за Col через кнопку «📚 Скиллы»!`, 'quest');
-  addLog(`[ИНФО] Кнопка «Найти врага» спавнит монстров. На 10 этаже ждёт Heathcliff с большим диалогом!`, 'legendary');
+  const race = RACES_DB[selectedRace];
+  const genderTxt = selectedGender === 'female' ? '♀ Женский' : '♂ Мужской';
+  addLog(`[СИСТЕМА] Добро пожаловать, ${player.name}! (${genderTxt})`, 'system');
+  addLog(`[КЛАСС] ${cls.name} — ${cls.skillIds.length} скиллов для изучения!`, 'system');
+  addLog(`[РАСА] ${race.icon} ${race.name} — ${race.bonusText}`, 'race');
+  addLog(`[МАСТЕРСТВО] Используйте скиллы, чтобы повышать мастерство (+15% урона за уровень).`, 'mastery');
   playSound('levelup'); showToast(`${player.name} создан!`);
   renderZone(); updateHUD(); saveGameAuto();
 });
