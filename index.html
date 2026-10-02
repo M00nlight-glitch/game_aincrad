@@ -3,27 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sword Art Online: Aincrad Chronicles | Achievements Edition</title>
+<title>Sword Art Online: Aincrad Chronicles | Dark Souls Edition</title>
 <style>
   :root {
-    --bg-dark: #0a0e1a;
-    --bg-panel: rgba(14, 23, 42, 0.88);
-    --cyan-neon: #6ee7ff;
-    --cyan-glow: rgba(110, 231, 255, 0.4);
-    --cyan-dim: #1e3a5f;
-    --cyan-bright: #00f0ff;
-    --gold-crit: #fbbf24;
-    --col-gold: #f59e0b;
-    --legendary-gold: #ffd700;
-    --elite-purple: #c084fc;
-    --miniboss-red: #ff3366;
-    --text-main: #e2e8f0;
-    --text-dim: #94a3b8;
+    --bg-dark: #0a0e1a; --bg-panel: rgba(14, 23, 42, 0.88);
+    --cyan-neon: #6ee7ff; --cyan-glow: rgba(110, 231, 255, 0.4);
+    --cyan-dim: #1e3a5f; --cyan-bright: #00f0ff;
+    --gold-crit: #fbbf24; --col-gold: #f59e0b;
+    --legendary-gold: #ffd700; --elite-purple: #c084fc; --miniboss-red: #ff3366;
+    --donate-pink: #ff69b4; --admin-red: #ff4444;
+    --text-main: #e2e8f0; --text-dim: #94a3b8;
     --border-cyan: rgba(110, 231, 255, 0.35);
     --font-mono: 'Consolas', 'Courier New', 'Fira Code', 'Segoe UI Mono', monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; font-family: var(--font-mono); }
-  html, body { height: 100vh; overflow: hidden; font-size: 12px; }
+  html, body { height: 100vh; overflow: hidden; font-size: 14px; }
   body {
     background-color: var(--bg-dark);
     background-image:
@@ -31,110 +25,108 @@
       radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
       linear-gradient(rgba(10, 14, 26, 0.95), rgba(10, 14, 26, 0.95)),
       repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.015) 2px, rgba(0, 240, 255, 0.015) 4px);
-    color: var(--text-main);
-    display: flex; align-items: center; justify-content: center;
-    padding: 6px;
+    color: var(--text-main); display: flex; align-items: center; justify-content: center; padding: 8px;
   }
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: rgba(10, 14, 26, 0.8); }
   ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--cyan-neon); }
 
-  #app-container { width: 100%; max-width: 1600px; height: 100vh; max-height: calc(100vh - 12px); display: flex; flex-direction: column; gap: 5px; }
+  #app-container { width: 100%; max-width: 1720px; height: 100vh; max-height: calc(100vh - 16px); display: flex; flex-direction: column; gap: 6px; }
 
-  .sao-panel { background: var(--bg-panel); border: 1px solid var(--border-cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.08), inset 0 0 12px rgba(0, 240, 255, 0.03); backdrop-filter: blur(8px); border-radius: 4px; position: relative; }
-  .sao-panel::before { content: ''; position: absolute; top: -1px; left: -1px; width: 8px; height: 8px; border-top: 2px solid var(--cyan-neon); border-left: 2px solid var(--cyan-neon); }
-  .sao-panel::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px; border-bottom: 2px solid var(--cyan-neon); border-right: 2px solid var(--cyan-neon); }
+  .sao-panel { background: var(--bg-panel); border: 1px solid var(--border-cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.08), inset 0 0 12px rgba(0, 240, 255, 0.03); backdrop-filter: blur(8px); border-radius: 5px; position: relative; }
+  .sao-panel::before { content: ''; position: absolute; top: -1px; left: -1px; width: 9px; height: 9px; border-top: 2px solid var(--cyan-neon); border-left: 2px solid var(--cyan-neon); }
+  .sao-panel::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 9px; height: 9px; border-bottom: 2px solid var(--cyan-neon); border-right: 2px solid var(--cyan-neon); }
 
-  .hud-header { padding: 6px 12px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0; }
-  .hud-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .player-tag { display: flex; align-items: center; gap: 6px; }
-  .player-cursor { width: 13px; height: 13px; background: #22c55e; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 8px #22c55e; animation: pulseCursor 2s infinite ease-in-out; }
+  .hud-header { padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; flex-shrink: 0; }
+  .hud-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .player-tag { display: flex; align-items: center; gap: 8px; }
+  .player-cursor { width: 15px; height: 15px; background: #22c55e; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); box-shadow: 0 0 8px #22c55e; animation: pulseCursor 2s infinite ease-in-out; }
   @keyframes pulseCursor { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.2); opacity: 1; } }
-  .player-name { font-size: 1.05rem; font-weight: 700; letter-spacing: 1.5px; color: #fff; text-shadow: 0 0 8px var(--cyan-neon); }
-  .player-class-tag { font-size: 0.68rem; color: var(--cyan-neon); letter-spacing: 1px; opacity: 0.85; }
-  .player-level-badge { background: linear-gradient(135deg, rgba(110, 231, 255, 0.2), rgba(30, 58, 138, 0.4)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 2px 8px; font-size: 0.8rem; font-weight: bold; border-radius: 3px; }
-  .floor-badge { background: linear-gradient(135deg, rgba(217, 70, 239, 0.25), rgba(126, 34, 206, 0.4)); border: 1px solid #d946ef; color: #f0abfc; padding: 2px 8px; font-size: 0.72rem; font-weight: bold; border-radius: 3px; }
-  .ach-badge { background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(180, 130, 0, 0.4)); border: 1px solid var(--legendary-gold); color: var(--legendary-gold); padding: 2px 8px; font-size: 0.72rem; font-weight: bold; border-radius: 3px; cursor: pointer; }
+  .player-name { font-size: 1.2rem; font-weight: 700; letter-spacing: 1.5px; color: #fff; text-shadow: 0 0 8px var(--cyan-neon); }
+  .player-class-tag { font-size: 0.78rem; color: var(--cyan-neon); letter-spacing: 1px; opacity: 0.85; }
+  .player-level-badge { background: linear-gradient(135deg, rgba(110, 231, 255, 0.2), rgba(30, 58, 138, 0.4)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 3px 10px; font-size: 0.9rem; font-weight: bold; border-radius: 3px; }
+  .floor-badge { background: linear-gradient(135deg, rgba(217, 70, 239, 0.25), rgba(126, 34, 206, 0.4)); border: 1px solid #d946ef; color: #f0abfc; padding: 3px 10px; font-size: 0.82rem; font-weight: bold; border-radius: 3px; }
+  .ach-badge { background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(180, 130, 0, 0.4)); border: 1px solid var(--legendary-gold); color: var(--legendary-gold); padding: 3px 10px; font-size: 0.82rem; font-weight: bold; border-radius: 3px; cursor: pointer; }
   .ach-badge.has-new { animation: achPulse 1.5s infinite; }
   @keyframes achPulse { 0%, 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); } 50% { box-shadow: 0 0 12px rgba(255, 215, 0, 1); } }
 
-  .hud-bars { display: flex; flex-direction: column; gap: 3px; min-width: 280px; flex: 1; max-width: 480px; }
-  .bar-group { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
-  .bar-label { width: 30px; font-weight: bold; font-size: 0.78rem; }
+  .hud-bars { display: flex; flex-direction: column; gap: 4px; min-width: 320px; flex: 1; max-width: 560px; }
+  .bar-group { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
+  .bar-label { width: 34px; font-weight: bold; font-size: 0.9rem; }
   .bar-label.hp { color: #4ade80; } .bar-label.mp { color: #60a5fa; } .bar-label.exp { color: #c084fc; }
-  .bar-container { flex: 1; height: 12px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 2px; overflow: hidden; }
+  .bar-container { flex: 1; height: 15px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 3px; overflow: hidden; }
   .bar-fill { height: 100%; width: 100%; transition: width 0.3s; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4); }
   .bar-fill.hp-fill { background: linear-gradient(90deg, #15803d, #22c55e); }
   .bar-fill.hp-yellow { background: linear-gradient(90deg, #ca8a04, #eab308); }
   .bar-fill.hp-red { background: linear-gradient(90deg, #991b1b, #ef4444); }
   .bar-fill.mp-fill { background: linear-gradient(90deg, #1d4ed8, #38bdf8); }
   .bar-fill.exp-fill { background: linear-gradient(90deg, #6b21a8, #a855f7); }
-  .bar-text { font-size: 0.7rem; color: #e2e8f0; min-width: 80px; text-align: right; }
+  .bar-text { font-size: 0.8rem; color: #e2e8f0; min-width: 90px; text-align: right; }
 
-  .hud-right { display: flex; align-items: center; gap: 8px; }
-  .currency-box { display: flex; align-items: center; gap: 5px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); padding: 3px 10px; border-radius: 3px; font-weight: 700; color: var(--col-gold); font-size: 0.82rem; }
-  .audio-btn { background: transparent; border: 1px solid var(--border-cyan); color: var(--cyan-neon); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
+  .hud-right { display: flex; align-items: center; gap: 10px; }
+  .currency-box { display: flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); padding: 5px 12px; border-radius: 3px; font-weight: 700; color: var(--col-gold); font-size: 0.92rem; }
+  .audio-btn { background: transparent; border: 1px solid var(--border-cyan); color: var(--cyan-neon); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
   .audio-btn:hover { background: rgba(110, 231, 255, 0.2); }
 
-  .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 5px; flex: 1; min-height: 0; }
-  .scene-column { display: flex; flex-direction: column; gap: 5px; min-height: 0; }
-  .side-column { display: flex; flex-direction: column; gap: 5px; min-height: 0; overflow-y: auto; }
+  .main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 6px; flex: 1; min-height: 0; }
+  .scene-column { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .side-column { display: flex; flex-direction: column; gap: 6px; min-height: 0; overflow-y: auto; }
 
-  .zone-card { padding: 8px 12px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  .zone-card { padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
   .zone-header-row { display: flex; justify-content: space-between; align-items: center; }
-  .zone-floor-tag { font-size: 0.68rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; opacity: 0.85; }
-  .zone-title { font-size: 1rem; font-weight: bold; color: #fff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(110, 231, 255, 0.4); }
-  .zone-status-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 2px; font-weight: bold; }
+  .zone-floor-tag { font-size: 0.78rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; opacity: 0.85; }
+  .zone-title { font-size: 1.15rem; font-weight: bold; color: #fff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(110, 231, 255, 0.4); }
+  .zone-status-badge { font-size: 0.8rem; padding: 3px 10px; border-radius: 3px; font-weight: bold; }
   .badge-safe { background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; color: #4ade80; }
   .badge-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; }
   .badge-boss { background: rgba(217, 70, 239, 0.2); border: 1px solid #d946ef; color: #f0abfc; animation: bossPulse 1.5s infinite; }
   @keyframes bossPulse { 0%, 100% { box-shadow: 0 0 4px rgba(217, 70, 239, 0.3); } 50% { box-shadow: 0 0 10px rgba(217, 70, 239, 0.8); } }
-  .zone-description { font-size: 0.75rem; line-height: 1.35; color: #cbd5e1; }
+  .zone-description { font-size: 0.85rem; line-height: 1.4; color: #cbd5e1; }
 
-  .battle-stage { background: rgba(6, 11, 25, 0.85); border: 1px solid rgba(110, 231, 255, 0.25); border-radius: 4px; padding: 8px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; flex-shrink: 0; }
+  .battle-stage { background: rgba(6, 11, 25, 0.85); border: 1px solid rgba(110, 231, 255, 0.25); border-radius: 5px; padding: 10px; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; flex-shrink: 0; }
   .battle-stage.shake { animation: screenShake 0.3s; }
   @keyframes screenShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
-  .enemy-card { display: flex; align-items: center; gap: 10px; padding: 8px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 4px; transition: all 0.3s; }
+  .enemy-card { display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 5px; transition: all 0.3s; }
   .enemy-card.stunned { border-color: #6ee7ff; box-shadow: 0 0 15px rgba(110, 231, 255, 0.5); }
   .enemy-card.elite { border-color: var(--elite-purple); box-shadow: 0 0 18px rgba(192, 132, 252, 0.5); background: linear-gradient(135deg, rgba(15,23,42,0.6), rgba(80, 40, 130, 0.3)); }
   .enemy-card.miniboss { border-color: var(--miniboss-red); box-shadow: 0 0 20px rgba(255, 51, 102, 0.6); background: linear-gradient(135deg, rgba(15,23,42,0.6), rgba(120, 20, 40, 0.35)); animation: minibossPulse 1.5s infinite; }
   @keyframes minibossPulse { 0%, 100% { box-shadow: 0 0 15px rgba(255, 51, 102, 0.5); } 50% { box-shadow: 0 0 25px rgba(255, 51, 102, 0.9); } }
 
-  .enemy-avatar { width: 60px; height: 60px; background: rgba(10, 14, 26, 0.9); border: 1px solid rgba(239, 68, 68, 0.6); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .enemy-avatar { width: 72px; height: 72px; background: rgba(10, 14, 26, 0.9); border: 1px solid rgba(239, 68, 68, 0.6); border-radius: 5px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .enemy-avatar.elite { border-color: var(--elite-purple); box-shadow: 0 0 10px rgba(192, 132, 252, 0.6); }
   .enemy-avatar.miniboss { border-color: var(--miniboss-red); box-shadow: 0 0 12px rgba(255, 51, 102, 0.7); }
-  .enemy-avatar svg { width: 40px !important; height: 40px !important; }
-  .enemy-info { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .enemy-name-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
-  .enemy-name { font-size: 0.95rem; font-weight: 700; color: #f87171; letter-spacing: 0.5px; }
+  .enemy-avatar svg { width: 48px !important; height: 48px !important; }
+  .enemy-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .enemy-name-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; }
+  .enemy-name { font-size: 1.08rem; font-weight: 700; color: #f87171; letter-spacing: 0.5px; }
   .enemy-name.elite { color: var(--elite-purple); text-shadow: 0 0 8px var(--elite-purple); }
   .enemy-name.miniboss { color: var(--miniboss-red); text-shadow: 0 0 10px var(--miniboss-red); }
-  .enemy-stats-preview { font-size: 0.7rem; color: #94a3b8; }
-  .tier-tag { font-size: 0.68rem; padding: 2px 8px; border-radius: 2px; font-weight: bold; letter-spacing: 1px; }
+  .enemy-stats-preview { font-size: 0.8rem; color: #94a3b8; }
+  .tier-tag { font-size: 0.78rem; padding: 3px 10px; border-radius: 3px; font-weight: bold; letter-spacing: 1px; }
   .tier-tag.elite { background: rgba(192, 132, 252, 0.2); border: 1px solid var(--elite-purple); color: var(--elite-purple); }
   .tier-tag.miniboss { background: rgba(255, 51, 102, 0.2); border: 1px solid var(--miniboss-red); color: var(--miniboss-red); animation: tagPulse 1s infinite; }
   @keyframes tagPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-  .enemy-mods-row { display: flex; gap: 4px; flex-wrap: wrap; }
-  .mod-tag { font-size: 0.66rem; padding: 1px 6px; border-radius: 2px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
-  .enemy-hp-bar-bg { height: 12px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 2px; overflow: hidden; position: relative; }
+  .enemy-mods-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mod-tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 3px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
+  .enemy-hp-bar-bg { height: 15px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 3px; overflow: hidden; position: relative; }
   .enemy-hp-bar-fill { height: 100%; background: linear-gradient(90deg, #991b1b, #ef4444); transition: width 0.25s; }
   .enemy-hp-bar-fill.elite { background: linear-gradient(90deg, #6b21a8, #c084fc); }
   .enemy-hp-bar-fill.miniboss { background: linear-gradient(90deg, #7f1d1d, #ff3366); }
-  .enemy-hp-text { position: absolute; width: 100%; top: 0; left: 0; text-align: center; font-size: 0.68rem; line-height: 12px; font-weight: bold; color: #fff; text-shadow: 0 0 3px #000; }
-  .enemy-debuff-row { display: flex; gap: 4px; flex-wrap: wrap; min-height: 16px; }
-  .debuff-tag { font-size: 0.66rem; padding: 1px 6px; border-radius: 2px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
+  .enemy-hp-text { position: absolute; width: 100%; top: 0; left: 0; text-align: center; font-size: 0.78rem; line-height: 15px; font-weight: bold; color: #fff; text-shadow: 0 0 3px #000; }
+  .enemy-debuff-row { display: flex; gap: 5px; flex-wrap: wrap; min-height: 18px; }
+  .debuff-tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 3px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
 
   .floating-dmg-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
-  .floating-text { position: absolute; font-weight: 900; font-size: 1.2rem; animation: floatUpFade 1.2s forwards; text-shadow: 0 0 6px rgba(0,0,0,0.9); z-index: 20; }
+  .floating-text { position: absolute; font-weight: 900; font-size: 1.4rem; animation: floatUpFade 1.2s forwards; text-shadow: 0 0 6px rgba(0,0,0,0.9); z-index: 20; }
   .floating-dmg { color: #f87171; }
-  .floating-crit { color: var(--gold-crit); font-size: 1.6rem; text-shadow: 0 0 10px var(--gold-crit); }
+  .floating-crit { color: var(--gold-crit); font-size: 1.8rem; text-shadow: 0 0 10px var(--gold-crit); }
   .floating-heal { color: #4ade80; text-shadow: 0 0 8px #4ade80; }
   .floating-mp { color: #60a5fa; }
-  @keyframes floatUpFade { 0% { opacity: 0; transform: translateY(8px) scale(0.7); } 20% { opacity: 1; transform: translateY(-5px) scale(1.1); } 100% { opacity: 0; transform: translateY(-40px) scale(0.9); } }
+  @keyframes floatUpFade { 0% { opacity: 0; transform: translateY(8px) scale(0.7); } 20% { opacity: 1; transform: translateY(-5px) scale(1.1); } 100% { opacity: 0; transform: translateY(-45px) scale(0.9); } }
 
-  .log-panel { flex: 1; min-height: 0; background: rgba(8, 13, 25, 0.9); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 8px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; font-size: 0.75rem; line-height: 1.35; }
-  .log-entry { padding: 1px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); word-break: break-word; animation: fadeInLog 0.2s; }
+  .log-panel { flex: 1; min-height: 0; background: rgba(8, 13, 25, 0.9); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 5px; padding: 10px 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; line-height: 1.4; }
+  .log-entry { padding: 2px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); word-break: break-word; animation: fadeInLog 0.2s; }
   @keyframes fadeInLog { from { opacity: 0; } to { opacity: 1; } }
   .log-entry.crit { color: var(--gold-crit); font-weight: bold; }
   .log-entry.player-action { color: #93c5fd; }
@@ -148,41 +140,44 @@
   .log-entry.legendary { color: var(--legendary-gold); font-weight: 900; }
   .log-entry.elite { color: var(--elite-purple); font-weight: bold; }
   .log-entry.miniboss { color: var(--miniboss-red); font-weight: 900; }
-  .log-entry.achievement { color: var(--legendary-gold); font-weight: 900; background: rgba(255, 215, 0, 0.08); padding: 3px 6px; border-left: 3px solid var(--legendary-gold); border-radius: 2px; }
+  .log-entry.achievement { color: var(--legendary-gold); font-weight: 900; background: rgba(255, 215, 0, 0.08); padding: 4px 8px; border-left: 3px solid var(--legendary-gold); border-radius: 3px; }
+  .log-entry.donate { color: var(--donate-pink); font-weight: bold; text-shadow: 0 0 8px var(--donate-pink); }
+  .log-entry.admin { color: var(--admin-red); font-weight: bold; text-shadow: 0 0 8px var(--admin-red); }
+  .log-entry.boss-talk { color: #ff6b9d; font-weight: bold; font-style: italic; }
 
-  .quest-card { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .quest-card { padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
   .quest-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-  .quest-title-badge { display: flex; align-items: center; gap: 5px; font-weight: bold; color: var(--cyan-neon); font-size: 0.82rem; }
-  .quest-body { display: flex; flex-direction: column; gap: 5px; }
-  .quest-item { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(110, 231, 255, 0.15); border-radius: 3px; padding: 6px 8px; display: flex; flex-direction: column; gap: 3px; }
-  .quest-name { font-size: 0.8rem; font-weight: bold; color: #fff; }
-  .quest-desc { font-size: 0.72rem; color: var(--text-dim); }
-  .quest-progress-bar { height: 5px; background: rgba(10, 14, 26, 0.8); border-radius: 2px; overflow: hidden; }
+  .quest-title-badge { display: flex; align-items: center; gap: 6px; font-weight: bold; color: var(--cyan-neon); font-size: 0.92rem; }
+  .quest-body { display: flex; flex-direction: column; gap: 6px; }
+  .quest-item { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(110, 231, 255, 0.15); border-radius: 4px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .quest-name { font-size: 0.9rem; font-weight: bold; color: #fff; }
+  .quest-desc { font-size: 0.82rem; color: var(--text-dim); }
+  .quest-progress-bar { height: 6px; background: rgba(10, 14, 26, 0.8); border-radius: 3px; overflow: hidden; }
   .quest-progress-fill { height: 100%; background: linear-gradient(90deg, #8b5cf6, #c084fc); transition: width 0.3s; }
-  .quest-rewards { font-size: 0.7rem; color: var(--col-gold); }
+  .quest-rewards { font-size: 0.8rem; color: var(--col-gold); }
 
-  .stats-card { padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-  .stat-box { background: rgba(10, 14, 26, 0.6); border: 1px solid rgba(110, 231, 255, 0.12); border-radius: 3px; padding: 5px 7px; display: flex; flex-direction: column; gap: 1px; }
-  .stat-label { font-size: 0.66rem; color: var(--text-dim); }
-  .stat-val { font-size: 0.85rem; font-weight: bold; color: #fff; }
+  .stats-card { padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .stat-box { background: rgba(10, 14, 26, 0.6); border: 1px solid rgba(110, 231, 255, 0.12); border-radius: 4px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; }
+  .stat-label { font-size: 0.76rem; color: var(--text-dim); }
+  .stat-val { font-size: 0.98rem; font-weight: bold; color: #fff; }
   .stat-val.atk { color: #fca5a5; } .stat-val.def { color: #93c5fd; } .stat-val.crit { color: var(--gold-crit); }
-  .stat-val.equip { color: var(--cyan-neon); font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stat-val.equip { color: var(--cyan-neon); font-size: 0.82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  .ach-summary { background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(180, 130, 0, 0.05)); border: 1px solid var(--legendary-gold); border-radius: 3px; padding: 7px 9px; display: flex; flex-direction: column; gap: 2px; cursor: pointer; }
+  .ach-summary { background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(180, 130, 0, 0.05)); border: 1px solid var(--legendary-gold); border-radius: 4px; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; }
   .ach-summary:hover { box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); }
-  .ach-summary-title { font-size: 0.78rem; font-weight: 900; color: var(--legendary-gold); }
-  .ach-summary-progress { font-size: 0.7rem; color: #fef3c7; }
+  .ach-summary-title { font-size: 0.88rem; font-weight: 900; color: var(--legendary-gold); }
+  .ach-summary-progress { font-size: 0.8rem; color: #fef3c7; }
 
-  .class-mini { background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(126,34,206,0.06)); border: 1px solid rgba(192,132,252,0.4); border-radius: 3px; padding: 6px 8px; }
-  .class-mini-title { font-size: 0.75rem; font-weight: bold; color: #e9d5ff; margin-bottom: 2px; }
-  .class-mini-desc { font-size: 0.7rem; color: #cbd5e1; line-height: 1.35; }
+  .class-mini { background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(126,34,206,0.06)); border: 1px solid rgba(192,132,252,0.4); border-radius: 4px; padding: 8px 10px; }
+  .class-mini-title { font-size: 0.85rem; font-weight: bold; color: #e9d5ff; margin-bottom: 3px; }
+  .class-mini-desc { font-size: 0.78rem; color: #cbd5e1; line-height: 1.4; }
 
-  .actions-panel { padding: 6px 10px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
-  .actions-header { font-size: 0.75rem; color: var(--cyan-neon); letter-spacing: 1px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-  .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 5px; }
+  .actions-panel { padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .actions-header { font-size: 0.85rem; color: var(--cyan-neon); letter-spacing: 1px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+  .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 6px; }
 
-  .sao-btn { background: linear-gradient(135deg, rgba(14, 28, 54, 0.85) 0%, rgba(10, 18, 36, 0.95) 100%); border: 1px solid var(--border-cyan); color: #fff; padding: 7px 10px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.5px; border-radius: 3px; cursor: pointer; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 5px; text-align: center; transition: all 0.15s; }
+  .sao-btn { background: linear-gradient(135deg, rgba(14, 28, 54, 0.85) 0%, rgba(10, 18, 36, 0.95) 100%); border: 1px solid var(--border-cyan); color: #fff; padding: 9px 14px; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; border-radius: 4px; cursor: pointer; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; transition: all 0.15s; }
   .sao-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(110, 231, 255, 0.15), transparent); transition: 0.4s; }
   .sao-btn:hover:not(:disabled) { border-color: var(--cyan-bright); box-shadow: 0 0 10px var(--cyan-glow); transform: translateY(-1px); color: var(--cyan-bright); }
   .sao-btn:hover:not(:disabled)::before { left: 100%; }
@@ -200,104 +195,139 @@
   .sao-btn.btn-class { border-color: rgba(245, 158, 11, 0.7); background: linear-gradient(135deg, rgba(60, 40, 10, 0.9) 0%, rgba(35, 20, 5, 1) 100%); color: #fde047; }
   .sao-btn.btn-class:hover:not(:disabled) { border-color: #fbbf24; color: #fff; }
   .sao-btn.btn-achievement { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(80, 60, 10, 0.9) 0%, rgba(50, 30, 5, 1) 100%); color: var(--legendary-gold); font-weight: 900; }
-  /* НОВАЯ КНОПКА ПОИСКА ВРАГА */
   .sao-btn.btn-hunt { border-color: #22c55e; background: linear-gradient(135deg, rgba(20, 60, 30, 0.9) 0%, rgba(10, 40, 20, 1) 100%); color: #86efac; font-weight: 900; animation: huntPulse 2s infinite; }
   .sao-btn.btn-hunt:hover:not(:disabled) { border-color: #4ade80; box-shadow: 0 0 18px rgba(74, 222, 128, 0.7); color: #fff; }
   @keyframes huntPulse { 0%, 100% { box-shadow: 0 0 6px rgba(34, 197, 94, 0.4); } 50% { box-shadow: 0 0 14px rgba(34, 197, 94, 0.9); } }
+  .sao-btn.btn-donate { border-color: var(--donate-pink); background: linear-gradient(135deg, rgba(60, 20, 50, 0.9) 0%, rgba(35, 10, 30, 1) 100%); color: var(--donate-pink); font-weight: 900; animation: donatePulse 2s infinite; }
+  .sao-btn.btn-donate:hover:not(:disabled) { border-color: #ffb6d9; box-shadow: 0 0 18px rgba(255, 105, 180, 0.7); color: #fff; }
+  @keyframes donatePulse { 0%, 100% { box-shadow: 0 0 6px rgba(255, 105, 180, 0.4); } 50% { box-shadow: 0 0 14px rgba(255, 105, 180, 0.9); } }
+  .sao-btn.btn-admin { border-color: var(--admin-red); background: linear-gradient(135deg, rgba(60, 15, 15, 0.9) 0%, rgba(35, 8, 8, 1) 100%); color: #ff8888; font-weight: 900; }
+  .sao-btn.btn-admin:hover:not(:disabled) { border-color: #ff6666; box-shadow: 0 0 18px rgba(255, 68, 68, 0.7); color: #fff; }
 
-  .footer-bar { padding: 6px 10px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; flex-shrink: 0; }
-  .footer-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
-  .footer-btn { padding: 6px 12px; font-size: 0.76rem; }
-  .version-tag { font-size: 0.68rem; color: var(--text-dim); opacity: 0.7; }
+  .footer-bar { padding: 8px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; flex-shrink: 0; }
+  .footer-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
+  .footer-btn { padding: 8px 14px; font-size: 0.85rem; }
+  .version-tag { font-size: 0.76rem; color: var(--text-dim); opacity: 0.7; }
 
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.88); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.active { opacity: 1; pointer-events: auto; }
-  .modal-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); border-radius: 5px; width: 100%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(15px) scale(0.97); transition: transform 0.2s; }
+  .modal-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); border-radius: 5px; width: 100%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(15px) scale(0.97); transition: transform 0.2s; }
+  .modal-window.donate-window { border-color: var(--donate-pink); box-shadow: 0 0 35px rgba(255, 105, 180, 0.4); }
+  .modal-window.admin-window { border-color: var(--admin-red); box-shadow: 0 0 35px rgba(255, 68, 68, 0.4); }
   .modal-overlay.active .modal-window { transform: translateY(0) scale(1); }
-  .modal-header { padding: 12px 16px; border-bottom: 1px solid rgba(110, 231, 255, 0.25); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-  .modal-title { font-size: 1.05rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
-  .modal-close-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #94a3b8; width: 28px; height: 28px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .modal-header { padding: 14px 18px; border-bottom: 1px solid rgba(110, 231, 255, 0.25); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .modal-window.donate-window .modal-header { border-bottom-color: var(--donate-pink); }
+  .modal-window.admin-window .modal-header { border-bottom-color: var(--admin-red); }
+  .modal-title { font-size: 1.15rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
+  .modal-window.donate-window .modal-title { color: var(--donate-pink); }
+  .modal-window.admin-window .modal-title { color: var(--admin-red); }
+  .modal-close-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #94a3b8; width: 30px; height: 30px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
   .modal-close-btn:hover { border-color: #ef4444; color: #ef4444; }
-  .modal-body { padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.82rem; }
+  .modal-body { padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.9rem; }
 
-  .items-list { display: flex; flex-direction: column; gap: 6px; }
-  .item-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.15); border-radius: 3px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .items-list { display: flex; flex-direction: column; gap: 7px; }
+  .item-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.15); border-radius: 4px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .item-card:hover { border-color: var(--cyan-neon); }
   .item-card.equipped { border-color: #22c55e; background: rgba(34, 197, 94, 0.08); }
-  .item-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-  .item-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .item-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+  .item-card.donate-item { border-color: var(--donate-pink); background: linear-gradient(135deg, rgba(255, 105, 180, 0.08), rgba(60, 20, 50, 0.15)); }
+  .item-card.donate-item:hover { box-shadow: 0 0 15px rgba(255, 105, 180, 0.5); }
+  .item-main { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .item-name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .item-name { font-size: 0.95rem; font-weight: 700; color: #fff; }
   .item-name.legendary { color: #f59e0b; }
-  .item-tag { font-size: 0.65rem; padding: 1px 6px; border-radius: 2px; background: rgba(110, 231, 255, 0.15); color: var(--cyan-neon); }
-  .item-desc { font-size: 0.72rem; color: var(--text-dim); }
-  .item-stat-badge { font-size: 0.72rem; color: #4ade80; }
-  .item-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-  .mini-btn { padding: 5px 10px; font-size: 0.75rem; }
+  .item-name.donate { color: var(--donate-pink); text-shadow: 0 0 8px var(--donate-pink); font-weight: 900; }
+  .item-tag { font-size: 0.72rem; padding: 2px 7px; border-radius: 2px; background: rgba(110, 231, 255, 0.15); color: var(--cyan-neon); }
+  .item-tag.donate { background: rgba(255, 105, 180, 0.2); color: var(--donate-pink); }
+  .item-desc { font-size: 0.8rem; color: var(--text-dim); }
+  .item-stat-badge { font-size: 0.8rem; color: #4ade80; }
+  .item-stat-badge.donate { color: var(--donate-pink); font-weight: bold; }
+  .item-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .mini-btn { padding: 6px 12px; font-size: 0.82rem; }
 
-  .shop-tabs { display: flex; gap: 6px; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 6px; }
-  .shop-tab { padding: 6px 14px; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; font-weight: bold; border-radius: 3px; font-size: 0.8rem; }
+  .shop-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 8px; flex-wrap: wrap; }
+  .shop-tab { padding: 8px 16px; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; font-weight: bold; border-radius: 3px; font-size: 0.88rem; }
   .shop-tab.active { background: rgba(110, 231, 255, 0.15); border-color: var(--cyan-neon); color: var(--cyan-bright); }
+  .shop-tab.donate-tab.active { background: rgba(255, 105, 180, 0.15); border-color: var(--donate-pink); color: var(--donate-pink); }
 
-  .ach-category { margin-bottom: 6px; }
-  .ach-category-title { font-size: 0.82rem; font-weight: bold; color: var(--legendary-gold); letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); margin-bottom: 6px; }
-  .ach-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px; }
-  .ach-item { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 3px; padding: 8px; display: flex; gap: 8px; align-items: flex-start; }
+  .ach-category { margin-bottom: 8px; }
+  .ach-category-title { font-size: 0.9rem; font-weight: bold; color: var(--legendary-gold); letter-spacing: 1.5px; padding-bottom: 5px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); margin-bottom: 8px; }
+  .ach-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 7px; }
+  .ach-item { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 4px; padding: 10px; display: flex; gap: 10px; align-items: flex-start; }
   .ach-item.unlocked { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(180, 130, 0, 0.03)); }
   .ach-item.locked { opacity: 0.55; }
   .ach-item.dynamic { border-color: #c084fc; background: linear-gradient(135deg, rgba(192, 132, 252, 0.08), rgba(126, 34, 206, 0.03)); }
-  .ach-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .ach-icon { font-size: 1.6rem; flex-shrink: 0; }
   .ach-item.locked .ach-icon { filter: grayscale(1); opacity: 0.6; }
-  .ach-content { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .ach-name { font-size: 0.82rem; font-weight: bold; color: #fff; }
+  .ach-content { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .ach-name { font-size: 0.9rem; font-weight: bold; color: #fff; }
   .ach-item.unlocked .ach-name { color: var(--legendary-gold); }
-  .ach-desc { font-size: 0.72rem; color: #cbd5e1; line-height: 1.3; }
-  .ach-reward { font-size: 0.7rem; color: #4ade80; font-weight: bold; }
-  .ach-progress-mini { height: 4px; background: rgba(10, 14, 26, 0.8); border-radius: 2px; overflow: hidden; margin-top: 3px; }
+  .ach-desc { font-size: 0.78rem; color: #cbd5e1; line-height: 1.35; }
+  .ach-reward { font-size: 0.78rem; color: #4ade80; font-weight: bold; }
+  .ach-progress-mini { height: 5px; background: rgba(10, 14, 26, 0.8); border-radius: 2px; overflow: hidden; margin-top: 4px; }
   .ach-progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #ffd700); transition: width 0.3s; }
-  .ach-progress-text { font-size: 0.66rem; color: #94a3b8; }
+  .ach-progress-text { font-size: 0.72rem; color: #94a3b8; }
+
+  /* SKILLS SHOP */
+  .skill-shop-item { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .skill-shop-item.locked { opacity: 0.6; border-style: dashed; }
+  .skill-shop-item.unlocked { border-color: #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(20, 60, 30, 0.05)); }
+  .skill-shop-info { flex: 1; }
+  .skill-shop-name { font-size: 1rem; font-weight: bold; color: #fff; margin-bottom: 3px; }
+  .skill-shop-name.unlocked { color: #4ade80; }
+  .skill-shop-desc { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 4px; }
+  .skill-shop-req { font-size: 0.78rem; color: #fbbf24; font-weight: bold; }
+  .skill-shop-req.met { color: #4ade80; }
+
+  .donate-hero { text-align: center; padding: 14px; background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(60, 20, 50, 0.1)); border: 2px solid var(--donate-pink); border-radius: 6px; }
+  .donate-hero-title { font-size: 1.4rem; font-weight: 900; color: var(--donate-pink); letter-spacing: 3px; text-shadow: 0 0 15px var(--donate-pink); }
+  .donate-hero-sub { font-size: 0.85rem; color: #ffb6d9; margin-top: 4px; }
+
+  .admin-form { display: flex; flex-direction: column; gap: 12px; }
+  .admin-input { background: rgba(10, 14, 26, 0.9); border: 2px solid var(--admin-red); color: #fff; padding: 14px 18px; font-size: 1.5rem; letter-spacing: 8px; text-align: center; border-radius: 4px; outline: none; font-family: var(--font-mono); }
+  .admin-input:focus { box-shadow: 0 0 20px rgba(255, 68, 68, 0.6); }
+  .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
 
   .creation-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.97); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; overflow-y: auto; }
   .creation-overlay.active { display: flex; }
-  .creation-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-radius: 6px; width: 100%; max-width: 900px; padding: 20px; display: flex; flex-direction: column; gap: 14px; max-height: 95vh; overflow-y: auto; }
-  .creation-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-align: center; text-shadow: 0 0 15px var(--cyan-neon); }
-  .creation-subtitle { text-align: center; color: var(--cyan-neon); font-size: 0.85rem; letter-spacing: 1.5px; opacity: 0.85; margin-top: -10px; }
-  .creation-section-label { font-size: 0.78rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 5px; }
-  .creation-input { width: 100%; background: rgba(10, 14, 26, 0.9); border: 1px solid var(--border-cyan); color: #fff; padding: 9px 14px; font-size: 0.95rem; letter-spacing: 1.5px; border-radius: 3px; outline: none; font-family: var(--font-mono); margin-top: 6px; }
+  .creation-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-radius: 6px; width: 100%; max-width: 1100px; padding: 24px; display: flex; flex-direction: column; gap: 16px; max-height: 95vh; overflow-y: auto; }
+  .creation-title { font-size: 1.7rem; font-weight: 900; letter-spacing: 3px; color: #fff; text-align: center; text-shadow: 0 0 15px var(--cyan-neon); }
+  .creation-subtitle { text-align: center; color: var(--cyan-neon); font-size: 0.92rem; letter-spacing: 1.5px; opacity: 0.85; margin-top: -12px; }
+  .creation-section-label { font-size: 0.85rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 6px; }
+  .creation-input { width: 100%; background: rgba(10, 14, 26, 0.9); border: 1px solid var(--border-cyan); color: #fff; padding: 11px 16px; font-size: 1.05rem; letter-spacing: 1.5px; border-radius: 4px; outline: none; font-family: var(--font-mono); margin-top: 8px; }
   .creation-input:focus { border-color: var(--cyan-bright); box-shadow: 0 0 10px var(--cyan-glow); }
-  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 8px; }
+  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px; }
   .class-card { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; gap: 5px; text-align: center; transition: all 0.15s; }
   .class-card:hover { border-color: var(--cyan-neon); background: rgba(20, 32, 58, 0.9); }
   .class-card.selected { border-color: var(--cyan-bright); background: rgba(110, 231, 255, 0.12); box-shadow: 0 0 15px var(--cyan-glow); }
   .class-icon { font-size: 1.8rem; }
-  .class-name { font-size: 0.95rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
-  .class-desc { font-size: 0.72rem; color: var(--text-dim); min-height: 40px; }
-  .class-stats { display: flex; justify-content: space-around; gap: 4px; font-size: 0.7rem; padding-top: 5px; border-top: 1px solid rgba(110, 231, 255, 0.15); }
+  .class-name { font-size: 0.98rem; font-weight: bold; color: #fff; letter-spacing: 1px; }
+  .class-desc { font-size: 0.75rem; color: var(--text-dim); min-height: 40px; }
+  .class-stats { display: flex; justify-content: space-around; gap: 4px; font-size: 0.72rem; padding-top: 5px; border-top: 1px solid rgba(110, 231, 255, 0.15); }
   .class-stats span { color: var(--cyan-neon); }
-  .class-abilities-preview { font-size: 0.68rem; color: #f0abfc; padding-top: 5px; border-top: 1px dashed rgba(192, 132, 252, 0.3); text-align: left; }
-  .color-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-  .color-swatch { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.15s; }
+  .color-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .color-swatch { width: 42px; height: 42px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.15s; }
   .color-swatch:hover { transform: scale(1.1); }
   .color-swatch.selected { border-color: #fff; box-shadow: 0 0 15px currentColor; transform: scale(1.12); }
-  .creation-actions { display: flex; justify-content: center; gap: 12px; }
-  .creation-error { color: #f87171; text-align: center; font-size: 0.82rem; min-height: 1em; font-weight: bold; }
+  .creation-actions { display: flex; justify-content: center; gap: 14px; }
+  .creation-error { color: #f87171; text-align: center; font-size: 0.88rem; min-height: 1em; font-weight: bold; }
 
   .death-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(12, 0, 4, 0.97); z-index: 250; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
   .death-overlay.active { opacity: 1; pointer-events: auto; }
-  .death-banner { border: 2px solid #ef4444; background: rgba(185, 28, 28, 0.2); box-shadow: 0 0 40px rgba(239, 68, 68, 0.7); padding: 24px 32px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 520px; width: 100%; }
-  .death-title { font-size: 2.2rem; font-weight: 900; color: #ff4d4d; letter-spacing: 4px; text-shadow: 0 0 15px #ef4444; }
-  .death-subtitle { font-size: 0.9rem; color: #fca5a5; line-height: 1.5; }
-  .death-warning { border: 1px solid #fbbf24; background: rgba(251, 191, 36, 0.1); color: #fde047; padding: 9px 12px; border-radius: 3px; font-size: 0.82rem; font-weight: bold; }
+  .death-banner { border: 2px solid #ef4444; background: rgba(185, 28, 28, 0.2); box-shadow: 0 0 40px rgba(239, 68, 68, 0.7); padding: 28px 36px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 580px; width: 100%; }
+  .death-title { font-size: 2.5rem; font-weight: 900; color: #ff4d4d; letter-spacing: 4px; text-shadow: 0 0 15px #ef4444; }
+  .death-subtitle { font-size: 1rem; color: #fca5a5; line-height: 1.5; }
+  .death-warning { border: 1px solid #fbbf24; background: rgba(251, 191, 36, 0.1); color: #fde047; padding: 10px 14px; border-radius: 3px; font-size: 0.9rem; font-weight: bold; }
 
-  .toast-box { position: fixed; bottom: 16px; right: 16px; background: rgba(14, 23, 42, 0.96); border: 1px solid var(--cyan-neon); box-shadow: 0 0 18px rgba(110, 231, 255, 0.35); padding: 10px 16px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; z-index: 150; transform: translateY(50px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 340px; }
+  .toast-box { position: fixed; bottom: 20px; right: 20px; background: rgba(14, 23, 42, 0.96); border: 1px solid var(--cyan-neon); box-shadow: 0 0 18px rgba(110, 231, 255, 0.35); padding: 12px 18px; border-radius: 4px; color: #fff; font-size: 0.92rem; font-weight: bold; z-index: 150; transform: translateY(50px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 380px; }
   .toast-box.show { transform: translateY(0); opacity: 1; }
   .toast-box.achievement { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(60, 45, 8, 0.98), rgba(40, 25, 5, 0.98)); box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); color: var(--legendary-gold); font-weight: 900; }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     html, body { overflow: auto; height: auto; }
     #app-container { height: auto; max-height: none; }
     .main-grid { grid-template-columns: 1fr; }
     .side-column { overflow-y: visible; }
-    .log-panel { min-height: 150px; }
+    .log-panel { min-height: 180px; }
   }
 </style>
 </head>
@@ -307,14 +337,14 @@
   <div class="creation-window">
     <div>
       <div class="creation-title">СОЗДАНИЕ ПЕРСОНАЖА</div>
-      <div class="creation-subtitle">LINK START • AINCRAD CHRONICLES</div>
+      <div class="creation-subtitle">DARK SOULS EDITION • 10 КЛАССОВ</div>
     </div>
     <div>
       <div class="creation-section-label">Имя игрока</div>
       <input type="text" class="creation-input" id="creation-name-input" maxlength="14" placeholder="Введите имя..." value="KIRITO">
     </div>
     <div>
-      <div class="creation-section-label">Класс / Архетип</div>
+      <div class="creation-section-label">Класс / Архетип (10 классов в стиле Dark Souls)</div>
       <div class="class-grid" id="class-grid"></div>
     </div>
     <div>
@@ -323,7 +353,7 @@
     </div>
     <div class="creation-error" id="creation-error"></div>
     <div class="creation-actions">
-      <button class="sao-btn btn-boss" id="creation-start-btn" style="padding: 12px 40px; font-size: 1rem;">⚔ НАЧАТЬ ИГРУ</button>
+      <button class="sao-btn btn-boss" id="creation-start-btn" style="padding: 14px 44px; font-size: 1.1rem;">⚔ НАЧАТЬ ИГРУ</button>
     </div>
   </div>
 </div>
@@ -363,12 +393,12 @@
 
     <div class="hud-right">
       <div class="currency-box">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-6 0v5a3.5 3.5 0 0 0 6 0"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-6 0v5a3.5 3.5 0 0 0 6 0"/></svg>
         <span id="hud-col">50 Col</span>
       </div>
       <button class="audio-btn" id="audio-toggle-btn">
-        <svg id="audio-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        <svg id="audio-icon-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        <svg id="audio-icon-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <svg id="audio-icon-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
       </button>
     </div>
   </header>
@@ -407,7 +437,7 @@
       </div>
 
       <div class="log-panel" id="game-log">
-        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в Sword Art Online: Aincrad.</div>
+        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в Sword Art Online: Aincrad — Dark Souls Edition.</div>
       </div>
     </section>
 
@@ -415,17 +445,17 @@
       <div class="sao-panel quest-card">
         <div class="quest-header" id="quest-header-toggle">
           <div class="quest-title-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <span>КВЕСТ</span>
           </div>
-          <span id="quest-toggle-arrow" style="font-size: 0.75rem; color: var(--cyan-neon);">▼</span>
+          <span id="quest-toggle-arrow" style="font-size: 0.85rem; color: var(--cyan-neon);">▼</span>
         </div>
         <div class="quest-body" id="quest-body-content">
           <div class="quest-item">
             <div class="quest-name" id="quest-title">Зачистка окраин</div>
             <div class="quest-desc" id="quest-desc">Уничтожьте 5 слаймов.</div>
             <div class="quest-progress-bar"><div class="quest-progress-fill" id="quest-fill" style="width: 0%;"></div></div>
-            <div style="font-size: 0.7rem; color: #94a3b8; display:flex; justify-content:space-between; margin-top:2px;">
+            <div style="font-size: 0.78rem; color: #94a3b8; display:flex; justify-content:space-between; margin-top:2px;">
               <span>Прогресс:</span><span id="quest-count-text">0 / 5</span>
             </div>
             <div class="quest-rewards" id="quest-reward-text">+90 EXP, +60 Col</div>
@@ -434,14 +464,14 @@
       </div>
 
       <div class="sao-panel stats-card">
-        <div style="font-size: 0.82rem; font-weight: bold; color: var(--cyan-neon); letter-spacing: 1px;">ХАРАКТЕРИСТИКИ</div>
+        <div style="font-size: 0.9rem; font-weight: bold; color: var(--cyan-neon); letter-spacing: 1px;">ХАРАКТЕРИСТИКИ</div>
         <div class="stats-grid">
           <div class="stat-box"><span class="stat-label">АТАКА</span><span class="stat-val atk" id="stat-atk">13</span></div>
           <div class="stat-box"><span class="stat-label">ЗАЩИТА</span><span class="stat-val def" id="stat-def">4</span></div>
           <div class="stat-box"><span class="stat-label">КРИТ</span><span class="stat-val crit" id="stat-crit">12%</span></div>
           <div class="stat-box"><span class="stat-label">УБИЙСТВ</span><span class="stat-val" id="stat-kills">0</span></div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:5px;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
           <div class="stat-box"><span class="stat-label">ОРУЖИЕ</span><span class="stat-val equip" id="stat-weapon-name">—</span></div>
           <div class="stat-box"><span class="stat-label">БРОНЯ</span><span class="stat-val equip" id="stat-armor-name">—</span></div>
         </div>
@@ -463,7 +493,7 @@
   <section class="sao-panel actions-panel">
     <div class="actions-header">
       <span id="actions-title">ДЕЙСТВИЯ</span>
-      <span style="font-size: 0.72rem; color: #94a3b8;" id="actions-hint">Выберите действие</span>
+      <span style="font-size: 0.8rem; color: #94a3b8;" id="actions-hint">Выберите действие</span>
     </div>
     <div class="actions-grid" id="actions-container"></div>
   </section>
@@ -473,25 +503,30 @@
       <button class="sao-btn footer-btn" id="btn-open-inventory">Инвентарь (<span id="inv-count-badge">0</span>)</button>
       <button class="sao-btn footer-btn" id="btn-open-status">Статус</button>
       <button class="sao-btn footer-btn btn-achievement" id="btn-open-achievements">🏆 Ачивки</button>
-      <button class="sao-btn footer-btn" id="btn-save-game">Сохранить</button>
-      <button class="sao-btn footer-btn" id="btn-load-game">Загрузить</button>
+      <button class="sao-btn footer-btn btn-skill" id="btn-open-skills">📚 Скиллы</button>
+      <button class="sao-btn footer-btn btn-donate" id="btn-open-donate">💎 Донат</button>
+      <button class="sao-btn footer-btn btn-admin" id="btn-open-admin">🔧 Админ</button>
+      <button class="sao-btn footer-btn" id="btn-save-game">💾</button>
+      <button class="sao-btn footer-btn" id="btn-load-game">📂</button>
     </div>
-    <div class="version-tag">AINCRAD v2.5.1 • MANUAL SPAWN</div>
+    <div class="version-tag">AINCRAD v3.0 • DARK SOULS EDITION</div>
   </footer>
 </div>
 
+<!-- INVENTORY -->
 <div class="modal-overlay" id="modal-inventory">
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title">ИНВЕНТАРЬ</div><button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button></div>
     <div class="modal-body">
-      <div style="font-size:0.82rem; color:var(--cyan-neon); letter-spacing:1px;">ЭКИПИРОВАНО</div>
+      <div style="font-size:0.88rem; color:var(--cyan-neon); letter-spacing:1px;">ЭКИПИРОВАНО</div>
       <div class="items-list" id="equipped-items-list"></div>
-      <div style="font-size:0.82rem; color:var(--cyan-neon); letter-spacing:1px; margin-top:8px;">СУМКА</div>
+      <div style="font-size:0.88rem; color:var(--cyan-neon); letter-spacing:1px; margin-top:8px;">СУМКА</div>
       <div class="items-list" id="bag-items-list"></div>
     </div>
   </div>
 </div>
 
+<!-- SHOP -->
 <div class="modal-overlay" id="modal-shop">
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title" id="shop-title">МАГАЗИН</div><button class="modal-close-btn" onclick="closeModal('modal-shop')">✕</button></div>
@@ -500,7 +535,7 @@
         <button class="shop-tab active" id="tab-buy" onclick="switchShopTab('buy')">КУПИТЬ</button>
         <button class="shop-tab" id="tab-sell" onclick="switchShopTab('sell')">ПРОДАТЬ (50%)</button>
       </div>
-      <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#f59e0b; padding:4px 0;">
+      <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:#f59e0b; padding:4px 0;">
         <span>Баланс:</span><span id="shop-player-col" style="font-weight:bold;">50 Col</span>
       </div>
       <div class="items-list" id="shop-items-container"></div>
@@ -508,6 +543,21 @@
   </div>
 </div>
 
+<!-- SKILLS SHOP -->
+<div class="modal-overlay" id="modal-skills">
+  <div class="modal-window">
+    <div class="modal-header"><div class="modal-title">📚 СКИЛЛЫ (Разблокировка)</div><button class="modal-close-btn" onclick="closeModal('modal-skills')">✕</button></div>
+    <div class="modal-body">
+      <div style="background:linear-gradient(135deg, rgba(168,85,247,0.15), rgba(126,34,206,0.08)); border:1px solid #c084fc; border-radius:4px; padding:12px;">
+        <div style="font-size:0.95rem; font-weight:bold; color:#e9d5ff;">Скиллы вашего класса: <span id="skills-class-name">—</span></div>
+        <div style="font-size:0.82rem; color:#cbd5e1; margin-top:4px;">Изучайте скиллы за Col. Требуется определённый уровень. Базовые 4 скилла доступны с начала игры.</div>
+      </div>
+      <div id="skills-list-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS -->
 <div class="modal-overlay" id="modal-status">
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title">ПРОФИЛЬ</div><button class="modal-close-btn" onclick="closeModal('modal-status')">✕</button></div>
@@ -515,38 +565,84 @@
   </div>
 </div>
 
+<!-- ACHIEVEMENTS -->
 <div class="modal-overlay" id="modal-achievements">
-  <div class="modal-window" style="max-width: 1000px;">
+  <div class="modal-window" style="max-width: 1100px;">
     <div class="modal-header"><div class="modal-title">🏆 ДОСТИЖЕНИЯ</div><button class="modal-close-btn" onclick="closeModal('modal-achievements')">✕</button></div>
     <div class="modal-body">
-      <div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(180,130,0,0.06)); border:1px solid #ffd700; border-radius:3px; padding:10px;">
-        <div style="font-size:0.95rem; font-weight:900; color:#ffd700; letter-spacing:1.5px;">ОТКРЫТО: <span id="ach-modal-progress">0 / 0</span></div>
-        <div style="font-size:0.8rem; color:#fef3c7; margin-top:3px;">Бонусы: <span id="ach-modal-bonus">—</span></div>
+      <div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(180,130,0,0.06)); border:1px solid #ffd700; border-radius:3px; padding:12px;">
+        <div style="font-size:1.05rem; font-weight:900; color:#ffd700; letter-spacing:1.5px;">ОТКРЫТО: <span id="ach-modal-progress">0 / 0</span></div>
+        <div style="font-size:0.88rem; color:#fef3c7; margin-top:4px;">Бонусы: <span id="ach-modal-bonus">—</span></div>
       </div>
       <div id="achievements-container"></div>
     </div>
   </div>
 </div>
 
+<!-- DONATE -->
+<div class="modal-overlay" id="modal-donate">
+  <div class="modal-window donate-window" style="max-width: 1000px;">
+    <div class="modal-header"><div class="modal-title">💎 ДОНАТ-МАГАЗИН</div><button class="modal-close-btn" onclick="closeModal('modal-donate')">✕</button></div>
+    <div class="modal-body">
+      <div class="donate-hero">
+        <div class="donate-hero-title">💎 ЭКСКЛЮЗИВНОЕ ОРУЖИЕ</div>
+        <div class="donate-hero-sub">Только здесь — оружие, которого нет ни в одном магазине Айнкрада!</div>
+      </div>
+      <div class="items-list" id="donate-items-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="modal-overlay" id="modal-admin-login">
+  <div class="modal-window admin-window" style="max-width: 500px;">
+    <div class="modal-header"><div class="modal-title">🔧 ПАНЕЛЬ АДМИНА</div><button class="modal-close-btn" onclick="closeModal('modal-admin-login')">✕</button></div>
+    <div class="modal-body">
+      <div class="admin-form">
+        <div style="text-align:center; font-size:0.9rem; color:#ff8888;">Введите пароль для доступа</div>
+        <input type="password" class="admin-input" id="admin-password" maxlength="4" placeholder="••••" autocomplete="off">
+        <div id="admin-error" style="color:#ff6666; text-align:center; font-weight:bold; min-height:1.2em;"></div>
+        <button class="sao-btn btn-admin" style="padding:12px; font-size:1rem;" onclick="tryAdminLogin()">🔓 ВОЙТИ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal-window admin-window" style="max-width: 800px;">
+    <div class="modal-header"><div class="modal-title">🔧 ПАНЕЛЬ АДМИНА</div><button class="modal-close-btn" onclick="closeModal('modal-admin')">✕</button></div>
+    <div class="modal-body">
+      <div style="text-align:center; padding:10px; background:linear-gradient(135deg, rgba(255,68,68,0.15), rgba(60,15,15,0.1)); border:2px solid var(--admin-red); border-radius:5px;">
+        <div style="font-size:1.2rem; font-weight:900; color:#ff6666; letter-spacing:3px;">🔧 ADMIN ACCESS GRANTED</div>
+        <div style="font-size:0.8rem; color:#ff8888; margin-top:4px;">Используйте возможности осознанно</div>
+      </div>
+      <div class="admin-grid" id="admin-buttons"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NPC DIALOGUE (поддержка многофазного диалога) -->
 <div class="modal-overlay" id="modal-dialogue">
   <div class="modal-window">
     <div class="modal-header"><div class="modal-title" id="npc-name-title">NPC</div><button class="modal-close-btn" onclick="closeModal('modal-dialogue')">✕</button></div>
     <div class="modal-body">
-      <div style="font-size:0.9rem; line-height:1.6; color:#e2e8f0;" id="npc-speech-text"></div>
-      <div style="margin-top:8px; display:flex; justify-content:flex-end;"><button class="sao-btn" onclick="closeModal('modal-dialogue')">Понятно</button></div>
+      <div style="font-size:1rem; line-height:1.6; color:#e2e8f0;" id="npc-speech-text"></div>
+      <div id="npc-choices" style="margin-top:12px; display:flex; flex-direction:column; gap:6px;"></div>
+      <div style="margin-top:8px; display:flex; justify-content:flex-end;"><button class="sao-btn" id="npc-close-btn" onclick="closeModal('modal-dialogue')">Закрыть</button></div>
     </div>
   </div>
 </div>
 
 <div class="death-overlay" id="death-overlay">
   <div class="death-banner">
-    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8">
+    <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8">
       <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/>
     </svg>
-    <div class="death-title">YOU ARE DEAD</div>
+    <div class="death-title">YOU DIED</div>
     <div class="death-subtitle">Ваши HP упали до нуля. Система Кардинал зафиксировала гибель.</div>
     <div class="death-warning">⚠ PERMADEATH: Персонаж удалён навсегда.</div>
-    <button class="sao-btn btn-boss" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="confirmPermadeath()">СОЗДАТЬ НОВОГО ПЕРСОНАЖА</button>
+    <button class="sao-btn btn-boss" style="width: 100%; font-size: 1.05rem; padding: 14px;" onclick="confirmPermadeath()">СОЗДАТЬ НОВОГО ПЕРСОНАЖА</button>
   </div>
 </div>
 
@@ -575,11 +671,12 @@ function playSound(type) {
   else if (type === 'defeat') tone(150, 0.8, 'sawtooth', 0.28);
   else if (type === 'skill') { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(400, now); o.frequency.linearRampToValueAtTime(1600, now + 0.18); g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.22); o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + 0.24); }
   else if (type === 'classSkill') [400, 800, 1200, 1600].forEach((f, i) => tone(f, 0.25, 'sawtooth', 0.09, i * 0.05));
-  else if (type === 'legendary') [261, 329, 392, 523, 659, 784, 1046].forEach((f, i) => tone(f, 0.5, 'triangle', 0.22, i * 0.08));
   else if (type === 'achievement') [523, 659, 784, 1046, 1318].forEach((f, i) => tone(f, 0.6, 'triangle', 0.2, i * 0.1));
   else if (type === 'elite') [220, 330, 440].forEach((f, i) => tone(f, 0.3, 'sawtooth', 0.16, i * 0.08));
   else if (type === 'miniboss') [150, 200, 280, 380].forEach((f, i) => tone(f, 0.5, 'sawtooth', 0.22, i * 0.12));
   else if (type === 'hunt') [660, 880, 1100].forEach((f, i) => tone(f, 0.15, 'sine', 0.14, i * 0.06));
+  else if (type === 'donate') [1046, 1318, 1568, 2093].forEach((f, i) => tone(f, 0.5, 'triangle', 0.22, i * 0.1));
+  else if (type === 'admin') [523, 523, 784].forEach((f, i) => tone(f, 0.15, 'square', 0.18, i * 0.1));
 }
 const audioBtn = document.getElementById('audio-toggle-btn');
 const audioIconOn = document.getElementById('audio-icon-on');
@@ -608,6 +705,21 @@ Object.assign(ITEMS_DB, {
   'mat_crystal': { id: 'mat_crystal', name: 'Кристалл маны', type: 'valuable', price: 150, desc: 'Редкий материал.' },
   'mat_dragon_scale': { id: 'mat_dragon_scale', name: 'Драконья чешуя', type: 'valuable', price: 500, legendary: true, desc: 'Бесподобный материал.' }
 });
+
+// Донат-оружие (только в донат-магазине!)
+Object.assign(ITEMS_DB, {
+  'don_w_guardian': { id: 'don_w_guardian', name: '💎 Меч Хранителя', type: 'weapon', atk: 350, price: 5000, donate: true, desc: 'Оружие вечных стражей Айнкрада. +350 ATK.' },
+  'don_w_void': { id: 'don_w_void', name: '💎 Клинок Пустоты', type: 'weapon', atk: 500, price: 12000, donate: true, desc: 'Выкован из чистой пустоты. +500 ATK.' },
+  'don_w_cosmic': { id: 'don_w_cosmic', name: '💎 Космический Разрушитель', type: 'weapon', atk: 800, price: 25000, donate: true, desc: 'Оружие из другой реальности. +800 ATK.' },
+  'don_w_gods': { id: 'don_w_gods', name: '💎 Оружие Богов', type: 'weapon', atk: 1200, price: 50000, donate: true, desc: 'Легендарное оружие, отобранное у самого Кардинала. +1200 ATK.' },
+  'don_w_admin': { id: 'don_w_admin', name: '💎 Клинок Разработчика', type: 'weapon', atk: 9999, price: 200000, donate: true, desc: 'Оружие с правами администратора. +9999 ATK.' },
+  'don_a_guardian': { id: 'don_a_guardian', name: '💎 Броня Хранителя', type: 'armor', def: 250, price: 5000, donate: true, desc: 'Непробиваемая защита. +250 DEF.' },
+  'don_a_void': { id: 'don_a_void', name: '💎 Плащ Пустоты', type: 'armor', def: 400, price: 12000, donate: true, desc: 'Сливается с тенью. +400 DEF.' },
+  'don_a_gods': { id: 'don_a_gods', name: '💎 Броня Богов', type: 'armor', def: 800, price: 30000, donate: true, desc: 'Защита уровня божеств. +800 DEF.' },
+  'don_p_crystal': { id: 'don_p_crystal', name: '💎 Донат-кристалл', type: 'consumable', fullHeal: true, price: 500, donate: true, desc: 'Мгновенно восстанавливает 100% HP/MP.' },
+  'don_p_kit': { id: 'don_p_kit', name: '💎 Набор выживания', type: 'consumable', healHp: 2000, price: 800, donate: true, desc: '+2000 HP мгновенно.' }
+});
+
 const WEAPONS_BY_FLOOR = {
   1: [{ id: 'w_iron', name: 'Железный меч', atk: 8, price: 80, desc: 'Добротный клинок.' }],
   2: [{ id: 'w_broadsword', name: 'Широкий меч', atk: 16, price: 180, desc: 'Тяжёлое оружие.' }],
@@ -714,25 +826,19 @@ function generateEnemy(floor, playerLevel) {
   const modCount = Math.random() < 0.3 ? 2 : (Math.random() < 0.6 ? 1 : 0);
   const shuffled = [...MODIFIERS].sort(() => Math.random() - 0.5);
   for (let i = 0; i < modCount; i++) { shuffled[i].apply(enemy); enemy.modifiers.push({ name: shuffled[i].name, icon: shuffled[i].icon }); }
-  const eliteChance = [0.05, 0.05, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25][Math.min(floor - 1, 9)];
-  const minibossChance = [0.02, 0.02, 0.04, 0.04, 0.07, 0.07, 0.10, 0.10, 0.15, 0.15][Math.min(floor - 1, 9)];
+  const eliteChance = [0.08, 0.08, 0.12, 0.12, 0.18, 0.18, 0.22, 0.22, 0.28, 0.28][Math.min(floor - 1, 9)];
+  const minibossChance = [0.03, 0.03, 0.05, 0.05, 0.08, 0.08, 0.12, 0.12, 0.17, 0.17][Math.min(floor - 1, 9)];
   const roll = Math.random();
   if (roll < minibossChance) {
     enemy.tier = 'miniboss';
     enemy.name = `${base.name} ${NAME_SUFFIXES[Math.floor(Math.random() * NAME_SUFFIXES.length)]}`;
-    enemy.hp = Math.round(enemy.hp * 2.5);
-    enemy.atk = Math.round(enemy.atk * 1.7);
-    enemy.def = Math.round(enemy.def * 1.5);
-    enemy.exp = Math.round(enemy.exp * 3);
-    enemy.col = Math.round(enemy.col * 4);
+    enemy.hp = Math.round(enemy.hp * 2.5); enemy.atk = Math.round(enemy.atk * 1.7); enemy.def = Math.round(enemy.def * 1.5);
+    enemy.exp = Math.round(enemy.exp * 3); enemy.col = Math.round(enemy.col * 4);
   } else if (roll < minibossChance + eliteChance) {
     enemy.tier = 'elite';
     enemy.name = `${NAME_PREFIXES[Math.floor(Math.random() * NAME_PREFIXES.length)]} ${base.name}`;
-    enemy.hp = Math.round(enemy.hp * 1.6);
-    enemy.atk = Math.round(enemy.atk * 1.35);
-    enemy.def = Math.round(enemy.def * 1.2);
-    enemy.exp = Math.round(enemy.exp * 2);
-    enemy.col = Math.round(enemy.col * 2.5);
+    enemy.hp = Math.round(enemy.hp * 1.6); enemy.atk = Math.round(enemy.atk * 1.35); enemy.def = Math.round(enemy.def * 1.2);
+    enemy.exp = Math.round(enemy.exp * 2); enemy.col = Math.round(enemy.col * 2.5);
   }
   enemy.dropTable = [];
   if (floor >= 1) enemy.dropTable.push({ id: 'p_hp_small', chance: 0.35 });
@@ -748,6 +854,61 @@ function generateBoss(floor) {
   return { ...b, hp: b.hp, maxHp: b.hp, isBoss: true, floor: floor, tier: 'boss', modifiers: [], dropTable: [{ id: 'p_crystal_heal', chance: 1.0 }, ...(WEAPONS_BY_FLOOR[floor] || []).map(w => ({ id: w.id, chance: 1.0 })), ...(ARMORS_BY_FLOOR[floor] || []).map(a => ({ id: a.id, chance: 0.7 }))] };
 }
 
+/* ═══════ CLASSES (Dark Souls style) ═══════ */
+const CLASSES_DB = {
+  'swordsman': { id: 'swordsman', name: 'МЕЧНИК', icon: '⚔️', desc: 'Сбалансированный мастер клинка.', hp: 140, mp: 60, atk: 13, def: 4, crit: 12, passiveName: 'Мастерство клинка', passiveDesc: '+15% урона от обычных атак.', activeName: 'Двойной разрез', activeDesc: 'Два удара по 85% ATK.', activeCost: 15, skillIds: ['slash', 'sonic', 'starburst'] },
+  'knight': { id: 'knight', name: 'РЫЦАРЬ', icon: '⚜️', desc: 'Тяжёлый доспех, высокая защита и самоотхил.', hp: 180, mp: 50, atk: 12, def: 12, crit: 8, passiveName: 'Стойкость рыцаря', passiveDesc: '+25% DEF, +15% max HP. Регенерация 3% HP каждый ход.', activeName: 'Святой удар', activeDesc: 'Мощный удар 200% ATK + лечение 10% HP.', activeCost: 18, skillIds: ['slash', 'holy_strike', 'starburst'] },
+  'pyromancer': { id: 'pyromancer', name: 'ПИРОМАНТ', icon: '🔥', desc: 'Мастер огненной магии и хаоса.', hp: 120, mp: 130, atk: 16, def: 4, crit: 15, passiveName: 'Пламя изнутри', passiveDesc: '+35% урона огненных навыков, +40 max MP.', activeName: 'Огненный шторм', activeDesc: '270% ATK, игнорирует 50% DEF, поджигает.', activeCost: 28, skillIds: ['fireball', 'chaos_flame', 'great_chaos'] },
+  'cleric': { id: 'cleric', name: 'КЛИРИК', icon: '⛪', desc: 'Святая магия: исцеление и молнии.', hp: 135, mp: 110, atk: 11, def: 7, crit: 10, passiveName: 'Благословение', passiveDesc: '+20% лечения, +25 max MP.', activeName: 'Исцеление', activeDesc: 'Восстанавливает 40% max HP.', activeCost: 22, skillIds: ['lightning', 'heal', 'wrath_gods'] },
+  'hunter': { id: 'hunter', name: 'ОХОТНИК', icon: '🏹', desc: 'Меткий стрелок с высоким критом.', hp: 115, mp: 75, atk: 15, def: 3, crit: 22, passiveName: 'Меткий глаз', passiveDesc: '+20% крит-шанс, ×2.1 крит-урон.', activeName: 'Снайперский выстрел', activeDesc: '300% ATK с гарантированным критом.', activeCost: 20, skillIds: ['power_shot', 'triple_shot', 'rain_arrows'] },
+  'thief': { id: 'thief', name: 'ВОР', icon: '🗡️', desc: 'Быстрый и ловкий, много Col.', hp: 105, mp: 65, atk: 14, def: 2, crit: 20, passiveName: 'Хитрость', passiveDesc: '+30% Col и +15% EXP.', activeName: 'Кража здоровья', activeDesc: '180% ATK, лечит 50% урона.', activeCost: 15, skillIds: ['backstab', 'pickpocket', 'shadow_kill'] },
+  'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый защитник.', hp: 220, mp: 40, atk: 9, def: 14, crit: 6, passiveName: 'Каменная кожа', passiveDesc: '+30% max HP, +20% DEF.', activeName: 'Щитовая стойка', activeDesc: 'Утроенная защита, +15% HP.', activeCost: 12, skillIds: ['bash', 'bulwark', 'earthquake'] },
+  'assassin': { id: 'assassin', name: 'АССАСИН', icon: '🩸', desc: 'Смертоносный убийца с теневой магией.', hp: 95, mp: 80, atk: 17, def: 2, crit: 28, passiveName: 'Смертельный фокус', passiveDesc: 'Крит-урон ×2.85.', activeName: 'Теневой удар', activeDesc: 'Гарантированный крит.', activeCost: 20, skillIds: ['slash', 'shadow_step', 'assassinate'] },
+  'mage': { id: 'mage', name: 'МАГ', icon: '✨', desc: 'Мастер стихийной магии.', hp: 110, mp: 140, atk: 14, def: 3, crit: 14, passiveName: 'Магический резонанс', passiveDesc: '+30% урона навыков, +50 max MP.', activeName: 'Огненный шар', activeDesc: '220% ATK, игнор. 50% DEF.', activeCost: 25, skillIds: ['ice_lance', 'chain_lightning', 'meteor'] },
+  'undead': { id: 'undead', name: 'НЕЖИТЬ', icon: '💀', desc: 'Проклятый, но возрождающийся из мёртвых.', hp: 150, mp: 70, atk: 15, def: 6, crit: 12, passiveName: 'Проклятие нежити', passiveDesc: 'Один раз за бой возрождается с 50% HP при смерти.', activeName: 'Жизнеотвод', activeDesc: '250% ATK, лечит 30% урона.', activeCost: 20, skillIds: ['dark_hand', 'lifedrain', 'death_curse'] }
+};
+
+/* ═══════ SKILLS DATABASE ═══════ */
+const SKILLS_DB = {
+  // Базовые (стоят 0 — сразу доступны)
+  'slash': { id: 'slash', name: '⚡ Разрез', desc: '150% ATK', mpCost: 12, reqLevel: 1, reqCol: 0, dmgMult: 1.5, bonusCrit: 5, icon: '⚡' },
+  'sonic': { id: 'sonic', name: '💫 Звуковой Прыжок', desc: '220% ATK', mpCost: 22, reqLevel: 3, reqCol: 300, dmgMult: 2.2, bonusCrit: 20, icon: '💫' },
+  'starburst': { id: 'starburst', name: '🌟 Starburst Stream', desc: '350% ATK', mpCost: 40, reqLevel: 8, reqCol: 1500, dmgMult: 3.5, bonusCrit: 35, icon: '🌟' },
+  // Рыцарь
+  'holy_strike': { id: 'holy_strike', name: '⚜️ Святой удар', desc: '200% ATK + лечение', mpCost: 18, reqLevel: 3, reqCol: 400, dmgMult: 2.0, bonusCrit: 10, healPct: 0.1, icon: '⚜️' },
+  // Пиромант
+  'fireball': { id: 'fireball', name: '🔥 Огненный шар', desc: '220% ATK, игнор 50% DEF', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, bonusCrit: 10, ignoreDefHalf: true, icon: '🔥' },
+  'chaos_flame': { id: 'chaos_flame', name: '💥 Пламя хаоса', desc: '280% ATK + дебафф DEF', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, bonusCrit: 15, defDebuff: 5, icon: '💥' },
+  'great_chaos': { id: 'great_chaos', name: '🌀 Великий Хаос', desc: '500% ATK, огромный урон', mpCost: 60, reqLevel: 15, reqCol: 3500, dmgMult: 5.0, bonusCrit: 30, icon: '🌀' },
+  // Клирик
+  'lightning': { id: 'lightning', name: '⚡ Молния', desc: '200% ATK', mpCost: 20, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 15, icon: '⚡' },
+  'heal': { id: 'heal', name: '💚 Исцеление', desc: 'Восстанавливает 40% HP', mpCost: 22, reqLevel: 3, reqCol: 400, isHeal: true, healPct: 0.4, icon: '💚' },
+  'wrath_gods': { id: 'wrath_gods', name: '☀️ Гнев Богов', desc: '400% ATK + лечение 25%', mpCost: 45, reqLevel: 12, reqCol: 2500, dmgMult: 4.0, bonusCrit: 20, healPct: 0.25, icon: '☀️' },
+  // Охотник
+  'power_shot': { id: 'power_shot', name: '🏹 Мощный выстрел', desc: '180% ATK', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.8, bonusCrit: 25, icon: '🏹' },
+  'triple_shot': { id: 'triple_shot', name: '🎯 Тройной выстрел', desc: '3 удара по 80% ATK', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 0.8, multiHits: 3, bonusCrit: 15, icon: '🎯' },
+  'rain_arrows': { id: 'rain_arrows', name: '🌧️ Дождь стрел', desc: '450% ATK', mpCost: 45, reqLevel: 12, reqCol: 2500, dmgMult: 4.5, bonusCrit: 30, icon: '🌧️' },
+  // Вор
+  'backstab': { id: 'backstab', name: '🗡️ Удар в спину', desc: '200% ATK, +30% крит', mpCost: 18, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 30, icon: '🗡️' },
+  'pickpocket': { id: 'pickpocket', name: '💰 Карманник', desc: '100% ATK + украсть Col', mpCost: 10, reqLevel: 3, reqCol: 250, dmgMult: 1.0, stealCol: true, icon: '💰' },
+  'shadow_kill': { id: 'shadow_kill', name: '🌑 Убийство тени', desc: '380% ATK', mpCost: 40, reqLevel: 10, reqCol: 2000, dmgMult: 3.8, bonusCrit: 40, icon: '🌑' },
+  // Танк
+  'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% ATK + оглушение', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },
+  'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: 'Лечит 25% HP, ×3 DEF', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
+  'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% ATK + оглушение 2х', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
+  // Ассасин
+  'shadow_step': { id: 'shadow_step', name: '💨 Теневой шаг', desc: '250% ATK, +25% крит', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.5, bonusCrit: 25, icon: '💨' },
+  'assassinate': { id: 'assassinate', name: '☠️ Казнь', desc: '500% ATK', mpCost: 50, reqLevel: 15, reqCol: 3000, dmgMult: 5.0, bonusCrit: 50, icon: '☠️' },
+  // Маг
+  'ice_lance': { id: 'ice_lance', name: '❄️ Ледяное копьё', desc: '220% ATK, заморозка 1х', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, freeze: 1, icon: '❄️' },
+  'chain_lightning': { id: 'chain_lightning', name: '⚡ Цепная молния', desc: '280% ATK, оглушение 1х', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, stun: 1, icon: '⚡' },
+  'meteor': { id: 'meteor', name: '☄️ Метеор', desc: '600% ATK, игнорирует DEF', mpCost: 70, reqLevel: 18, reqCol: 5000, dmgMult: 6.0, ignoreDef: true, icon: '☄️' },
+  // Нежить
+  'dark_hand': { id: 'dark_hand', name: '🤚 Тёмная рука', desc: '200% ATK, лечит 20% урона', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, lifesteal: 0.2, icon: '🤚' },
+  'lifedrain': { id: 'lifedrain', name: '💚 Жизнеотвод', desc: '250% ATK, лечит 40% урона', mpCost: 28, reqLevel: 8, reqCol: 1200, dmgMult: 2.5, lifesteal: 0.4, icon: '💚' },
+  'death_curse': { id: 'death_curse', name: '💀 Проклятие смерти', desc: '380% ATK + кровотечение', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.8, bleed: 3, icon: '💀' }
+};
+
 /* ═══════ ACHIEVEMENTS ═══════ */
 const ACHIEVEMENTS = [
   { id: 'kill_10', category: 'Убийства', icon: '⚔️', name: 'Новичок', desc: 'Убить 10 монстров', target: 10, type: 'killsTotal', reward: { atk: 3 }, rewardText: '+3 ATK' },
@@ -757,10 +918,8 @@ const ACHIEVEMENTS = [
   { id: 'kill_1000', category: 'Убийства', icon: '⚔️', name: 'Легенда', desc: 'Убить 1000 монстров', target: 1000, type: 'killsTotal', reward: { atk: 100, def: 20, crit: 5 }, rewardText: '+100 ATK, +20 DEF, +5% крит' },
   { id: 'elite_5', category: 'Элиты', icon: '💜', name: 'Охотник на элит', desc: 'Убить 5 элитных', target: 5, type: 'eliteKills', reward: { atk: 10, crit: 2 }, rewardText: '+10 ATK, +2% крит' },
   { id: 'elite_25', category: 'Элиты', icon: '💜', name: 'Гроза элит', desc: 'Убить 25 элитных', target: 25, type: 'eliteKills', reward: { atk: 30, def: 15, crit: 4 }, rewardText: '+30 ATK, +15 DEF, +4% крит' },
-  { id: 'elite_100', category: 'Элиты', icon: '💜', name: 'Элитный охотник', desc: 'Убить 100 элитных', target: 100, type: 'eliteKills', reward: { atk: 80, def: 40, crit: 8, hp: 200 }, rewardText: '+80 ATK, +40 DEF, +8% крит' },
   { id: 'miniboss_1', category: 'Мини-боссы', icon: '🔥', name: 'Первая кровь', desc: 'Убить мини-босса', target: 1, type: 'minibossKills', reward: { atk: 15, hp: 100 }, rewardText: '+15 ATK, +100 HP' },
   { id: 'miniboss_10', category: 'Мини-боссы', icon: '🔥', name: 'Гроза мини-боссов', desc: 'Убить 10 мини-боссов', target: 10, type: 'minibossKills', reward: { atk: 40, def: 20, crit: 3 }, rewardText: '+40 ATK, +20 DEF, +3% крит' },
-  { id: 'miniboss_50', category: 'Мини-боссы', icon: '🔥', name: 'Погибель титанов', desc: 'Убить 50 мини-боссов', target: 50, type: 'minibossKills', reward: { atk: 120, def: 60, hp: 500 }, rewardText: '+120 ATK, +60 DEF, +500 HP' },
   { id: 'boss_first', category: 'Боссы', icon: '👑', name: 'Первая победа', desc: 'Победить босса этажа', target: 1, type: 'bossKills', reward: { atk: 20, hp: 100 }, rewardText: '+20 ATK, +100 HP' },
   { id: 'boss_5', category: 'Боссы', icon: '👑', name: 'Беати-проходчик', desc: 'Победить 5 боссов', target: 5, type: 'bossKills', reward: { atk: 50, def: 30, hp: 300 }, rewardText: '+50 ATK, +30 DEF, +300 HP' },
   { id: 'boss_10', category: 'Боссы', icon: '👑', name: 'Покоритель Айнкрада', desc: 'Победить всех 10 боссов', target: 10, type: 'bossKills', reward: { atk: 200, def: 100, crit: 10, hp: 1000 }, rewardText: 'Огромные бонусы' },
@@ -770,24 +929,18 @@ const ACHIEVEMENTS = [
   { id: 'lvl_5', category: 'Развитие', icon: '⭐', name: 'Опытный', desc: 'Достичь 5 уровня', target: 5, type: 'level', reward: { hp: 100, mp: 20 }, rewardText: '+100 HP, +20 MP' },
   { id: 'lvl_10', category: 'Развитие', icon: '⭐', name: 'Мастер', desc: 'Достичь 10 уровня', target: 10, type: 'level', reward: { atk: 30, def: 15, hp: 200, mp: 50 }, rewardText: '+30 ATK, +15 DEF, +200 HP, +50 MP' },
   { id: 'lvl_25', category: 'Развитие', icon: '⭐', name: 'Грандмастер', desc: 'Достичь 25 уровня', target: 25, type: 'level', reward: { atk: 100, def: 60, crit: 5, hp: 500, mp: 100 }, rewardText: '+100 ATK, +60 DEF, +5% крит' },
-  { id: 'lvl_50', category: 'Развитие', icon: '⭐', name: 'Легенда Айнкрада', desc: 'Достичь 50 уровня', target: 50, type: 'level', reward: { atk: 300, def: 150, crit: 15, hp: 2000, mp: 300 }, rewardText: 'Огромные бонусы' },
   { id: 'col_1000', category: 'Богатство', icon: '💰', name: 'Богач', desc: 'Накопить 1000 Col', target: 1000, type: 'totalCol', reward: { colBonus: 100 }, rewardText: '+100 Col' },
-  { id: 'col_10000', category: 'Богатство', icon: '💰', name: 'Магнат', desc: 'Накопить 10000 Col', target: 10000, type: 'totalCol', reward: { colBonus: 1000 }, rewardText: '+1000 Col' },
-  { id: 'col_100000', category: 'Богатство', icon: '💰', name: 'Крез', desc: 'Накопить 100000 Col', target: 100000, type: 'totalCol', reward: { colBonus: 10000 }, rewardText: '+10000 Col' }
+  { id: 'col_10000', category: 'Богатство', icon: '💰', name: 'Магнат', desc: 'Накопить 10000 Col', target: 10000, type: 'totalCol', reward: { colBonus: 1000 }, rewardText: '+1000 Col' }
 ];
 const DYNAMIC_ACH_TEMPLATES = [
   { icon: '⚡', name: 'Скорость света', desc: 'Критический удар', reward: { atk: 5 }, rewardText: '+5 ATK' },
   { icon: '🎯', name: 'Снайпер', desc: 'Точное попадание', reward: { crit: 1 }, rewardText: '+1% крит' },
   { icon: '🛡️', name: 'Непробиваемый', desc: 'Выжить в тяжёлом бою', reward: { def: 3 }, rewardText: '+3 DEF' },
-  { icon: '🍀', name: 'Любимец Кардинала', desc: 'Удача на вашей стороне', reward: { hp: 50 }, rewardText: '+50 HP' },
-  { icon: '🔥', name: 'Огненный клинок', desc: 'Сжечь врага дотла', reward: { atk: 4 }, rewardText: '+4 ATK' },
-  { icon: '💧', name: 'Мудрый воин', desc: 'Мастерство магии', reward: { mp: 15 }, rewardText: '+15 MP' },
-  { icon: '👁️', name: 'Взгляд тигра', desc: 'Слабость врага', reward: { crit: 2 }, rewardText: '+2% крит' },
-  { icon: '⚔️', name: 'Мастер клинка', desc: 'Идеальная техника', reward: { atk: 6 }, rewardText: '+6 ATK' },
-  { icon: '🌟', name: 'Звёздный час', desc: 'Подвиг', reward: { hp: 75, def: 2 }, rewardText: '+75 HP, +2 DEF' }
+  { icon: '🍀', name: 'Любимец Кардинала', desc: 'Удача', reward: { hp: 50 }, rewardText: '+50 HP' },
+  { icon: '🔥', name: 'Огненный клинок', desc: 'Сжечь врага', reward: { atk: 4 }, rewardText: '+4 ATK' }
 ];
-const DYNAMIC_NAMES_1 = ['Легенда', 'Тень', 'Проклятие', 'Дар', 'Клинок', 'Мудрость', 'Гнев', 'Судьба', 'Эхо', 'Шторм'];
-const DYNAMIC_NAMES_2 = ['Айнкрада', 'Кардинала', 'Бездны', 'Звёзд', 'Войны', 'Титанов', 'Небес', 'Хаоса', 'Света', 'Тьмы'];
+const DYNAMIC_NAMES_1 = ['Легенда', 'Тень', 'Проклятие', 'Дар', 'Клинок', 'Мудрость', 'Гнев', 'Судьба'];
+const DYNAMIC_NAMES_2 = ['Айнкрада', 'Кардинала', 'Бездны', 'Звёзд', 'Войны', 'Титанов', 'Небес'];
 
 /* ═══════ ZONES ═══════ */
 const ZONES_DB = {};
@@ -809,35 +962,39 @@ FLOORS_DATA.forEach(f => {
   ZONES_DB[`dungeon_f${f.n}`] = { id: `dungeon_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • ПОДЗЕМЕЛЬЕ`, name: f.dungeonName, isSafe: false, desc: f.dungeonDesc, zoneType: 'dungeon', bossId: BOSSES_DB[f.n] ? BOSSES_DB[f.n].id : null };
 });
 
-/* ═══════ CLASSES ═══════ */
-const CLASSES_DB = {
-  'swordsman': { id: 'swordsman', name: 'МЕЧНИК', icon: '⚔️', desc: 'Сбалансированный мастер клинка.', hp: 140, mp: 60, atk: 13, def: 4, crit: 12, passiveName: 'Мастерство клинка', passiveDesc: '+15% урона от обычных атак.', activeName: 'Двойной разрез', activeDesc: 'Два удара по 85% ATK.', activeCost: 15 },
-  'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый защитник.', hp: 200, mp: 40, atk: 9, def: 10, crit: 6, passiveName: 'Каменная кожа', passiveDesc: '+20% max HP, +15% DEF.', activeName: 'Щитовая стойка', activeDesc: 'Утроенная защита и +15% HP.', activeCost: 12 },
-  'assassin': { id: 'assassin', name: 'АССАСИН', icon: '🗡️', desc: 'Смертоносный убийца.', hp: 100, mp: 70, atk: 16, def: 2, crit: 25, passiveName: 'Смертельный фокус', passiveDesc: 'Крит-урон ×2.85.', activeName: 'Теневой удар', activeDesc: 'Гарантированный крит.', activeCost: 20 },
-  'mage': { id: 'mage', name: 'МАГ', icon: '✨', desc: 'Мастер стихийной магии.', hp: 110, mp: 120, atk: 14, def: 3, crit: 14, passiveName: 'Магический резонанс', passiveDesc: '+25% урона навыков, +30 max MP.', activeName: 'Огненный шар', activeDesc: '220% ATK, игнор. 50% DEF.', activeCost: 25 }
-};
-
 /* ═══════ STATE ═══════ */
 let characterProfile = { name: 'KIRITO', classId: 'swordsman', color: '#22c55e' };
 let player = null;
 let combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
 let currentShopTab = 'buy';
+let adminAuthenticated = false;
 
 function makeFreshPlayer() {
   const cls = CLASSES_DB[characterProfile.classId];
+  const unlockedSkills = {};
+  // Базовые скиллы доступны сразу (reqCol === 0)
+  (cls.skillIds || []).forEach(sid => {
+    if (SKILLS_DB[sid] && SKILLS_DB[sid].reqCol === 0) unlockedSkills[sid] = true;
+  });
+  // Также всегда даём 'slash' как базовую атаку
+  if (SKILLS_DB['slash']) unlockedSkills['slash'] = true;
+
   return {
     name: characterProfile.name, classId: characterProfile.classId, color: characterProfile.color,
     level: 1, hp: cls.hp, maxHp: cls.hp, mp: cls.mp, maxMp: cls.mp,
     baseAtk: cls.atk, baseDef: cls.def, baseCrit: cls.crit,
-    exp: 0, maxExp: 100, col: 50,
+    exp: 0, maxExp: 100, col: 500,
     killsCount: 0, eliteKills: 0, minibossKills: 0, bossKills: 0, totalColEarned: 0,
     currentZone: 'town_f1', highestFloor: 1,
     equippedWeapon: 'w_rusty', equippedArmor: 'a_cloth',
-    inventory: [{ id: 'p_hp_small', count: 3 }, { id: 'p_mp_small', count: 2 }],
+    inventory: [{ id: 'p_hp_small', count: 5 }, { id: 'p_mp_small', count: 5 }],
     currentQuestIdx: 0, questProgress: 0,
     unlockedFloors: { 1: true }, bossesDefeated: {},
     achievements: {}, dynamicAchievements: [],
-    achievementBonuses: { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 }
+    achievementBonuses: { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 },
+    unlockedSkills: unlockedSkills, // ← Скиллы, которые открыты
+    heathcliffDialogDone: false,    // ← Диалог с финальным боссом
+    heathcliffDialogPhase: 0
   };
 }
 
@@ -845,11 +1002,36 @@ function makeFreshPlayer() {
 function getClass() { return CLASSES_DB[player.classId]; }
 function getAchBonus() { return { atk: 0, def: 0, hp: 0, mp: 0, crit: 0, ...player.achievementBonuses }; }
 function getTotalAtk() { const w = ITEMS_DB[player.equippedWeapon] || { atk: 0 }; return player.baseAtk + (w.atk || 0) + getAchBonus().atk; }
-function getTotalDef() { const a = ITEMS_DB[player.equippedArmor] || { def: 0 }; let t = player.baseDef + (a.def || 0) + getAchBonus().def; if (player.classId === 'tank') t = Math.round(t * 1.15); return t; }
-function getTotalCrit() { return player.baseCrit + getAchBonus().crit; }
-function getTotalMaxHp() { let hp = player.maxHp + getAchBonus().hp; if (player.classId === 'tank') hp = Math.round(hp * 1.2); return hp; }
-function getTotalMaxMp() { let mp = player.maxMp + getAchBonus().mp; if (player.classId === 'mage') mp += 30; return mp; }
-function getCritMultiplier() { return player.classId === 'assassin' ? 2.85 : 1.9; }
+function getTotalDef() {
+  const a = ITEMS_DB[player.equippedArmor] || { def: 0 };
+  let t = player.baseDef + (a.def || 0) + getAchBonus().def;
+  if (player.classId === 'tank') t = Math.round(t * 1.2);
+  if (player.classId === 'knight') t = Math.round(t * 1.25);
+  return t;
+}
+function getTotalCrit() {
+  let c = player.baseCrit + getAchBonus().crit;
+  if (player.classId === 'hunter') c += 20;
+  return c;
+}
+function getTotalMaxHp() {
+  let hp = player.maxHp + getAchBonus().hp;
+  if (player.classId === 'tank') hp = Math.round(hp * 1.3);
+  if (player.classId === 'knight') hp = Math.round(hp * 1.15);
+  return hp;
+}
+function getTotalMaxMp() {
+  let mp = player.maxMp + getAchBonus().mp;
+  if (player.classId === 'mage') mp += 50;
+  if (player.classId === 'pyromancer') mp += 40;
+  if (player.classId === 'cleric') mp += 25;
+  return mp;
+}
+function getCritMultiplier() {
+  if (player.classId === 'assassin') return 2.85;
+  if (player.classId === 'hunter') return 2.1;
+  return 1.9;
+}
 function calculateDamage(atk, def, isCrit = false) {
   const v = 0.88 + Math.random() * (1.12 - 0.88);
   let dmg = (v * atk) - (def * 0.5);
@@ -857,7 +1039,16 @@ function calculateDamage(atk, def, isCrit = false) {
   return Math.max(1, Math.round(dmg));
 }
 function getCurrentFloor() { return ZONES_DB[player.currentZone].floor || 1; }
-function computeSkillDmg(mult) { let m = mult; if (player.classId === 'mage') m *= 1.25; return getTotalAtk() * m; }
+function computeSkillDmg(mult) {
+  let m = mult;
+  if (player.classId === 'mage') m *= 1.3;
+  if (player.classId === 'pyromancer') m *= 1.35;
+  return getTotalAtk() * m;
+}
+function isSkillUnlocked(skillId) {
+  if (skillId === 'slash') return true; // Базовая атака всегда доступна
+  return player.unlockedSkills && player.unlockedSkills[skillId];
+}
 
 /* ═══════ ACHIEVEMENTS LOGIC ═══════ */
 function getAchProgressValue(ach) {
@@ -1013,7 +1204,7 @@ function showToast(m) {
 function showAchievementToast(name, reward) {
   const t = document.getElementById('toast-box');
   t.className = 'toast-box achievement show';
-  t.innerHTML = `<div style="font-size:0.8rem;">Достижение разблокировано!</div><div style="font-size:1rem; margin:3px 0;">${name}</div><div style="font-size:0.8rem; color:#4ade80;">${reward}</div>`;
+  t.innerHTML = `<div style="font-size:0.85rem;">Достижение разблокировано!</div><div style="font-size:1.05rem; margin:3px 0;">${name}</div><div style="font-size:0.85rem; color:#4ade80;">${reward}</div>`;
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 function spawnFloatingNumber(t, type = 'floating-dmg') {
@@ -1052,7 +1243,6 @@ function renderExplorationButtons() {
   h.textContent = `Этаж ${z.floor}`;
 
   if (z.isSafe) {
-    // ГОРОД: без поиска врагов
     c.appendChild(createActionButton('🔥 Отдохнуть', 'btn-item', restAtCampfire));
     c.appendChild(createActionButton(`🛒 Магазин`, 'btn-item', openShop));
     if (z.floor === 1) {
@@ -1063,10 +1253,15 @@ function renderExplorationButtons() {
     const uf = Object.keys(player.unlockedFloors).map(Number).filter(n => n !== z.floor && player.unlockedFloors[n]).sort((a, b) => a - b);
     uf.forEach(f => c.appendChild(createActionButton(`🌀 Этаж ${f}`, 'btn-skill', () => changeZone(`town_f${f}`))));
   } else if (z.bossId) {
-    // ПОДЗЕМЕЛЬЕ: поиск врагов + босс
     c.appendChild(createActionButton('⚔️ НАЙТИ ВРАГА', 'btn-hunt', huntForEnemy));
     if (!player.bossesDefeated[z.bossId]) {
-      c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
+      // Финальный босс 10 этажа → сначала диалог
+      if (z.floor === 10) {
+        c.appendChild(createActionButton(`💬 Диалог с Heathcliff`, 'btn-boss', () => startHeathcliffDialog()));
+        c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
+      } else {
+        c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
+      }
     } else {
       const nf = z.floor + 1;
       if (nf <= 10 && !player.unlockedFloors[nf]) {
@@ -1079,29 +1274,22 @@ function renderExplorationButtons() {
     }
     c.appendChild(createActionButton(`🌲 Обратно в поле ➔`, '', () => changeZone(`wild_f${z.floor}`)));
   } else {
-    // ПОЛЕ: только поиск врагов + переходы
     c.appendChild(createActionButton('⚔️ НАЙТИ ВРАГА', 'btn-hunt', huntForEnemy));
     c.appendChild(createActionButton(`💀 В подземелье ➔`, 'btn-defend', () => changeZone(`dungeon_f${z.floor}`)));
     c.appendChild(createActionButton(`🏛️ В город ➔`, '', () => changeZone(`town_f${z.floor}`)));
   }
 }
 
-/* ⚔️ ГЛАВНАЯ ФУНКЦИЯ: поиск врага по нажатию кнопки */
 function huntForEnemy() {
   const z = ZONES_DB[player.currentZone];
   if (!z || z.isSafe) { showToast('Здесь не водятся враги'); return; }
   if (z.zoneType !== 'wild' && z.zoneType !== 'dungeon') return;
-
-  // Небольшая задержка для "поиска" + звук
   playSound('hunt');
   addLog(`[ПОИСК] Вы исследуете окрестности...`, 'system');
-
-  // Отключаем кнопки на момент поиска
   disableCombatButtons(true);
-
   setTimeout(() => {
-    // 12% шанс найти Col вместо боя
-    if (Math.random() < 0.12) {
+    // Уменьшил шанс находки — теперь 4% (было 12%)
+    if (Math.random() < 0.04) {
       const col = (15 + Math.floor(Math.random() * 25)) * z.floor;
       player.col += col; player.totalColEarned += col;
       playSound('heal');
@@ -1112,7 +1300,6 @@ function huntForEnemy() {
       renderExplorationButtons();
       return;
     }
-    // Спавн врага
     const enemy = generateEnemy(z.floor, player.level);
     startCombatWithEnemy(enemy);
   }, 350);
@@ -1124,19 +1311,24 @@ function renderCombatButtons() {
   c.innerHTML = '';
   t.textContent = `БОЙ: ${combatState.enemy.name.toUpperCase()}`;
   c.appendChild(createActionButton('⚔️ Атака', 'btn-attack', playerActionAttack));
+
+  // Классовая способность
   const cls = getClass();
   const cb = createActionButton(`${cls.icon} ${cls.activeName} (${cls.activeCost}MP)`, 'btn-class', playerActionClassAbility);
   cb.disabled = player.mp < cls.activeCost;
   c.appendChild(cb);
-  const s1 = createActionButton('⚡ Разрез (12MP)', 'btn-skill', () => playerActionSkill('slash', 12, 1.5, 5));
-  s1.disabled = player.mp < 12;
-  c.appendChild(s1);
-  const s2 = createActionButton('💫 Звук. Прыжок (22MP)', 'btn-skill', () => playerActionSkill('sonic', 22, 2.2, 20));
-  s2.disabled = player.mp < 22;
-  c.appendChild(s2);
-  const s3 = createActionButton('🌟 Starburst (40MP)', 'btn-skill', () => playerActionSkill('starburst', 40, 3.5, 35));
-  s3.disabled = player.mp < 40;
-  c.appendChild(s3);
+
+  // Скиллы класса — только разблокированные
+  const skillIds = cls.skillIds || [];
+  skillIds.forEach(sid => {
+    if (!isSkillUnlocked(sid)) return;
+    const sk = SKILLS_DB[sid];
+    if (!sk) return;
+    const btn = createActionButton(`${sk.icon} ${sk.name} (${sk.mpCost}MP)`, 'btn-skill', () => playerActionSkillUse(sid));
+    btn.disabled = player.mp < sk.mpCost;
+    c.appendChild(btn);
+  });
+
   c.appendChild(createActionButton('🛡️ Защита', 'btn-defend', playerActionDefend));
   c.appendChild(createActionButton('🧪 Зелье', 'btn-item', openQuickItemMenu));
   const esc = createActionButton('🏃 Побег', '', playerActionEscape);
@@ -1172,17 +1364,14 @@ function startCombatWithEnemy(enemy) {
   const tierRow = document.getElementById('enemy-tier-row');
   const modsRow = document.getElementById('enemy-mods-row');
   const hpFill = document.getElementById('enemy-hp-bar');
-  card.className = 'enemy-card';
-  avatar.className = 'enemy-avatar';
-  nameEl.className = 'enemy-name';
-  hpFill.className = 'enemy-hp-bar-fill';
+  card.className = 'enemy-card'; avatar.className = 'enemy-avatar'; nameEl.className = 'enemy-name'; hpFill.className = 'enemy-hp-bar-fill';
   tierRow.innerHTML = ''; modsRow.innerHTML = '';
   if (e.tier === 'elite') { card.classList.add('elite'); avatar.classList.add('elite'); nameEl.classList.add('elite'); hpFill.classList.add('elite'); tierRow.innerHTML = `<span class="tier-tag elite">💜 ЭЛИТА</span>`; }
   else if (e.tier === 'miniboss') { card.classList.add('miniboss'); avatar.classList.add('miniboss'); nameEl.classList.add('miniboss'); hpFill.classList.add('miniboss'); tierRow.innerHTML = `<span class="tier-tag miniboss">🔥 МИНИ-БОСС</span>`; }
   if (e.modifiers && e.modifiers.length) modsRow.innerHTML = e.modifiers.map(m => `<span class="mod-tag">${m.icon} ${m.name}</span>`).join('');
   nameEl.textContent = e.name;
   document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
-  avatar.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
+  avatar.innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
   updateEnemyHpBar(); updateDebuffDisplay(); updateEnemyCardState();
   document.getElementById('battle-stage').style.display = 'flex';
   if (e.tier === 'miniboss') { playSound('miniboss'); addLog(`🔥 [МИНИ-БОСС] ${e.name}!`, 'miniboss'); }
@@ -1190,6 +1379,7 @@ function startCombatWithEnemy(enemy) {
   else addLog(`[БОЙ] ${e.name} (HP ${e.maxHp}).`, 'danger');
   renderCombatButtons(); updateHUD();
 }
+
 function startBossFight(floor) {
   const boss = generateBoss(floor);
   if (!boss) return;
@@ -1207,13 +1397,14 @@ function startBossFight(floor) {
   document.getElementById('enemy-mods-row').innerHTML = '';
   document.getElementById('enemy-name').textContent = e.name;
   document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
-  document.getElementById('enemy-avatar').innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
+  document.getElementById('enemy-avatar').innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
   updateEnemyHpBar(); updateDebuffDisplay();
   document.getElementById('battle-stage').style.display = 'flex';
   playSound('miniboss');
   addLog(`👑 [БОСС] ${e.name}! HP ${e.maxHp}`, 'miniboss');
   renderCombatButtons(); updateHUD();
 }
+
 function updateEnemyHpBar() {
   if (!combatState.enemy) return;
   const e = combatState.enemy;
@@ -1261,15 +1452,18 @@ function playerActionClassAbility() {
   player.mp -= cls.activeCost;
   combatState.isDefending = false;
   playSound('classSkill');
-  let logMsg = '', totalDmg = 0;
-  if (player.classId === 'swordsman') {
+  let logMsg = '';
+  const enemy = combatState.enemy;
+
+  if (player.classId === 'swordsman' || player.classId === 'assassin') {
+    let totalDmg = 0;
     for (let i = 0; i < 2; i++) {
       const isCrit = Math.random() * 100 < getTotalCrit();
-      const dmg = calculateDamage(computeSkillDmg(0.85), combatState.enemy.def, isCrit);
+      const dmg = calculateDamage(computeSkillDmg(0.85), enemy.def, isCrit);
       totalDmg += dmg;
       setTimeout(() => { spawnFloatingNumber(`-${dmg}`, isCrit ? 'floating-crit' : 'floating-dmg'); triggerScreenShake(); }, i * 150);
     }
-    combatState.enemy.hp -= totalDmg;
+    enemy.hp -= totalDmg;
     logMsg = `⚔️ ДВОЙНОЙ РАЗРЕЗ: ${totalDmg}!`;
   } else if (player.classId === 'tank') {
     const heal = Math.round(getTotalMaxHp() * 0.15);
@@ -1277,45 +1471,136 @@ function playerActionClassAbility() {
     combatState.isDefending = true; combatState.defendTurns = 2;
     spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
     logMsg = `🛡️ ЩИТОВАЯ СТОЙКА: +${heal} HP!`;
-  } else if (player.classId === 'assassin') {
-    const dmg = calculateDamage(computeSkillDmg(1.8), combatState.enemy.def, true);
-    combatState.enemy.hp -= dmg;
-    triggerScreenShake();
-    spawnFloatingNumber(`ТЕНЬ! -${dmg}`, 'floating-crit');
-    logMsg = `🗡️ ТЕНЕВОЙ УДАР: ${dmg}!`;
   } else if (player.classId === 'mage') {
-    const effDef = Math.max(0, combatState.enemy.def * 0.5);
+    const effDef = Math.max(0, enemy.def * 0.5);
     const dmg = calculateDamage(computeSkillDmg(2.2), effDef, false);
-    combatState.enemy.hp -= dmg;
-    combatState.enemy.defDebuff += 3;
+    enemy.hp -= dmg; enemy.defDebuff += 3;
     triggerScreenShake();
     spawnFloatingNumber(`🔥 -${dmg}`, 'floating-crit');
     logMsg = `✨ ОГНЕННЫЙ ШАР: ${dmg}!`;
+  } else if (player.classId === 'knight') {
+    const dmg = calculateDamage(computeSkillDmg(2.0), enemy.def, false);
+    const heal = Math.round(getTotalMaxHp() * 0.1);
+    enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    triggerScreenShake();
+    spawnFloatingNumber(`⚜️ -${dmg}`, 'floating-crit');
+    spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
+    logMsg = `⚜️ СВЯТОЙ УДАР: ${dmg} + ${heal} HP!`;
+  } else if (player.classId === 'pyromancer') {
+    const effDef = Math.max(0, enemy.def * 0.5);
+    const dmg = calculateDamage(computeSkillDmg(2.7), effDef, false);
+    enemy.hp -= dmg; enemy.defDebuff += 5;
+    triggerScreenShake();
+    spawnFloatingNumber(`🔥 -${dmg}`, 'floating-crit');
+    logMsg = `🔥 ОГНЕННЫЙ ШТОРМ: ${dmg}!`;
+  } else if (player.classId === 'cleric') {
+    const heal = Math.round(getTotalMaxHp() * 0.4);
+    player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
+    logMsg = `⛪ ИСЦЕЛЕНИЕ: +${heal} HP!`;
+  } else if (player.classId === 'hunter') {
+    const dmg = calculateDamage(computeSkillDmg(3.0), enemy.def, true);
+    enemy.hp -= dmg;
+    triggerScreenShake();
+    spawnFloatingNumber(`🏹 -${dmg}`, 'floating-crit');
+    logMsg = `🏹 СНАЙПЕРСКИЙ ВЫСТРЕЛ: ${dmg}!`;
+  } else if (player.classId === 'thief') {
+    const dmg = calculateDamage(computeSkillDmg(1.8), enemy.def, false);
+    const heal = Math.round(dmg * 0.5);
+    enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    triggerScreenShake();
+    spawnFloatingNumber(`🗡️ -${dmg}`, 'floating-crit');
+    logMsg = `🗡️ КРАЖА ЗДОРОВЬЯ: ${dmg} урона, +${heal} HP!`;
+  } else if (player.classId === 'undead') {
+    const dmg = calculateDamage(computeSkillDmg(2.5), enemy.def, false);
+    const heal = Math.round(dmg * 0.3);
+    enemy.hp -= dmg; player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    triggerScreenShake();
+    spawnFloatingNumber(`💀 -${dmg}`, 'floating-crit');
+    logMsg = `💀 ЖИЗНЕОТВОД: ${dmg} урона, +${heal} HP!`;
   }
+
   addLog(`[КЛАСС] ${logMsg}`, 'class-skill');
   updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();
   if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
 }
-function playerActionSkill(type, cost, mult, bonusCrit) {
+
+/* ═══════ УНИВЕРСАЛЬНОЕ ИСПОЛЬЗОВАНИЕ СКИЛЛА ИЗ SKILLS_DB ═══════ */
+function playerActionSkillUse(skillId) {
   if (!combatState.active) return;
-  if (player.mp < cost) { showToast('Мало MP!'); return; }
-  player.mp -= cost;
+  const sk = SKILLS_DB[skillId];
+  if (!sk) return;
+  if (!isSkillUnlocked(skillId)) { showToast('Скилл не изучен!'); return; }
+  if (player.mp < sk.mpCost) { showToast('Мало MP!'); return; }
+  player.mp -= sk.mpCost;
   combatState.isDefending = false;
-  const isCrit = Math.random() * 100 < (getTotalCrit() + bonusCrit);
-  let effDef = combatState.enemy.def;
-  if (combatState.enemy.defDebuff) effDef = Math.max(0, effDef - combatState.enemy.defDebuff);
-  let atkBase = computeSkillDmg(mult);
-  if (combatState.hasteActive) { atkBase *= 1.5; combatState.hasteActive = false; }
-  const dmg = calculateDamage(atkBase, effDef, isCrit);
-  combatState.enemy.hp -= dmg;
-  triggerScreenShake();
   playSound('skill');
-  let name = type === 'slash' ? 'Разрез' : (type === 'sonic' ? 'Звук. Прыжок' : 'Starburst');
-  if (isCrit) { playSound('crit'); spawnFloatingNumber(`КРИТ! -${dmg}`, 'floating-crit'); addLog(`[${name}] КРИТ ${dmg}!`, 'crit'); }
-  else { spawnFloatingNumber(`-${dmg}`, 'floating-dmg'); addLog(`[${name}] ${dmg}.`, 'player-action'); }
-  updateEnemyHpBar();
+  const enemy = combatState.enemy;
+
+  // Лечение (без урона)
+  if (sk.isHeal) {
+    const heal = Math.round(getTotalMaxHp() * sk.healPct);
+    player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
+    addLog(`[СКИЛЛ] ${sk.name}: +${heal} HP!`, 'class-skill');
+    updateHUD();
+    enemyTurn();
+    return;
+  }
+
+  // Мультиудар
+  if (sk.multiHits) {
+    let total = 0;
+    for (let i = 0; i < sk.multiHits; i++) {
+      const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
+      const dmg = calculateDamage(computeSkillDmg(sk.dmgMult), enemy.def, isCrit);
+      total += dmg;
+      setTimeout(() => { spawnFloatingNumber(`-${dmg}`, isCrit ? 'floating-crit' : 'floating-dmg'); triggerScreenShake(); }, i * 150);
+    }
+    enemy.hp -= total;
+    addLog(`[СКИЛЛ] ${sk.name}: ${sk.multiHits} удара, всего ${total}!`, 'class-skill');
+  } else {
+    const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
+    let effDef = enemy.def;
+    if (sk.ignoreDef) effDef = 0;
+    else if (sk.ignoreDefHalf) effDef = Math.max(0, effDef * 0.5);
+    if (enemy.defDebuff) effDef = Math.max(0, effDef - enemy.defDebuff);
+
+    let atkBase = computeSkillDmg(sk.dmgMult);
+    if (combatState.hasteActive) { atkBase *= 1.5; combatState.hasteActive = false; }
+    const dmg = calculateDamage(atkBase, effDef, isCrit);
+    enemy.hp -= dmg;
+    triggerScreenShake();
+
+    // Эффекты
+    if (sk.healPct) {
+      const heal = Math.round(getTotalMaxHp() * sk.healPct);
+      player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+      spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
+    }
+    if (sk.lifesteal) {
+      const heal = Math.round(dmg * sk.lifesteal);
+      player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+      spawnFloatingNumber(`+${heal} HP`, 'floating-heal');
+    }
+    if (sk.stun) enemy.stunnedTurns += sk.stun;
+    if (sk.freeze) enemy.frozenTurns += sk.freeze;
+    if (sk.defDebuff) enemy.defDebuff += sk.defDebuff;
+    if (sk.bleed) { enemy.bleedTurns = sk.bleed; enemy.bleedDmg = Math.round(getTotalAtk() * 0.3); }
+    if (sk.stealCol) {
+      const stolen = Math.round(enemy.col * 0.5);
+      player.col += stolen; player.totalColEarned += stolen;
+      spawnFloatingNumber(`+${stolen} Col`, 'floating-mp');
+    }
+
+    if (isCrit) { playSound('crit'); spawnFloatingNumber(`КРИТ! -${dmg}`, 'floating-crit'); addLog(`[${sk.name}] КРИТ ${dmg}!`, 'crit'); }
+    else { spawnFloatingNumber(`-${dmg}`, 'floating-dmg'); addLog(`[${sk.name}] ${dmg}.`, 'player-action'); }
+  }
+
+  updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();
   if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
 }
+
 function playerActionDefend() {
   if (!combatState.active) return;
   combatState.isDefending = true;
@@ -1365,8 +1650,28 @@ function enemyTurn() {
     addLog(`[ВРАГ] ${e.name} наносит ${dmg}!`, 'enemy-action');
     combatState.isDefending = false;
     if (combatState.defendTurns > 0) combatState.defendTurns--;
+
+    // Пассивка рыцаря: +3% HP каждый ход
+    if (player.classId === 'knight') {
+      const heal = Math.round(getTotalMaxHp() * 0.03);
+      player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+    }
+
     updateHUD();
-    if (player.hp <= 0) { player.hp = 0; updateHUD(); handlePlayerDeath(); }
+    if (player.hp <= 0) {
+      // Пассивка нежити: возрождение 1 раз за бой
+      if (player.classId === 'undead' && !combatState.undeadUsed) {
+        combatState.undeadUsed = true;
+        player.hp = Math.round(getTotalMaxHp() * 0.5);
+        playSound('legendary');
+        addLog(`💀 [НЕЖИТЬ] Проклятие активировано! Возрождение с ${player.hp} HP!`, 'legendary');
+        spawnFloatingNumber(`ВОЗРОЖДЕНИЕ`, 'floating-crit');
+        updateHUD();
+        endEnemyTurn();
+        return;
+      }
+      player.hp = 0; updateHUD(); handlePlayerDeath();
+    }
     else endEnemyTurn();
   }, 400);
 }
@@ -1376,7 +1681,9 @@ function handleVictory() {
   const e = combatState.enemy;
   playSound('levelup');
   addLog(`[ПОБЕДА] ${e.name} повержен!`, 'victory');
-  const expGain = e.exp, colGain = e.col;
+  const expMult = player.classId === 'thief' ? 1.15 : 1;
+  const colMult = player.classId === 'thief' ? 1.3 : 1;
+  const expGain = Math.round(e.exp * expMult), colGain = Math.round(e.col * colMult);
   player.exp += expGain; player.col += colGain; player.totalColEarned += colGain; player.killsCount++;
   if (e.tier === 'elite') { player.eliteKills++; addLog(`💜 [ЭЛИТА] +${expGain} EXP, +${colGain} Col`, 'elite'); }
   else if (e.tier === 'miniboss') { player.minibossKills++; addLog(`🔥 [МИНИ-БОСС] +${expGain} EXP, +${colGain} Col`, 'miniboss'); }
@@ -1396,10 +1703,23 @@ function handleVictory() {
   endCombat();
   updateHUD();
   saveGameAuto();
+
+  // Шанс на "засаду" — следующий враг сразу (25%)
+  if (!e.isBoss && Math.random() < 0.25) {
+    const z = ZONES_DB[player.currentZone];
+    if (z && z.zoneType && !z.isSafe) {
+      setTimeout(() => {
+        const nextEnemy = generateEnemy(z.floor, player.level);
+        addLog(`⚔️ [ЗАСАДА] Из тени появляется ещё один враг!`, 'danger');
+        startCombatWithEnemy(nextEnemy);
+      }, 800);
+    }
+  }
 }
 function endCombat() {
   combatState.active = false; combatState.enemy = null;
   combatState.isDefending = false; combatState.defendTurns = 0; combatState.hasteActive = false;
+  combatState.undeadUsed = false;
   document.getElementById('battle-stage').style.display = 'none';
   renderZone();
 }
@@ -1474,6 +1794,306 @@ document.getElementById('quest-header-toggle').addEventListener('click', () => {
   document.getElementById('quest-toggle-arrow').textContent = questExpanded ? '▼' : '▲';
   playSound('click');
 });
+
+/* ═══════ SKILLS SHOP UI ═══════ */
+function openSkillsModal() {
+  const cls = getClass();
+  document.getElementById('skills-class-name').textContent = cls.name;
+  const container = document.getElementById('skills-list-container');
+  container.innerHTML = '';
+
+  const skillIds = cls.skillIds || [];
+  skillIds.forEach(sid => {
+    const sk = SKILLS_DB[sid];
+    if (!sk) return;
+    const unlocked = isSkillUnlocked(sid);
+    const levelOk = player.level >= sk.reqLevel;
+    const colOk = player.col >= sk.reqCol;
+    const canBuy = !unlocked && levelOk && colOk;
+
+    const div = document.createElement('div');
+    div.className = `skill-shop-item ${unlocked ? 'unlocked' : 'locked'}`;
+    div.innerHTML = `
+      <div class="skill-shop-info">
+        <div class="skill-shop-name ${unlocked ? 'unlocked' : ''}">${sk.icon} ${sk.name}</div>
+        <div class="skill-shop-desc">${sk.desc} • MP: ${sk.mpCost}</div>
+        <div class="skill-shop-req ${levelOk ? 'met' : ''}">Уровень: ${sk.reqLevel} ${levelOk ? '✓' : '✗'}</div>
+        <div class="skill-shop-req ${colOk ? 'met' : ''}">Цена: ${sk.reqCol} Col ${colOk ? '✓' : '✗'}</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        ${unlocked ? '<div style="color:#4ade80; font-weight:bold; font-size:1.1rem;">✓ ИЗУЧЕНО</div>' : `<button class="sao-btn mini-btn ${canBuy ? 'btn-item' : ''}" ${canBuy ? '' : 'disabled'} onclick="learnSkill('${sid}')">Изучить</button>`}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  openModal('modal-skills');
+}
+function learnSkill(sid) {
+  const sk = SKILLS_DB[sid];
+  if (!sk) return;
+  if (isSkillUnlocked(sid)) { showToast('Уже изучен!'); return; }
+  if (player.level < sk.reqLevel) { showToast(`Нужен Lv. ${sk.reqLevel}`); return; }
+  if (player.col < sk.reqCol) { showToast(`Нужно ${sk.reqCol} Col`); return; }
+  player.col -= sk.reqCol;
+  player.unlockedSkills[sid] = true;
+  playSound('levelup');
+  addLog(`📚 [СКИЛЛ] Изучен: ${sk.name}!`, 'quest');
+  showToast(`Изучен скилл: ${sk.name}`);
+  openSkillsModal();
+  updateHUD();
+  saveGameAuto();
+}
+
+/* ═══════ DONATE ═══════ */
+function openDonateModal() {
+  const c = document.getElementById('donate-items-container');
+  c.innerHTML = '';
+  const donateItems = Object.values(ITEMS_DB).filter(i => i.donate);
+  donateItems.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'item-card donate-item';
+    const stats = item.atk ? `+${item.atk} ATK` : (item.def ? `+${item.def} DEF` : (item.healHp ? `+${item.healHp} HP` : (item.fullHeal ? '100% HP/MP' : '')));
+    card.innerHTML = `
+      <div class="item-main">
+        <div class="item-name-row">
+          <span class="item-name donate">${item.name}</span>
+          <span class="item-tag donate">DONATE</span>
+          <span class="item-tag">${item.type.toUpperCase()}</span>
+        </div>
+        <div class="item-desc">${item.desc}</div>
+        <div class="item-stat-badge donate">${stats} • ${item.price} Col</div>
+      </div>
+      <div class="item-actions">
+        <button class="sao-btn mini-btn btn-donate" onclick="buyDonateItem('${item.id}')">💎 Купить</button>
+      </div>
+    `;
+    c.appendChild(card);
+  });
+  playSound('donate');
+  openModal('modal-donate');
+}
+function buyDonateItem(id) {
+  const item = ITEMS_DB[id];
+  if (!item) return;
+  if (player.col < item.price) { showToast('Мало Col!'); return; }
+  player.col -= item.price;
+  addItemToInventory(id, 1);
+  playSound('donate');
+  addLog(`💎 [ДОНАТ] Куплено: ${item.name}!`, 'donate');
+  showToast(`💎 Куплено: ${item.name}`);
+  openDonateModal();
+  updateHUD();
+}
+
+/* ═══════ ADMIN ═══════ */
+function openAdminLogin() {
+  adminAuthenticated = false;
+  document.getElementById('admin-password').value = '';
+  document.getElementById('admin-error').textContent = '';
+  openModal('modal-admin-login');
+  setTimeout(() => document.getElementById('admin-password').focus(), 100);
+}
+function tryAdminLogin() {
+  const pwd = document.getElementById('admin-password').value;
+  if (pwd === '1111') {
+    adminAuthenticated = true;
+    playSound('admin');
+    closeModal('modal-admin-login');
+    openAdminPanel();
+  } else {
+    document.getElementById('admin-error').textContent = '❌ Неверный пароль';
+    playSound('defeat');
+  }
+}
+document.getElementById('admin-password').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') tryAdminLogin();
+});
+function openAdminPanel() {
+  if (!adminAuthenticated) { openAdminLogin(); return; }
+  const c = document.getElementById('admin-buttons');
+  c.innerHTML = '';
+  const actions = [
+    { label: '💰 +10 000 Col', fn: () => { player.col += 10000; player.totalColEarned += 10000; addLog('🔧 [АДМИН] +10 000 Col', 'admin'); updateHUD(); } },
+    { label: '⭐ +10 000 000 EXP', fn: () => { player.exp += 10000000; addLog('🔧 [АДМИН] +10M EXP', 'admin'); checkLevelUp(); updateHUD(); } },
+    { label: '⚔️ +100 ATK', fn: () => { player.baseAtk += 100; addLog('🔧 [АДМИН] +100 ATK', 'admin'); updateHUD(); } },
+    { label: '🛡️ +100 DEF', fn: () => { player.baseDef += 100; addLog('🔧 [АДМИН] +100 DEF', 'admin'); updateHUD(); } },
+    { label: '❤️ Полное HP', fn: () => { player.hp = getTotalMaxHp(); addLog('🔧 [АДМИН] Полное HP', 'admin'); updateHUD(); } },
+    { label: '💧 Полное MP', fn: () => { player.mp = getTotalMaxMp(); addLog('🔧 [АДМИН] Полное MP', 'admin'); updateHUD(); } },
+    { label: '🗼 Открыть все этажи', fn: () => { for (let i = 1; i <= 10; i++) player.unlockedFloors[i] = true; player.highestFloor = 10; addLog('🔧 [АДМИН] Все этажи открыты', 'admin'); updateHUD(); checkAchievements(); } },
+    { label: '📚 Все скиллы класса', fn: () => {
+      const cls = getClass();
+      (cls.skillIds || []).forEach(sid => player.unlockedSkills[sid] = true);
+      addLog('🔧 [АДМИН] Все скиллы разблокированы', 'admin');
+    } },
+    { label: '🏆 Все ачивки', fn: () => {
+      ACHIEVEMENTS.forEach(ach => {
+        if (!player.achievements[ach.id] || !player.achievements[ach.id].unlocked) {
+          player.achievements[ach.id] = { unlocked: true, progress: ach.target };
+          if (ach.reward) {
+            for (const [key, amount] of Object.entries(ach.reward)) {
+              if (key === 'colBonus') { player.col += amount; player.totalColEarned += amount; }
+              else if (key === 'hp') { player.achievementBonuses.hp += amount; }
+              else if (key === 'mp') { player.achievementBonuses.mp += amount; }
+              else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amount;
+            }
+          }
+        }
+      });
+      addLog('🔧 [АДМИН] Все ачивки получены', 'admin');
+      updateHUDAchBadge(); updateHUD();
+    } },
+    { label: '⚡ Убить врага в бою', fn: () => {
+      if (combatState.active && combatState.enemy) {
+        combatState.enemy.hp = 0;
+        addLog('🔧 [АДМИН] Мгновенное убийство', 'admin');
+        handleVictory();
+      } else showToast('Нет активного боя');
+    } },
+    { label: '💎 Всё донат-оружие', fn: () => {
+      ['don_w_guardian','don_w_void','don_w_cosmic','don_w_gods','don_w_admin','don_a_guardian','don_a_void','don_a_gods'].forEach(id => addItemToInventory(id, 1));
+      addLog('🔧 [АДМИН] Всё донат-оружие выдано', 'admin');
+    } },
+    { label: '🔓 Разблокировать Heathcliff диалог', fn: () => {
+      player.heathcliffDialogDone = false;
+      player.unlockedFloors[10] = true;
+      addLog('🔧 [АДМИН] Диалог с Heathcliff доступен', 'admin');
+    } },
+    { label: '💾 Сохранить игру', fn: () => saveGame(false) },
+    { label: '🚪 Выйти из админки', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } }
+  ];
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'sao-btn btn-admin';
+    b.style.padding = '10px';
+    b.textContent = a.label;
+    b.onclick = () => { playSound('admin'); a.fn(); };
+    c.appendChild(b);
+  });
+  openModal('modal-admin');
+}
+
+/* ═══════ HEATHCLIFF DIALOG (многофазный) ═══════ */
+const HEATHCLIFF_DIALOG = [
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«...Итак, ты добрался до меня, Кирито. Я ждал этого момента очень долго. Знаешь ли ты, кто я на самом деле?»`,
+    choices: [
+      { text: '«Ты — лидер гильдии Рыцарей Крови»', next: 1, effect: 'neutral' },
+      { text: '«Ты — финальный босс Айнкрада»', next: 1, effect: 'neutral' },
+      { text: '«Ты — Akihiko Kayaba, создатель SAO»', next: 2, effect: 'smart' }
+    ]
+  },
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«Хм... Ты не так прост, как я думал. Да, я действительно стою за всем этим. Но зачем, по-твоему, я создал этот мир?»`,
+    choices: [
+      { text: '«Чтобы убивать людей ради развлечения»', next: 3, effect: 'aggressive' },
+      { text: '«Чтобы воплотить свою мечту — замок в небе»', next: 3, effect: 'wise' },
+      { text: '«Чтобы найти достойного противника — настоящего мечника»', next: 3, effect: 'smart' }
+    ]
+  },
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«...Ты меня удивил. Мало кто догадывается об этом так быстро. Но знай: настоящий поединок ещё впереди.»`,
+    choices: [
+      { text: '«Я готов. Дай мне сразиться с тобой!»', next: 4, effect: 'aggressive' },
+      { text: '«Отпусти всех — и я не буду сражаться»', next: 4, effect: 'wise' }
+    ]
+  },
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«Каждый из нас стремился к чему-то своему. Я — к свободе, ты — к победе. Но в этом мире лишь один сможет вернуться домой. И это будем я — либо ты.»`,
+    choices: [
+      { text: '«Тогда доставай меч. Один из нас падёт»', next: 5, effect: 'aggressive' },
+      { text: '«Есть третий путь. Мы можем объединиться»', next: 5, effect: 'wise' }
+    ]
+  },
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«Ты действительно необычный игрок, Кирито. Даже сейчас, стоя на грани смерти, ты не сдаёшься. Это достойно уважения.»`,
+    choices: [
+      { text: '«Я не сдамся. Никогда.»', next: 6, effect: 'aggressive' },
+      { text: '«Покажи мне свою истинную силу.»', next: 6, effect: 'neutral' }
+    ]
+  },
+  {
+    name: 'Heathcliff the Paladin',
+    text: `«Хорошо. Тогда — последний бой. Используй всё, что у тебя есть. Покажи мне, на что способен настоящий Проходчик!»`,
+    choices: [
+      { text: '⚔️ «НАЧАТЬ БОЙ!»', next: -1, effect: 'start_battle' },
+      { text: '💬 «Ещё немного поговорим»', next: 0, effect: 'restart' }
+    ]
+  }
+];
+
+function startHeathcliffDialog() {
+  player.heathcliffDialogPhase = 0;
+  showDialogPhase(0);
+  openModal('modal-dialogue');
+  playSound('boss_talk');
+}
+function showDialogPhase(phaseIdx) {
+  const phase = HEATHCLIFF_DIALOG[phaseIdx];
+  if (!phase) { closeModal('modal-dialogue'); return; }
+  document.getElementById('npc-name-title').textContent = phase.name;
+  document.getElementById('npc-speech-text').innerHTML = `<div style="font-style:italic; color:#ff6b9d;">💬 ${phase.text}</div>`;
+  addLog(`💬 [Heathcliff]: ${phase.text.substring(0, 80)}...`, 'boss-talk');
+  const choicesDiv = document.getElementById('npc-choices');
+  choicesDiv.innerHTML = '';
+  phase.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'sao-btn btn-skill';
+    btn.style.padding = '10px';
+    btn.style.textAlign = 'left';
+    btn.style.justifyContent = 'flex-start';
+    btn.innerHTML = choice.text;
+    btn.onclick = () => {
+      playSound('click');
+      if (choice.effect === 'start_battle') {
+        player.heathcliffDialogDone = true;
+        closeModal('modal-dialogue');
+        addLog(`💬 [Heathcliff]: «Тогда — начнём!»`, 'boss-talk');
+        // Финальный босс усилен +30% HP и +20% ATK
+        const boss = generateBoss(10);
+        boss.hp = Math.round(boss.hp * 1.3);
+        boss.maxHp = boss.hp;
+        boss.atk = Math.round(boss.atk * 1.2);
+        boss.name = 'Heathcliff the Paladin (Истинная форма)';
+        startBossFightCustom(boss);
+      } else if (choice.effect === 'restart') {
+        showDialogPhase(0);
+      } else {
+        showDialogPhase(choice.next);
+      }
+    };
+    choicesDiv.appendChild(btn);
+  });
+  // Если это финальная фаза — скрыть кнопку "Закрыть" (только выбор)
+  document.getElementById('npc-close-btn').style.display = (phase.choices.length > 0) ? 'none' : 'inline-block';
+}
+function startBossFightCustom(boss) {
+  if (!boss) return;
+  combatState.active = true;
+  combatState.isDefending = false;
+  combatState.defendTurns = 0;
+  combatState.hasteActive = false;
+  combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0, atkDebuffPct: 0, atkDebuffTurns: 0 };
+  const e = combatState.enemy;
+  document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
+  document.getElementById('enemy-avatar').className = 'enemy-avatar miniboss';
+  document.getElementById('enemy-name').className = 'enemy-name miniboss';
+  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill miniboss';
+  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag miniboss">👑 ФИНАЛЬНЫЙ БОСС</span>`;
+  document.getElementById('enemy-mods-row').innerHTML = '';
+  document.getElementById('enemy-name').textContent = e.name;
+  document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
+  document.getElementById('enemy-avatar').innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
+  updateEnemyHpBar(); updateDebuffDisplay();
+  document.getElementById('battle-stage').style.display = 'flex';
+  playSound('miniboss');
+  addLog(`👑 [ФИНАЛ] ${e.name}! HP ${e.maxHp}`, 'miniboss');
+  renderCombatButtons(); updateHUD();
+}
 
 /* ═══════ ACHIEVEMENTS UI ═══════ */
 function openAchievements() { if (!player) return; renderAchievementsModal(); openModal('modal-achievements'); }
@@ -1561,7 +2181,7 @@ function renderInventoryModal() {
 }
 function createItemCard(item, count, isEq, slotType) {
   const d = document.createElement('div');
-  d.className = `item-card ${isEq ? 'equipped' : ''}`;
+  d.className = `item-card ${isEq ? 'equipped' : ''} ${item.donate ? 'donate-item' : ''}`;
   let stats = '';
   if (item.atk) stats += `+${item.atk} ATK `;
   if (item.def) stats += `+${item.def} DEF `;
@@ -1573,7 +2193,7 @@ function createItemCard(item, count, isEq, slotType) {
   if (item.type === 'armor') tag = 'Броня';
   if (item.type === 'consumable') tag = 'Зелье';
   if (item.type === 'valuable') tag = 'Материал';
-  d.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name ${item.legendary ? 'legendary' : ''}">${item.name}</span><span class="item-tag">${tag}</span>${count > 1 ? `<span style="font-size:0.72rem; color:#94a3b8;">x${count}</span>` : ''}</div><div class="item-desc">${item.desc}</div>${stats ? `<div class="item-stat-badge">${stats}</div>` : ''}</div><div class="item-actions"></div>`;
+  d.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name ${item.legendary ? 'legendary' : ''} ${item.donate ? 'donate' : ''}">${item.name}</span><span class="item-tag ${item.donate ? 'donate' : ''}">${tag}</span>${count > 1 ? `<span style="font-size:0.78rem; color:#94a3b8;">x${count}</span>` : ''}</div><div class="item-desc">${item.desc}</div>${stats ? `<div class="item-stat-badge ${item.donate ? 'donate' : ''}">${stats}</div>` : ''}</div><div class="item-actions"></div>`;
   const actions = d.querySelector('.item-actions');
   if (isEq) { const b = document.createElement('button'); b.className = 'sao-btn mini-btn'; b.textContent = 'Снять'; b.onclick = () => unequipSlot(slotType); actions.appendChild(b); }
   else if (item.type === 'weapon' || item.type === 'armor') { const b = document.createElement('button'); b.className = 'sao-btn mini-btn btn-skill'; b.textContent = 'Надеть'; b.onclick = () => equipItem(item.id); actions.appendChild(b); }
@@ -1637,7 +2257,7 @@ function renderShopItems() {
       const price = Math.max(1, Math.floor(item.price * 0.5));
       const card = document.createElement('div');
       card.className = 'item-card';
-      card.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.75rem; color:#94a3b8;">x${inv.count}</span></div><div class="item-desc">Скупка: ${price} Col.</div></div><div class="item-actions"><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price})">Продать (+${price})</button></div>`;
+      card.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.8rem; color:#94a3b8;">x${inv.count}</span></div><div class="item-desc">Скупка: ${price} Col.</div></div><div class="item-actions"><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price})">Продать (+${price})</button></div>`;
       c.appendChild(card);
     });
   }
@@ -1649,8 +2269,10 @@ function sellShopItem(id, price) { const item = ITEMS_DB[id]; if (!item) return;
 function talkNpc(id) {
   const t = document.getElementById('npc-name-title');
   const s = document.getElementById('npc-speech-text');
-  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«Враги не появляются сами — жми кнопку <b>Найти врага</b> в поле или подземелье! Так ты сам решаешь, когда вступать в бой. Собирай ачивки — они дают постоянные бонусы!»`; }
-  else { t.textContent = 'Кляйн'; s.innerHTML = `«Слушай, кнопка <b>Найти врага</b> — твой выбор момента боя. На высоких этажах выше шанс элиты (до 25%) и мини-босса (до 15%)!»`; }
+  document.getElementById('npc-choices').innerHTML = '';
+  document.getElementById('npc-close-btn').style.display = 'inline-block';
+  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«Жми <b>Найти врага</b> в поле или подземелье! Скиллы теперь изучаются за Col — начни с дешёвых. На 10 этаже Heathcliff ждёт тебя...»`; }
+  else { t.textContent = 'Кляйн'; s.innerHTML = `«Слушай, теперь у нас 10 классов! Пиромант, рыцарь, клирик — попробуй разные! Скиллы покупаются за Col, изучай по мере прокачки.»`; }
   playSound('click'); openModal('modal-dialogue');
 }
 
@@ -1659,6 +2281,8 @@ function renderStatusModal() {
   const c = document.getElementById('status-modal-content');
   const cls = getClass();
   const ab = getAchBonus();
+  const unlockedCount = Object.keys(player.unlockedSkills || {}).filter(k => player.unlockedSkills[k]).length;
+  const totalSkills = (cls.skillIds || []).length;
   let fp = '';
   for (let n = 1; n <= 10; n++) {
     const bd = player.bossesDefeated[BOSSES_DB[n]?.id];
@@ -1668,8 +2292,8 @@ function renderStatusModal() {
     fp += `<span style="color:${col}; margin-right:5px; font-weight:bold;">${st} ${n}</span>`;
   }
   c.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(110,231,255,0.2); padding-bottom:8px;">
-      <div><div style="font-size:1.2rem; font-weight:bold; color:#fff;">${player.name}</div><div style="font-size:0.82rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • Этаж ${getCurrentFloor()}</div></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(110,231,255,0.2); padding-bottom:10px;">
+      <div><div style="font-size:1.35rem; font-weight:bold; color:#fff;">${player.name}</div><div style="font-size:0.9rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • Этаж ${getCurrentFloor()}</div></div>
       <div style="display:flex; gap:8px;"><div class="player-level-badge">Lv. ${player.level}</div><div class="ach-badge">🏆 ${getTotalAchievementsUnlocked()}</div></div>
     </div>
     <div class="stats-grid">
@@ -1680,16 +2304,17 @@ function renderStatusModal() {
       <div class="stat-box"><span class="stat-label">КРИТ</span><span class="stat-val crit">${getTotalCrit().toFixed(1)}%</span></div>
       <div class="stat-box"><span class="stat-label">COL</span><span class="stat-val" style="color:#f59e0b;">${player.col}</span></div>
     </div>
-    <div style="font-size:0.82rem; color:var(--cyan-neon); margin-top:6px;">ЭТАЖИ</div>
-    <div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:3px; font-size:0.9rem;">${fp}</div>
-    <div style="font-size:0.82rem; color:var(--cyan-neon); margin-top:6px;">СТАТИСТИКА</div>
-    <div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:3px; font-size:0.8rem; line-height:1.6; color:#cbd5e1;">
+    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">ЭТАЖИ</div>
+    <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:1rem;">${fp}</div>
+    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">СКИЛЛЫ КЛАССА</div>
+    <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:0.88rem; color:#cbd5e1;">Изучено: <b>${unlockedCount} / ${totalSkills}</b></div>
+    <div style="font-size:0.9rem; color:var(--cyan-neon); margin-top:8px;">СТАТИСТИКА</div>
+    <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:0.88rem; line-height:1.7; color:#cbd5e1;">
       <div>• Всего убито: <b>${player.killsCount}</b></div>
       <div>• 💜 Элит: <b>${player.eliteKills}</b> • 🔥 Мини-боссов: <b>${player.minibossKills}</b> • 👑 Боссов: <b>${player.bossKills}</b></div>
       <div>• Заработано: <b>${player.totalColEarned} Col</b></div>
-      <div>• Ачивок: <b>${getTotalAchievementsUnlocked()} / ${ACHIEVEMENTS.length}</b> (дин.: ${(player.dynamicAchievements||[]).length})</div>
     </div>
-    <button class="sao-btn btn-achievement" style="padding:10px; font-size:0.92rem;" onclick="closeModal('modal-status'); openAchievements();">🏆 АЧИВКИ</button>
+    <button class="sao-btn btn-skill" style="padding:12px; font-size:1rem;" onclick="closeModal('modal-status'); openSkillsModal();">📚 ИЗУЧИТЬ СКИЛЛЫ</button>
   `;
 }
 
@@ -1709,7 +2334,7 @@ function confirmPermadeath() {
 }
 
 /* ═══════ SAVE/LOAD ═══════ */
-const SAVE_KEY = 'sao_aincrad_rpg_save_v6';
+const SAVE_KEY = 'sao_aincrad_rpg_save_v7';
 function saveGame(isAuto = false) {
   if (!player) return;
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile })); if (!isAuto) { playSound('click'); showToast('Сохранено!'); addLog(`[СИСТЕМА] Прогресс сохранён.`, 'system'); } } catch (e) { showToast('Ошибка!'); }
@@ -1727,10 +2352,8 @@ function loadGame() {
     if (!player.achievementBonuses) player.achievementBonuses = { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 };
     if (!player.unlockedFloors) player.unlockedFloors = { 1: true };
     if (!player.bossesDefeated) player.bossesDefeated = {};
-    if (player.eliteKills === undefined) player.eliteKills = 0;
-    if (player.minibossKills === undefined) player.minibossKills = 0;
-    if (player.bossKills === undefined) player.bossKills = 0;
-    if (player.totalColEarned === undefined) player.totalColEarned = player.col;
+    if (!player.unlockedSkills) player.unlockedSkills = { slash: true };
+    if (player.heathcliffDialogDone === undefined) player.heathcliffDialogDone = false;
     if (combatState.active) endCombat();
     playSound('heal'); addLog(`[СИСТЕМА] Загружено. ${player.name}!`, 'system');
     renderZone(); updateHUD();
@@ -1744,6 +2367,9 @@ function closeModal(id) { playSound('click'); document.getElementById(id).classL
 document.getElementById('btn-open-inventory').addEventListener('click', () => { renderInventoryModal(); openModal('modal-inventory'); });
 document.getElementById('btn-open-status').addEventListener('click', () => { renderStatusModal(); openModal('modal-status'); });
 document.getElementById('btn-open-achievements').addEventListener('click', openAchievements);
+document.getElementById('btn-open-skills').addEventListener('click', openSkillsModal);
+document.getElementById('btn-open-donate').addEventListener('click', openDonateModal);
+document.getElementById('btn-open-admin').addEventListener('click', openAdminLogin);
 document.getElementById('btn-save-game').addEventListener('click', () => saveGame(false));
 document.getElementById('btn-load-game').addEventListener('click', () => loadGame());
 document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); }); });
@@ -1758,7 +2384,7 @@ function renderClassOptions() {
   Object.values(CLASSES_DB).forEach(cls => {
     const card = document.createElement('div');
     card.className = `class-card ${cls.id === selectedClass ? 'selected' : ''}`;
-    card.innerHTML = `<div class="class-icon">${cls.icon}</div><div class="class-name">${cls.name}</div><div class="class-desc">${cls.desc}</div><div class="class-stats"><span>HP ${cls.hp}</span><span>ATK ${cls.atk}</span><span>DEF ${cls.def}</span><span>CRIT ${cls.crit}%</span></div><div class="class-abilities-preview"><b>✦ ${cls.activeName}</b><br>${cls.activeDesc}</div>`;
+    card.innerHTML = `<div class="class-icon">${cls.icon}</div><div class="class-name">${cls.name}</div><div class="class-desc">${cls.desc}</div><div class="class-stats"><span>HP ${cls.hp}</span><span>ATK ${cls.atk}</span><span>DEF ${cls.def}</span><span>CRIT ${cls.crit}%</span></div>`;
     card.onclick = () => { selectedClass = cls.id; playSound('click'); renderClassOptions(); };
     g.appendChild(card);
   });
@@ -1795,8 +2421,8 @@ document.getElementById('creation-start-btn').addEventListener('click', () => {
   const cls = CLASSES_DB[selectedClass];
   addLog(`[СИСТЕМА] Добро пожаловать, ${player.name}!`, 'system');
   addLog(`[КЛАСС] ${cls.name}. Способность: «${cls.activeName}».`, 'system');
-  addLog(`[ПОИСК ВРАГОВ] Враги появляются только при нажатии кнопки «Найти врага» в поле или подземелье!`, 'quest');
-  addLog(`[АЧИВКИ] Система ачивок активна!`, 'achievement');
+  addLog(`[СКИЛЛЫ] Начните с базовой атаки. Изучайте скиллы за Col через кнопку «📚 Скиллы»!`, 'quest');
+  addLog(`[ИНФО] Кнопка «Найти врага» спавнит монстров. На 10 этаже ждёт Heathcliff с большим диалогом!`, 'legendary');
   playSound('levelup'); showToast(`${player.name} создан!`);
   renderZone(); updateHUD(); saveGameAuto();
 });
