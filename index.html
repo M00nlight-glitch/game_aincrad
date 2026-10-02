@@ -1,0 +1,3126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sword Art Online: Aincrad Chronicles | Text RPG</title>
+  <style>
+    /* ══════════════════════════════════════════════════════════════
+       SAO / AINCRAD THEME & RESET STYLES
+       ══════════════════════════════════════════════════════════════ */
+    :root {
+      --bg-dark: #0a0e1a;
+      --bg-panel: rgba(14, 23, 42, 0.88);
+      --bg-card: rgba(20, 32, 58, 0.75);
+      --bg-card-hover: rgba(30, 48, 85, 0.9);
+      --cyan-neon: #6ee7ff;
+      --cyan-glow: rgba(110, 231, 255, 0.4);
+      --cyan-dim: #1e3a5f;
+      --cyan-bright: #00f0ff;
+      --gold-crit: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.6);
+      --hp-green: #22c55e;
+      --hp-yellow: #eab308;
+      --hp-red: #ef4444;
+      --mp-blue: #3b82f6;
+      --exp-purple: #a855f7;
+      --col-gold: #f59e0b;
+      --text-main: #e2e8f0;
+      --text-dim: #94a3b8;
+      --border-cyan: rgba(110, 231, 255, 0.35);
+      --border-cyan-active: #6ee7ff;
+      --font-mono: 'Consolas', 'Courier New', 'Fira Code', 'Segoe UI Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: var(--font-mono);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(110, 231, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        linear-gradient(rgba(10, 14, 26, 0.95), rgba(10, 14, 26, 0.95)),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.015) 2px, rgba(0, 240, 255, 0.015) 4px);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 14, 26, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--cyan-dim);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan-neon);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       MAIN CONTAINER & LAYOUT
+       ══════════════════════════════════════════════════════════════ */
+    #app-container {
+      width: 100%;
+      max-width: 1080px;
+      min-height: calc(100vh - 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    /* SAO Hexagonal & Angular Panels */
+    .sao-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.08), inset 0 0 15px rgba(0, 240, 255, 0.03);
+      backdrop-filter: blur(8px);
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .sao-panel::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 8px;
+      height: 8px;
+      border-top: 2px solid var(--cyan-neon);
+      border-left: 2px solid var(--cyan-neon);
+    }
+    .sao-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-bottom: 2px solid var(--cyan-neon);
+      border-right: 2px solid var(--cyan-neon);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       TOP HUD (PLAYER STATUS BAR)
+       ══════════════════════════════════════════════════════════════ */
+    .hud-header {
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .player-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .player-cursor {
+      width: 14px;
+      height: 14px;
+      background: #22c55e;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseCursor 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseCursor {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 6px #22c55e); }
+    }
+
+    .player-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-shadow: 0 0 10px var(--cyan-neon);
+    }
+
+    .player-level-badge {
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.2), rgba(30, 58, 138, 0.4));
+      border: 1px solid var(--cyan-neon);
+      color: var(--cyan-bright);
+      padding: 2px 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+
+    .hud-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 240px;
+      flex: 1;
+      max-width: 360px;
+    }
+
+    .bar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .bar-label {
+      width: 28px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .bar-label.hp { color: #4ade80; }
+    .bar-label.mp { color: #60a5fa; }
+    .bar-label.exp { color: #c084fc; }
+
+    .bar-container {
+      flex: 1;
+      height: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 100%;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .bar-fill.hp-fill {
+      background: linear-gradient(90deg, #15803d, #22c55e);
+    }
+    .bar-fill.hp-yellow {
+      background: linear-gradient(90deg, #ca8a04, #eab308);
+    }
+    .bar-fill.hp-red {
+      background: linear-gradient(90deg, #991b1b, #ef4444);
+    }
+    .bar-fill.mp-fill {
+      background: linear-gradient(90deg, #1d4ed8, #38bdf8);
+    }
+    .bar-fill.exp-fill {
+      background: linear-gradient(90deg, #6b21a8, #a855f7);
+    }
+
+    .bar-text {
+      font-size: 0.72rem;
+      color: #e2e8f0;
+      min-width: 72px;
+      text-align: right;
+      letter-spacing: 0.5px;
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .currency-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-weight: 700;
+      color: var(--col-gold);
+      text-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+    }
+
+    .audio-btn {
+      background: transparent;
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan-neon);
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s ease;
+    }
+    .audio-btn:hover {
+      background: rgba(110, 231, 255, 0.2);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       MIDDLE MAIN CONTENT (SPLIT: LOG & SCENE / STATS & QUEST)
+       ══════════════════════════════════════════════════════════════ */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 12px;
+      flex: 1;
+    }
+
+    @media (max-width: 840px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Side: Zone / Battle Scene + Combat/Story Feed */
+    .scene-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .zone-card {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .zone-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(110, 231, 255, 0.2);
+      padding-bottom: 8px;
+    }
+
+    .zone-floor-tag {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: var(--cyan-neon);
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .zone-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 10px rgba(110, 231, 255, 0.4);
+    }
+
+    .zone-status-badge {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .badge-safe {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid #22c55e;
+      color: #4ade80;
+    }
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #f87171;
+    }
+    .badge-boss {
+      background: rgba(217, 70, 239, 0.2);
+      border: 1px solid #d946ef;
+      color: #f0abfc;
+      animation: bossPulse 1.5s infinite;
+    }
+
+    @keyframes bossPulse {
+      0%, 100% { box-shadow: 0 0 5px rgba(217, 70, 239, 0.3); }
+      50% { box-shadow: 0 0 15px rgba(217, 70, 239, 0.8); }
+    }
+
+    .zone-description {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #cbd5e1;
+    }
+
+    /* Combat / Visual Stage */
+    .battle-stage {
+      background: rgba(6, 11, 25, 0.85);
+      border: 1px solid rgba(110, 231, 255, 0.25);
+      border-radius: 4px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .battle-stage.shake {
+      animation: screenShake 0.3s ease-in-out;
+    }
+
+    @keyframes screenShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) translateY(4px); }
+      40% { transform: translateX(8px) translateY(-4px); }
+      60% { transform: translateX(-5px) translateY(2px); }
+      80% { transform: translateX(5px) translateY(-2px); }
+    }
+
+    .enemy-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .enemy-avatar {
+      width: 70px;
+      height: 70px;
+      background: rgba(10, 14, 26, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.6);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .enemy-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .enemy-name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .enemy-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f87171;
+      letter-spacing: 1px;
+    }
+
+    .enemy-stats-preview {
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+
+    .enemy-hp-bar-bg {
+      height: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .enemy-hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #991b1b, #ef4444);
+      transition: width 0.25s ease;
+    }
+
+    .enemy-hp-text {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      text-align: center;
+      font-size: 0.68rem;
+      line-height: 12px;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 0 3px #000;
+    }
+
+    /* Floating combat text numbers */
+    .floating-dmg-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-text {
+      position: absolute;
+      font-weight: 900;
+      font-size: 1.3rem;
+      animation: floatUpFade 1.2s forwards cubic-bezier(0.1, 0.8, 0.3, 1);
+      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      z-index: 20;
+    }
+
+    .floating-dmg { color: #f87171; }
+    .floating-crit { 
+      color: var(--gold-crit); 
+      font-size: 1.7rem; 
+      text-shadow: 0 0 12px var(--gold-crit); 
+    }
+    .floating-heal { color: #4ade80; text-shadow: 0 0 10px #4ade80; }
+    .floating-mp { color: #60a5fa; }
+
+    @keyframes floatUpFade {
+      0% { opacity: 0; transform: translateY(10px) scale(0.7); }
+      20% { opacity: 1; transform: translateY(-5px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-45px) scale(0.9); }
+    }
+
+    /* Game Log & Text Console */
+    .log-panel {
+      flex: 1;
+      min-height: 200px;
+      max-height: 260px;
+      background: rgba(8, 13, 25, 0.9);
+      border: 1px solid rgba(110, 231, 255, 0.2);
+      border-radius: 4px;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+
+    .log-entry {
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      animation: fadeInLog 0.2s ease-out;
+      word-break: break-word;
+    }
+
+    @keyframes fadeInLog {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .log-entry.crit {
+      color: var(--gold-crit);
+      font-weight: bold;
+      text-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
+    }
+    .log-entry.player-action { color: #93c5fd; }
+    .log-entry.enemy-action { color: #fca5a5; }
+    .log-entry.heal { color: #86efac; }
+    .log-entry.system { color: var(--cyan-neon); }
+    .log-entry.victory { color: #fde047; font-weight: bold; }
+    .log-entry.quest { color: #c084fc; font-weight: bold; }
+    .log-entry.danger { color: #f87171; font-weight: bold; }
+
+    /* Right Side: Quest Tracker & Fast Stats Column */
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .quest-card {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quest-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .quest-title-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: bold;
+      color: var(--cyan-neon);
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+    }
+
+    .quest-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quest-item {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(110, 231, 255, 0.15);
+      border-radius: 3px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .quest-name {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .quest-desc {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .quest-progress-bar {
+      height: 6px;
+      background: rgba(10, 14, 26, 0.8);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+
+    .quest-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6, #c084fc);
+      transition: width 0.3s ease;
+    }
+
+    .quest-rewards {
+      font-size: 0.73rem;
+      color: var(--col-gold);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    /* Fast Stats Card */
+    .stats-card {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-box {
+      background: rgba(10, 14, 26, 0.6);
+      border: 1px solid rgba(110, 231, 255, 0.12);
+      border-radius: 3px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+
+    .stat-val {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .stat-val.atk { color: #fca5a5; }
+    .stat-val.def { color: #93c5fd; }
+    .stat-val.crit { color: var(--gold-crit); }
+    .stat-val.equip { color: var(--cyan-neon); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ══════════════════════════════════════════════════════════════
+       BOTTOM ACTIONS & DYNAMIC BUTTONS
+       ══════════════════════════════════════════════════════════════ */
+    .actions-panel {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .actions-header {
+      font-size: 0.8rem;
+      color: var(--cyan-neon);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    /* SAO Futuristic Neon Buttons */
+    .sao-btn {
+      background: linear-gradient(135deg, rgba(14, 28, 54, 0.85) 0%, rgba(10, 18, 36, 0.95) 100%);
+      border: 1px solid var(--border-cyan);
+      color: #ffffff;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      transition: all 0.15s ease-in-out;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .sao-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(110, 231, 255, 0.15), transparent);
+      transition: 0.4s;
+    }
+
+    .sao-btn:hover:not(:disabled) {
+      border-color: var(--cyan-bright);
+      background: linear-gradient(135deg, rgba(20, 42, 82, 0.9) 0%, rgba(14, 30, 60, 1) 100%);
+      box-shadow: 0 0 14px var(--cyan-glow), inset 0 0 8px rgba(110, 231, 255, 0.2);
+      transform: translateY(-2px);
+      color: var(--cyan-bright);
+    }
+
+    .sao-btn:hover:not(:disabled)::before {
+      left: 100%;
+    }
+
+    .sao-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .sao-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    /* Action Types */
+    .sao-btn.btn-attack {
+      border-color: rgba(239, 68, 68, 0.6);
+      background: linear-gradient(135deg, rgba(60, 15, 25, 0.85) 0%, rgba(30, 10, 15, 0.95) 100%);
+    }
+    .sao-btn.btn-attack:hover:not(:disabled) {
+      border-color: #ef4444;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+
+    .sao-btn.btn-skill {
+      border-color: rgba(168, 85, 247, 0.6);
+      background: linear-gradient(135deg, rgba(40, 20, 65, 0.85) 0%, rgba(20, 10, 35, 0.95) 100%);
+    }
+    .sao-btn.btn-skill:hover:not(:disabled) {
+      border-color: #c084fc;
+      box-shadow: 0 0 14px rgba(168, 85, 247, 0.5);
+      color: #e9d5ff;
+    }
+
+    .sao-btn.btn-defend {
+      border-color: rgba(59, 130, 246, 0.6);
+      background: linear-gradient(135deg, rgba(15, 35, 70, 0.85) 0%, rgba(10, 20, 45, 0.95) 100%);
+    }
+    .sao-btn.btn-defend:hover:not(:disabled) {
+      border-color: #60a5fa;
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+      color: #93c5fd;
+    }
+
+    .sao-btn.btn-item {
+      border-color: rgba(34, 197, 94, 0.6);
+      background: linear-gradient(135deg, rgba(15, 45, 25, 0.85) 0%, rgba(10, 30, 15, 0.95) 100%);
+    }
+    .sao-btn.btn-item:hover:not(:disabled) {
+      border-color: #4ade80;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.5);
+      color: #86efac;
+    }
+
+    .sao-btn.btn-boss {
+      border-color: rgba(217, 70, 239, 0.8);
+      background: linear-gradient(135deg, rgba(60, 15, 60, 0.9) 0%, rgba(30, 8, 30, 1) 100%);
+      animation: bossBtnPulse 2s infinite ease-in-out;
+    }
+    @keyframes bossBtnPulse {
+      0%, 100% { box-shadow: 0 0 6px rgba(217, 70, 239, 0.4); }
+      50% { box-shadow: 0 0 16px rgba(217, 70, 239, 0.8); }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       FOOTER MENU (INVENTORY, SAVE, LOAD, STATUS)
+       ══════════════════════════════════════════════════════════════ */
+    .footer-bar {
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-btn {
+      padding: 6px 14px;
+      font-size: 0.82rem;
+    }
+
+    .version-tag {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      opacity: 0.7;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       MODALS & DIALOGS (INVENTORY, SHOP, STATUS, SKILLS, DEATH)
+       ══════════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(4, 7, 15, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: var(--bg-panel);
+      border: 1px solid var(--cyan-neon);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+      border-radius: 4px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal-window {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(110, 231, 255, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #94a3b8;
+      width: 28px;
+      height: 28px;
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.15s;
+    }
+    .modal-close-btn:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Inventory Items / Shop Items Grid */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .item-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(110, 231, 255, 0.15);
+      border-radius: 3px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: border-color 0.15s ease;
+    }
+
+    .item-card:hover {
+      border-color: var(--cyan-neon);
+      background: rgba(20, 32, 58, 0.9);
+    }
+
+    .item-card.equipped {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .item-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .item-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .item-name.legendary {
+      color: #f59e0b;
+      text-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+    }
+
+    .item-tag {
+      font-size: 0.68rem;
+      padding: 1px 5px;
+      border-radius: 2px;
+      background: rgba(110, 231, 255, 0.15);
+      color: var(--cyan-neon);
+    }
+
+    .item-desc {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
+
+    .item-stat-badge {
+      font-size: 0.74rem;
+      color: #4ade80;
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+    }
+
+    /* Shop Tabs */
+    .shop-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(110, 231, 255, 0.2);
+      padding-bottom: 8px;
+    }
+
+    .shop-tab {
+      padding: 6px 16px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 2px;
+      transition: all 0.15s;
+    }
+
+    .shop-tab.active {
+      background: rgba(110, 231, 255, 0.15);
+      border-color: var(--cyan-neon);
+      color: var(--cyan-bright);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       DEATH SCREEN OVERLAY (YOU ARE DEAD - SAO STYLE)
+       ══════════════════════════════════════════════════════════════ */
+    .death-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(12, 0, 4, 0.96);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .death-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .death-banner {
+      border: 2px solid #ef4444;
+      background: rgba(185, 28, 28, 0.2);
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+      padding: 30px 40px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 500px;
+      width: 100%;
+      animation: deathGlitch 0.6s infinite alternate;
+    }
+
+    @keyframes deathGlitch {
+      0% { transform: scale(1); filter: drop-shadow(0 0 10px #ef4444); }
+      100% { transform: scale(1.02); filter: drop-shadow(0 0 25px #ef4444); }
+    }
+
+    .death-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #ff4d4d;
+      letter-spacing: 4px;
+      text-shadow: 0 0 15px #ef4444;
+    }
+
+    .death-subtitle {
+      font-size: 0.95rem;
+      color: #fca5a5;
+      line-height: 1.5;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(14, 23, 42, 0.95);
+      border: 1px solid var(--cyan-neon);
+      box-shadow: 0 0 20px rgba(110, 231, 255, 0.3);
+      padding: 10px 18px;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: bold;
+      z-index: 150;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      pointer-events: none;
+    }
+    .toast-box.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      .hud-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hud-bars {
+        max-width: 100%;
+      }
+      .actions-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .footer-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .footer-buttons {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         TOP HUD: PLAYER VITALS & CURRENCY
+         ══════════════════════════════════════════════════════════════ -->
+    <header class="sao-panel hud-header">
+      <div class="hud-left">
+        <div class="player-tag">
+          <div class="player-cursor" title="Статус: Жив (Зелёный маркер игрока)"></div>
+          <span class="player-name" id="hud-name">KIRITO</span>
+          <span class="player-level-badge" id="hud-level">Lv. 1</span>
+        </div>
+      </div>
+
+      <div class="hud-bars">
+        <!-- HP BAR -->
+        <div class="bar-group">
+          <span class="bar-label hp">HP</span>
+          <div class="bar-container">
+            <div class="bar-fill hp-fill" id="hud-hp-bar" style="width: 100%;"></div>
+          </div>
+          <span class="bar-text" id="hud-hp-text">140 / 140</span>
+        </div>
+
+        <!-- MP BAR -->
+        <div class="bar-group">
+          <span class="bar-label mp">MP</span>
+          <div class="bar-container">
+            <div class="bar-fill mp-fill" id="hud-mp-bar" style="width: 100%;"></div>
+          </div>
+          <span class="bar-text" id="hud-mp-text">60 / 60</span>
+        </div>
+
+        <!-- EXP BAR -->
+        <div class="bar-group">
+          <span class="bar-label exp">EXP</span>
+          <div class="bar-container">
+            <div class="bar-fill exp-fill" id="hud-exp-bar" style="width: 0%;"></div>
+          </div>
+          <span class="bar-text" id="hud-exp-text">0 / 100</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="currency-box" title="Валюта Айнкрада">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-6 0v5a3.5 3.5 0 0 0 6 0"/></svg>
+          <span id="hud-col">50 Col</span>
+        </div>
+        <button class="audio-btn" id="audio-toggle-btn" title="Звуковые эффекты (Вкл/Выкл)">
+          <svg id="audio-icon-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <svg id="audio-icon-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         MAIN CONTENT GRID: ZONE / SCENE & QUESTS / STATS
+         ══════════════════════════════════════════════════════════════ -->
+    <main class="main-grid">
+
+      <!-- Left Column: Location details, Combat Arena & Interactive Log -->
+      <section class="scene-column">
+
+        <!-- Zone Description Panel -->
+        <div class="sao-panel zone-card">
+          <div class="zone-header-row">
+            <div>
+              <div class="zone-floor-tag" id="zone-floor-tag">ЭТАЖ 1 • AINCRAD</div>
+              <div class="zone-title" id="zone-title">Городок Начал</div>
+            </div>
+            <div id="zone-badge-container">
+              <span class="zone-status-badge badge-safe">МИРНАЯ ЗОНА</span>
+            </div>
+          </div>
+          <div class="zone-description" id="zone-desc">
+            Центральная площадь Стартового Города. Вокруг шумят торговцы, а в центре горит костёр, у которого можно отдохнуть и восстановить силы перед вылазкой.
+          </div>
+        </div>
+
+        <!-- Combat / Monster Arena (Hidden in town unless fighting) -->
+        <div class="battle-stage" id="battle-stage" style="display: none;">
+          <div class="floating-dmg-container" id="floating-numbers"></div>
+          
+          <div class="enemy-card">
+            <div class="enemy-avatar" id="enemy-avatar">
+              <!-- Dynamic SVG Monster Icon -->
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9"/>
+                <circle cx="9" cy="10" r="1.5" fill="#ef4444"/>
+                <circle cx="15" cy="10" r="1.5" fill="#ef4444"/>
+                <path d="M8 15s1.5 2 4 2 4-2 4-2"/>
+              </svg>
+            </div>
+            <div class="enemy-info">
+              <div class="enemy-name-row">
+                <span class="enemy-name" id="enemy-name">Слайм</span>
+                <span class="enemy-stats-preview" id="enemy-atk-preview">ATK: 7</span>
+              </div>
+              <div class="enemy-hp-bar-bg">
+                <div class="enemy-hp-bar-fill" id="enemy-hp-bar" style="width: 100%;"></div>
+                <div class="enemy-hp-text" id="enemy-hp-text">34 / 34 HP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Log & Combat Feed -->
+        <div class="log-panel" id="game-log">
+          <div class="log-entry system">[СИСТЕМА] Добро пожаловать в Sword Art Online: Aincrad. Полное погружение началось.</div>
+          <div class="log-entry system">[ИНФО] Вы находитесь в Городке Начал. Поговорите с NPC, экипируйтесь и отправляйтесь на охоту!</div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Quest Log & Fast Stats Overview -->
+      <aside class="side-column">
+
+        <!-- Collapsible Quest Log Widget -->
+        <div class="sao-panel quest-card">
+          <div class="quest-header" id="quest-header-toggle">
+            <div class="quest-title-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>ЖУРНАЛ КВЕСТОВ</span>
+            </div>
+            <span id="quest-toggle-arrow" style="font-size: 0.8rem; color: var(--cyan-neon);">▼</span>
+          </div>
+
+          <div class="quest-body" id="quest-body-content">
+            <div class="quest-item" id="active-quest-container">
+              <div class="quest-name" id="quest-title">1. Зачистка окраин</div>
+              <div class="quest-desc" id="quest-desc">Уничтожьте 5 слаймов в Лесу Первого Этажа.</div>
+              <div class="quest-progress-bar">
+                <div class="quest-progress-fill" id="quest-fill" style="width: 0%;"></div>
+              </div>
+              <div style="font-size: 0.72rem; color: #94a3b8; display:flex; justify-content:space-between; margin-top:2px;">
+                <span>Прогресс:</span>
+                <span id="quest-count-text">0 / 5</span>
+              </div>
+              <div class="quest-rewards" id="quest-reward-text">
+                Награда: +90 EXP, +60 Col, 2x Малое зелье HP
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Status & Gear Stats Summary -->
+        <div class="sao-panel stats-card">
+          <div style="font-size: 0.82rem; font-weight: bold; color: var(--cyan-neon); letter-spacing: 1px;">
+            ХАРАКТЕРИСТИКИ
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <span class="stat-label">АТАКА (ATK)</span>
+              <span class="stat-val atk" id="stat-atk">13</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">ЗАЩИТА (DEF)</span>
+              <span class="stat-val def" id="stat-def">4</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">КРИТИЧЕСКИЙ</span>
+              <span class="stat-val crit" id="stat-crit">12%</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">ОБОРОНА</span>
+              <span class="stat-val" id="stat-kills">0 Убийств</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+            <div class="stat-box">
+              <span class="stat-label">ОРУЖИЕ</span>
+              <span class="stat-val equip" id="stat-weapon-name">Ржавый клинок (+0 ATK)</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">БРОНЯ</span>
+              <span class="stat-val equip" id="stat-armor-name">Тканевая туника (+0 DEF)</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </main>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         BOTTOM DYNAMIC ACTIONS PANEL
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="sao-panel actions-panel">
+      <div class="actions-header">
+        <span id="actions-title">ДЕЙСТВИЯ ЛОКАЦИИ</span>
+        <span style="font-size: 0.72rem; color: #94a3b8;" id="actions-hint">Выберите следующее действие</span>
+      </div>
+      <div class="actions-grid" id="actions-container">
+        <!-- Dynamically populated buttons based on state -->
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         FOOTER CONTROLS: INVENTORY, SAVE, LOAD, STATUS
+         ══════════════════════════════════════════════════════════════ -->
+    <footer class="sao-panel footer-bar">
+      <div class="footer-buttons">
+        <button class="sao-btn footer-btn" id="btn-open-inventory">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Инвентарь (<span id="inv-count-badge">0</span>)
+        </button>
+        <button class="sao-btn footer-btn" id="btn-open-status">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Статус
+        </button>
+        <button class="sao-btn footer-btn" id="btn-save-game">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Сохранить
+        </button>
+        <button class="sao-btn footer-btn" id="btn-load-game">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Загрузить
+        </button>
+      </div>
+      <div class="version-tag">
+        AINCRAD SYSTEM v1.4.0 • SWORD ART ONLINE
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODAL: INVENTORY & EQUIPMENT
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-inventory">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">ИНВЕНТАРЬ И СНАРЯЖЕНИЕ</div>
+        <button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:0.8rem; color:var(--cyan-neon); letter-spacing:1px; margin-bottom: -4px;">
+          ЭКИПИРОВАНО
+        </div>
+        <div class="items-list" id="equipped-items-list">
+          <!-- Equipped items rendered here -->
+        </div>
+
+        <div style="font-size:0.8rem; color:var(--cyan-neon); letter-spacing:1px; margin-top: 10px; margin-bottom: -4px;">
+          ПРЕДМЕТЫ В СУМКЕ
+        </div>
+        <div class="items-list" id="bag-items-list">
+          <!-- Bag items rendered here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODAL: SHOP (AGIL'S SHOP)
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-shop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">ЛАВКА ЭГИЛЯ (МАГАЗИН)</div>
+        <button class="modal-close-btn" onclick="closeModal('modal-shop')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="shop-tabs">
+          <button class="shop-tab active" id="tab-buy" onclick="switchShopTab('buy')">КУПИТЬ ТОВАРЫ</button>
+          <button class="shop-tab" id="tab-sell" onclick="switchShopTab('sell')">ПРОДАТЬ ИНВЕНТАРЬ (50%)</button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#f59e0b; padding:4px 0;">
+          <span>Ваш баланс:</span>
+          <span id="shop-player-col" style="font-weight:bold;">50 Col</span>
+        </div>
+
+        <div class="items-list" id="shop-items-container">
+          <!-- Dynamic shop items -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODAL: FULL CHARACTER STATUS
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-status">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">ПРОФИЛЬ ИГРОКА</div>
+        <button class="modal-close-btn" onclick="closeModal('modal-status')">✕</button>
+      </div>
+      <div class="modal-body" id="status-modal-content">
+        <!-- Rendered with stats -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODAL: DIALOGUE WITH NPCS
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-dialogue">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title" id="npc-name-title">NPC</div>
+        <button class="modal-close-btn" onclick="closeModal('modal-dialogue')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:0.95rem; line-height:1.6; color:#e2e8f0;" id="npc-speech-text"></div>
+        <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+          <button class="sao-btn" onclick="closeModal('modal-dialogue')">Понятно</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       DEATH OVERLAY: YOU ARE DEAD (SAO SYSTEM OVERRIDE)
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="death-overlay" id="death-overlay">
+    <div class="death-banner">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8">
+        <path d="M12 2C6.48 2 2 6.48 2 12c0 3.84 2.16 7.18 5.35 8.87.35.19.65-.12.65-.52V18.5a4.5 4.5 0 0 1-1.3-.2 1.5 1.5 0 0 1-.95-1.9c.45-1.2 1.4-2.1 2.6-2.4"/>
+        <circle cx="9" cy="10" r="2" fill="#ef4444"/>
+        <circle cx="15" cy="10" r="2" fill="#ef4444"/>
+        <path d="M9 16c1.5 1.5 4.5 1.5 6 0"/>
+        <path d="M12 22v-3"/>
+      </svg>
+      <div class="death-title">YOU ARE DEAD</div>
+      <div class="death-subtitle">
+        Ваши очки здоровья упали до нуля. Система Кардинал зафиксировала поражение.
+        Благодаря аварийному телепорту вы возрождаетесь у костра в Городке Начал.
+      </div>
+      <button class="sao-btn btn-boss" style="margin-top: 10px; width: 100%; font-size: 1rem;" onclick="respawnPlayer()">
+        ВОЗРОДИТЬСЯ В ГОРОДЕ
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div class="toast-box" id="toast-box">Уведомление</div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       GAME LOGIC & AUDIO SYNTHESIZER SCRIPT
+       ══════════════════════════════════════════════════════════════ -->
+  <script>
+    /* ══════════════════════════════════════════════════════════════
+       1. WEB AUDIO API SYNTHESIZER (NO EXTERNAL AUDIO FILES NEEDED)
+       ══════════════════════════════════════════════════════════════ */
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+
+      if (type === 'click') {
+        // SAO crisp UI blip
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.05);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      } 
+      else if (type === 'slash') {
+        // Sword whoosh & slash
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.14);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      } 
+      else if (type === 'crit') {
+        // Golden Critical Hit chime
+        [880, 1320, 1760].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+          gain.gain.setValueAtTime(0.15, now + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.04);
+          osc.stop(now + idx * 0.04 + 0.22);
+        });
+      } 
+      else if (type === 'heal') {
+        // Potion / Rest shimmer
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+          gain.gain.setValueAtTime(0.12, now + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.25);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.06);
+          osc.stop(now + idx * 0.06 + 0.28);
+        });
+      } 
+      else if (type === 'levelup') {
+        // Triumphant SAO fanfare
+        const notes = [440, 554.37, 659.25, 880, 1108.73];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.38);
+        });
+      } 
+      else if (type === 'defeat') {
+        // Low doom drone
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.8);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.85);
+      } 
+      else if (type === 'skill') {
+        // High-tech sword skill charge
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.linearRampToValueAtTime(1600, now + 0.18);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      }
+    }
+
+    // Toggle Sound Button
+    const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioIconOn = document.getElementById('audio-icon-on');
+    const audioIconOff = document.getElementById('audio-icon-off');
+
+    audioBtn.addEventListener('click', () => {
+      initAudio();
+      soundEnabled = !soundEnabled;
+      audioIconOn.style.display = soundEnabled ? 'block' : 'none';
+      audioIconOff.style.display = soundEnabled ? 'none' : 'block';
+      showToast(soundEnabled ? "Звук включен" : "Звук отключен");
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       2. DATABASE: ITEMS, WEAPONS, ARMORS, ENEMIES, ZONES, QUESTS
+       ══════════════════════════════════════════════════════════════ */
+    const ITEMS_DB = {
+      // Weapons
+      'w_rusty': { id: 'w_rusty', name: 'Ржавый клинок', type: 'weapon', atk: 0, def: 0, price: 10, desc: 'Базовый меч начинающего игрока.' },
+      'w_iron': { id: 'w_iron', name: 'Железный меч', type: 'weapon', atk: 8, def: 0, price: 80, desc: 'Добротный одноручный клинок кузнечной работы.' },
+      'w_steel': { id: 'w_steel', name: 'Стальной меч', type: 'weapon', atk: 18, def: 0, price: 220, desc: 'Острый закалённый меч с отличным уроном.' },
+      'w_elucidator': { id: 'w_elucidator', name: 'Элюсидатор', type: 'weapon', atk: 14, def: 0, price: 600, legendary: true, desc: 'Легендарный угольно-чёрный одноручный меч исключительной прочности.' },
+      'w_dark_repulser': { id: 'w_dark_repulser', name: 'Вразумитель', type: 'weapon', atk: 32, def: 0, price: 950, legendary: true, desc: 'Выкованный из кристаллита редчайший клинок бледно-бирюзового цвета.' },
+
+      // Armors
+      'a_cloth': { id: 'a_cloth', name: 'Тканевая туника', type: 'armor', atk: 0, def: 0, price: 10, desc: 'Простая стартовая рубаха без брони.' },
+      'a_leather': { id: 'a_leather', name: 'Кожаная броня', type: 'armor', atk: 0, def: 3, price: 50, desc: 'Лёгкая куртка из дублёной кожи кабана.' },
+      'a_iron': { id: 'a_iron', name: 'Железная броня', type: 'armor', atk: 0, def: 8, price: 160, desc: 'Надёжные стальные пластины на кожаной основе.' },
+      'a_coat_midnight': { id: 'a_coat_midnight', name: 'Плащ Биттера', type: 'armor', atk: 0, def: 30, price: 750, legendary: true, desc: 'Чёрный длинный плащ с высокими защитными чарами.' },
+      'a_blood_knight': { id: 'a_blood_knight', name: 'Доспехи Рыцаря Крови', type: 'armor', atk: 0, def: 45, price: 1400, legendary: true, desc: 'Бело-красные священные доспехи великой гильдии.' },
+
+      // Consumables & Valuables
+      'p_hp_small': { id: 'p_hp_small', name: 'Малое зелье HP', type: 'consumable', healHp: 50, price: 25, desc: 'Восстанавливает 50 HP.' },
+      'p_hp_large': { id: 'p_hp_large', name: 'Большое зелье HP', type: 'consumable', healHp: 120, price: 65, desc: 'Восстанавливает 120 HP.' },
+      'p_mp_small': { id: 'p_mp_small', name: 'Малое зелье MP', type: 'consumable', healMp: 30, price: 20, desc: 'Восстанавливает 30 MP.' },
+      'p_mp_large': { id: 'p_mp_large', name: 'Большое зелье MP', type: 'consumable', healMp: 60, price: 50, desc: 'Восстанавливает 60 MP.' },
+      'p_crystal_heal': { id: 'p_crystal_heal', name: 'Кристалл Исцеления', type: 'consumable', fullHeal: true, price: 130, legendary: true, desc: 'Мгновенно восстанавливает 100% HP и MP.' },
+      'p_crystal_tp': { id: 'p_crystal_tp', name: 'Кристалл Телепорта', type: 'consumable', teleportTown: true, price: 70, desc: 'Мгновенно возвращает в безопасный Городок Начал.' },
+      'mat_ore': { id: 'mat_ore', name: 'Железная руда', type: 'valuable', price: 60, desc: 'Ценный материал для торговли и кузнечного дела.' }
+    };
+
+    // Enemy Templates
+    const ENEMIES_DB = {
+      'slime': {
+        id: 'slime',
+        name: 'Слайм',
+        maxHp: 34,
+        atk: 7,
+        def: 1,
+        exp: 14,
+        col: 8,
+        svg: `<circle cx="12" cy="14" r="8" fill="rgba(110,231,255,0.3)" stroke="#6ee7ff" stroke-width="2"/><circle cx="9" cy="12" r="1.5" fill="#6ee7ff"/><circle cx="15" cy="12" r="1.5" fill="#6ee7ff"/>`,
+        dropTable: [{ id: 'p_hp_small', chance: 0.35 }]
+      },
+      'boar': {
+        id: 'boar',
+        name: 'Кабан (Frenzy Boar)',
+        maxHp: 62,
+        atk: 12,
+        def: 2,
+        exp: 28,
+        col: 16,
+        svg: `<path d="M4 14c0-4 4-8 8-8s8 4 8 8v4H4z" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="2"/><circle cx="8" cy="13" r="1.5" fill="#ef4444"/><circle cx="16" cy="13" r="1.5" fill="#ef4444"/><path d="M6 18l-3 3M18 18l3 3" stroke="#f59e0b" stroke-width="2"/>`,
+        dropTable: [{ id: 'mat_ore', chance: 0.3 }, { id: 'p_hp_small', chance: 0.4 }]
+      },
+      'skeleton': {
+        id: 'skeleton',
+        name: 'Скелет Лабиринта',
+        maxHp: 88,
+        atk: 17,
+        def: 4,
+        exp: 46,
+        col: 30,
+        svg: `<circle cx="12" cy="8" r="6" stroke="#94a3b8" stroke-width="2" fill="none"/><line x1="12" y1="14" x2="12" y2="20" stroke="#94a3b8" stroke-width="2"/><line x1="7" y1="16" x2="17" y2="16" stroke="#94a3b8" stroke-width="2"/><circle cx="10" cy="8" r="1.5" fill="#ef4444"/><circle cx="14" cy="8" r="1.5" fill="#ef4444"/>`,
+        dropTable: [{ id: 'p_hp_large', chance: 0.3 }, { id: 'w_iron', chance: 0.15 }]
+      },
+      'ghost': {
+        id: 'ghost',
+        name: 'Призрак 2-го Этажа',
+        maxHp: 140,
+        atk: 24,
+        def: 6,
+        exp: 90,
+        col: 65,
+        svg: `<path d="M12 2a8 8 0 0 0-8 8v10l4-2 4 2 4-2 4 2V10a8 8 0 0 0-8-8z" fill="rgba(168,85,247,0.3)" stroke="#c084fc" stroke-width="2"/><circle cx="9" cy="9" r="2" fill="#00f0ff"/><circle cx="15" cy="9" r="2" fill="#00f0ff"/>`,
+        dropTable: [{ id: 'p_mp_large', chance: 0.4 }, { id: 'p_hp_large', chance: 0.35 }]
+      },
+      'boss_gleam_eyes': {
+        id: 'boss_gleam_eyes',
+        name: 'The Gleam Eyes (Босс 1 Этажа)',
+        isBoss: true,
+        maxHp: 420,
+        atk: 26,
+        def: 8,
+        exp: 320,
+        col: 250,
+        svg: `<path d="M12 2L4 8v8l8 6 8-6V8z" fill="rgba(220,38,38,0.4)" stroke="#ef4444" stroke-width="2.5"/><circle cx="8" cy="11" r="2" fill="#00f0ff"/><circle cx="16" cy="11" r="2" fill="#00f0ff"/><path d="M9 16h6" stroke="#ef4444" stroke-width="2"/>`,
+        dropTable: [{ id: 'w_elucidator', chance: 1.0 }, { id: 'p_crystal_heal', chance: 1.0 }]
+      },
+      'boss_lich_king': {
+        id: 'boss_lich_king',
+        name: 'The Lich King (Босс 2 Этажа)',
+        isBoss: true,
+        maxHp: 800,
+        atk: 38,
+        def: 12,
+        exp: 800,
+        col: 600,
+        svg: `<path d="M12 2l3 4 5-1-2 5 4 4-5 2v6l-5-3-5 3v-6l-5-2 4-4-2-5 5 1z" fill="rgba(147,51,234,0.45)" stroke="#a855f7" stroke-width="2.5"/><circle cx="9" cy="10" r="2" fill="#fbbf24"/><circle cx="15" cy="10" r="2" fill="#fbbf24"/>`,
+        dropTable: [{ id: 'a_coat_midnight', chance: 1.0 }, { id: 'w_dark_repulser', chance: 0.8 }]
+      }
+    };
+
+    // Quests Database
+    const QUESTS_DB = [
+      {
+        id: 0,
+        title: '1. Зачистка окраин',
+        desc: 'Убейте 5 слаймов в Лесу Первого Этажа.',
+        targetType: 'slime',
+        targetCount: 5,
+        expReward: 90,
+        colReward: 60,
+        itemRewards: [{ id: 'p_hp_small', count: 2 }],
+        rewardDesc: '+90 EXP, +60 Col, 2x Малое зелье HP'
+      },
+      {
+        id: 1,
+        title: '2. Свирепые кабаны',
+        desc: 'Убейте 4 кабанов в глубине леса.',
+        targetType: 'boar',
+        targetCount: 4,
+        expReward: 180,
+        colReward: 120,
+        itemRewards: [{ id: 'mat_ore', count: 1 }],
+        rewardDesc: '+180 EXP, +120 Col, Железная руда'
+      },
+      {
+        id: 2,
+        title: '3. Кости лабиринта',
+        desc: 'Уничтожьте 6 скелетов в Подземелье Лабиринта.',
+        targetType: 'skeleton',
+        targetCount: 6,
+        expReward: 420,
+        colReward: 220,
+        itemRewards: [{ id: 'p_hp_large', count: 1 }],
+        rewardDesc: '+420 EXP, +220 Col, 1x Большое зелье HP'
+      },
+      {
+        id: 3,
+        title: '4. Босс первого этажа',
+        desc: 'Сразите грозного The Gleam Eyes в покоях босса!',
+        targetType: 'boss_gleam_eyes',
+        targetCount: 1,
+        expReward: 1200,
+        colReward: 900,
+        itemRewards: [{ id: 'w_elucidator', count: 1 }],
+        rewardDesc: '+1200 EXP, +900 Col, Меч «Элюсидатор»'
+      },
+      {
+        id: 4,
+        title: '5. Очищение Второго Этажа',
+        desc: 'Уничтожьте 5 призраков на Втором Этаже.',
+        targetType: 'ghost',
+        targetCount: 5,
+        expReward: 800,
+        colReward: 500,
+        itemRewards: [{ id: 'p_mp_large', count: 2 }],
+        rewardDesc: '+800 EXP, +500 Col, 2x Большое зелье MP'
+      },
+      {
+        id: 5,
+        title: '6. Владыка Смерти',
+        desc: 'Победите босса Второго Этажа — The Lich King!',
+        targetType: 'boss_lich_king',
+        targetCount: 1,
+        expReward: 2000,
+        colReward: 1500,
+        itemRewards: [{ id: 'a_coat_midnight', count: 1 }],
+        rewardDesc: '+2000 EXP, +1500 Col, «Плащ Биттера»'
+      }
+    ];
+
+    // Zones Database (5 linked areas)
+    const ZONES_DB = {
+      'town': {
+        id: 'town',
+        floorTag: 'ЭТАЖ 1 • AINCRAD',
+        name: 'Городок Начал',
+        isSafe: true,
+        desc: 'Центральная площадь Стартового Города. Вокруг шумят торговцы, а в центре горит костёр, у которого можно отдохнуть и восстановить силы перед вылазкой.',
+        neighbors: ['forest1']
+      },
+      'forest1': {
+        id: 'forest1',
+        floorTag: 'ЭТАЖ 1 • ЛЕСНЫЕ ОКРАИНЫ',
+        name: 'Лес Первого Этажа',
+        isSafe: false,
+        desc: 'Густой зелёный лес за стенами города. В листве копошатся слаймы и дикие кабаны. Вдали виднеется мрачный вход в Подземелье Лабиринта.',
+        neighbors: ['town', 'dungeon1'],
+        spawns: ['slime', 'boar']
+      },
+      'dungeon1': {
+        id: 'dungeon1',
+        floorTag: 'ЭТАЖ 1 • ЛАБИРИНТ',
+        name: 'Подземелье Лабиринта',
+        isSafe: false,
+        desc: 'Холодные каменные коридоры, ведущие к покоям босса. Здесь бродят вооружённые скелеты. В глубине сияют Врата Босса (The Gleam Eyes).',
+        neighbors: ['forest1'],
+        spawns: ['skeleton'],
+        bossId: 'boss_gleam_eyes'
+      },
+      'floor2': {
+        id: 'floor2',
+        floorTag: 'ЭТАЖ 2 • УРБАС И РУИНЫ',
+        name: 'Второй Этаж (Урбас)',
+        isSafe: false,
+        desc: 'Горное плато и древние руины второго этажа. В тумане витают свирепые призраки. На вершине замка правит The Lich King.',
+        neighbors: ['town'], // Teleport link
+        spawns: ['ghost'],
+        bossId: 'boss_lich_king'
+      },
+      'floor3': {
+        id: 'floor3',
+        floorTag: 'ЭТАЖ 3 • ВРАТА В БУДУЩЕЕ',
+        name: 'Третий Этаж (Заглушка)',
+        isSafe: true,
+        desc: 'Поздравляем! Второй этаж Айнкрада полностью зачищен от монстров. Проход на 3-й этаж будет открыт в следующем обновлении игры. Вы настоящий Проходчик (Beater)! Продолжение следует...',
+        neighbors: ['floor2', 'town']
+      }
+    };
+
+    /* ══════════════════════════════════════════════════════════════
+       3. PLAYER STATE & INITIALIZATION
+       ══════════════════════════════════════════════════════════════ */
+    let player = {
+      name: 'KIRITO',
+      level: 1,
+      hp: 140,
+      maxHp: 140,
+      mp: 60,
+      maxMp: 60,
+      baseAtk: 13,
+      baseDef: 4,
+      critChance: 12, // in %
+      exp: 0,
+      maxExp: 100,
+      col: 50,
+      killsCount: 0,
+      currentZone: 'town',
+      equippedWeapon: 'w_rusty',
+      equippedArmor: 'a_cloth',
+      inventory: [
+        { id: 'p_hp_small', count: 3 },
+        { id: 'p_mp_small', count: 2 }
+      ],
+      currentQuestIdx: 0,
+      questProgress: 0,
+      unlockedFloors: {
+        floor2: false,
+        floor3: false
+      },
+      bossesDefeated: {
+        boss_gleam_eyes: false,
+        boss_lich_king: false
+      }
+    };
+
+    // Combat State
+    let combatState = {
+      active: false,
+      enemy: null,
+      isDefending: false
+    };
+
+    // Shop tab
+    let currentShopTab = 'buy';
+
+    /* ══════════════════════════════════════════════════════════════
+       4. COMPUTED STATS & FORMULAS
+       ══════════════════════════════════════════════════════════════ */
+    function getTotalAtk() {
+      const weapon = ITEMS_DB[player.equippedWeapon] || { atk: 0 };
+      return player.baseAtk + (weapon.atk || 0);
+    }
+
+    function getTotalDef() {
+      const armor = ITEMS_DB[player.equippedArmor] || { def: 0 };
+      return player.baseDef + (armor.def || 0);
+    }
+
+    function getTotalCrit() {
+      return player.critChance;
+    }
+
+    // Damage Formula as required: random(0.88..1.12) * ATK - DEF * 0.5
+    function calculateDamage(attackerAtk, defenderDef, isCrit = false) {
+      const variance = 0.88 + Math.random() * (1.12 - 0.88);
+      let dmg = (variance * attackerAtk) - (defenderDef * 0.5);
+      if (isCrit) {
+        dmg *= 1.9; // Crit multiplier 1.9x
+      }
+      return Math.max(1, Math.round(dmg));
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       5. HUD & UI RENDERING
+       ══════════════════════════════════════════════════════════════ */
+    function updateHUD() {
+      document.getElementById('hud-name').textContent = player.name;
+      document.getElementById('hud-level').textContent = `Lv. ${player.level}`;
+
+      // HP Bar
+      const hpPct = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
+      const hpBar = document.getElementById('hud-hp-bar');
+      hpBar.style.width = `${hpPct}%`;
+      hpBar.className = 'bar-fill hp-fill';
+      if (hpPct <= 25) {
+        hpBar.className = 'bar-fill hp-red';
+      } else if (hpPct <= 50) {
+        hpBar.className = 'bar-fill hp-yellow';
+      }
+      document.getElementById('hud-hp-text').textContent = `${player.hp} / ${player.maxHp}`;
+
+      // MP Bar
+      const mpPct = Math.max(0, Math.min(100, (player.mp / player.maxMp) * 100));
+      document.getElementById('hud-mp-bar').style.width = `${mpPct}%`;
+      document.getElementById('hud-mp-text').textContent = `${player.mp} / ${player.maxMp}`;
+
+      // EXP Bar
+      const expPct = Math.max(0, Math.min(100, (player.exp / player.maxExp) * 100));
+      document.getElementById('hud-exp-bar').style.width = `${expPct}%`;
+      document.getElementById('hud-exp-text').textContent = `${player.exp} / ${player.maxExp}`;
+
+      // Currency
+      document.getElementById('hud-col').textContent = `${player.col} Col`;
+
+      // Stats card
+      document.getElementById('stat-atk').textContent = `${getTotalAtk()} (+${(ITEMS_DB[player.equippedWeapon]||{}).atk||0})`;
+      document.getElementById('stat-def').textContent = `${getTotalDef()} (+${(ITEMS_DB[player.equippedArmor]||{}).def||0})`;
+      document.getElementById('stat-crit').textContent = `${getTotalCrit().toFixed(1)}%`;
+      document.getElementById('stat-kills').textContent = `${player.killsCount} Врагов`;
+
+      const curWep = ITEMS_DB[player.equippedWeapon];
+      const curArm = ITEMS_DB[player.equippedArmor];
+      document.getElementById('stat-weapon-name').textContent = curWep ? `${curWep.name} (+${curWep.atk} ATK)` : 'Нет';
+      document.getElementById('stat-armor-name').textContent = curArm ? `${curArm.name} (+${curArm.def} DEF)` : 'Нет';
+
+      // Inventory badge count
+      const totalItems = player.inventory.reduce((sum, item) => sum + item.count, 0);
+      document.getElementById('inv-count-badge').textContent = totalItems;
+
+      // Update Quests Display
+      updateQuestDisplay();
+    }
+
+    function renderZone() {
+      const zone = ZONES_DB[player.currentZone];
+      document.getElementById('zone-floor-tag').textContent = zone.floorTag;
+      document.getElementById('zone-title').textContent = zone.name;
+      document.getElementById('zone-desc').textContent = zone.desc;
+
+      const badgeContainer = document.getElementById('zone-badge-container');
+      if (zone.isSafe) {
+        badgeContainer.innerHTML = `<span class="zone-status-badge badge-safe">МИРНАЯ ЗОНА</span>`;
+      } else if (zone.bossId && !player.bossesDefeated[zone.bossId]) {
+        badgeContainer.innerHTML = `<span class="zone-status-badge badge-boss">ОПАСНОСТЬ: БОСС</span>`;
+      } else {
+        badgeContainer.innerHTML = `<span class="zone-status-badge badge-danger">БОЕВАЯ ЗОНА</span>`;
+      }
+
+      if (!combatState.active) {
+        document.getElementById('battle-stage').style.display = 'none';
+        renderExplorationButtons();
+      } else {
+        document.getElementById('battle-stage').style.display = 'flex';
+        renderCombatButtons();
+      }
+    }
+
+    function addLog(text, type = '') {
+      const logContainer = document.getElementById('game-log');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.innerHTML = text;
+      logContainer.appendChild(entry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-box');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    function spawnFloatingNumber(text, type = 'floating-dmg') {
+      const container = document.getElementById('floating-numbers');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = `floating-text ${type}`;
+      el.textContent = text;
+      el.style.left = `${30 + Math.random() * 40}%`;
+      el.style.top = `${20 + Math.random() * 30}%`;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+
+    function triggerScreenShake() {
+      const stage = document.getElementById('battle-stage');
+      stage.classList.remove('shake');
+      void stage.offsetWidth; // trigger reflow
+      stage.classList.add('shake');
+      setTimeout(() => stage.classList.remove('shake'), 350);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       6. ACTION BUTTON RENDERING (DYNAMIC EXPLORATION & COMBAT)
+       ══════════════════════════════════════════════════════════════ */
+    function renderExplorationButtons() {
+      const container = document.getElementById('actions-container');
+      const title = document.getElementById('actions-title');
+      const hint = document.getElementById('actions-hint');
+      container.innerHTML = '';
+
+      title.textContent = `ДЕЙСТВИЯ: ${ZONES_DB[player.currentZone].name.toUpperCase()}`;
+      hint.textContent = 'Выберите путь или взаимодействие';
+
+      const zone = ZONES_DB[player.currentZone];
+
+      // Town actions
+      if (player.currentZone === 'town') {
+        // Rest at Bonfire
+        const btnRest = createActionButton('🔥 Отдохнуть у костра (100% HP/MP)', 'btn-item', () => restAtCampfire());
+        container.appendChild(btnRest);
+
+        // Talk with NPC Argo
+        const btnArgo = createActionButton('💬 Арго «Крыса» (Слухи)', '', () => talkNpc('argo'));
+        container.appendChild(btnArgo);
+
+        // Talk with Klein
+        const btnKlein = createActionButton('💬 Кляйн (Советы)', '', () => talkNpc('klein'));
+        container.appendChild(btnKlein);
+
+        // Shop (Agil)
+        const btnShop = createActionButton('🛒 Лавка Эгиля (Магазин)', 'btn-item', () => openShop());
+        container.appendChild(btnShop);
+
+        // Move to Forest
+        const btnForest = createActionButton('🌲 Идти в Лес 1-го Этажа ➔', 'btn-defend', () => changeZone('forest1'));
+        container.appendChild(btnForest);
+
+        // Teleport to Floor 2 (if unlocked)
+        if (player.unlockedFloors.floor2) {
+          const btnF2 = createActionButton('🌀 Телепорт: Второй Этаж ➔', 'btn-skill', () => changeZone('floor2'));
+          container.appendChild(btnF2);
+        }
+      }
+
+      // Forest Floor 1 actions
+      else if (player.currentZone === 'forest1') {
+        const btnExplore = createActionButton('⚔️ Исследовать лес (Поиск монстров)', 'btn-attack', () => exploreWilderness());
+        container.appendChild(btnExplore);
+
+        const btnDungeon = createActionButton('💀 Вход в Подземелье Лабиринта ➔', 'btn-defend', () => changeZone('dungeon1'));
+        container.appendChild(btnDungeon);
+
+        const btnTown = createActionButton('🏛️ Вернуться в Городок Начал ➔', '', () => changeZone('town'));
+        container.appendChild(btnTown);
+      }
+
+      // Dungeon Floor 1 actions
+      else if (player.currentZone === 'dungeon1') {
+        const btnExplore = createActionButton('⚔️ Зачищать коридоры (Скелеты)', 'btn-attack', () => exploreWilderness());
+        container.appendChild(btnExplore);
+
+        // Boss gate
+        if (!player.bossesDefeated.boss_gleam_eyes) {
+          const btnBoss = createActionButton('⚡ ВРАТА БОССА: The Gleam Eyes', 'btn-boss', () => startCombat('boss_gleam_eyes'));
+          container.appendChild(btnBoss);
+        } else {
+          const btnGateF2 = createActionButton('✨ Врата Второго Этажа ➔', 'btn-skill', () => {
+            player.unlockedFloors.floor2 = true;
+            changeZone('floor2');
+          });
+          container.appendChild(btnGateF2);
+        }
+
+        const btnForest = createActionButton('🌲 Выход в Лес ➔', '', () => changeZone('forest1'));
+        container.appendChild(btnForest);
+      }
+
+      // Floor 2 actions
+      else if (player.currentZone === 'floor2') {
+        const btnExplore = createActionButton('⚔️ Исследовать руины (Призраки)', 'btn-attack', () => exploreWilderness());
+        container.appendChild(btnExplore);
+
+        // Boss 2
+        if (!player.bossesDefeated.boss_lich_king) {
+          const btnBoss2 = createActionButton('⚡ ВРАТА БОССА: The Lich King', 'btn-boss', () => startCombat('boss_lich_king'));
+          container.appendChild(btnBoss2);
+        } else {
+          const btnF3 = createActionButton('🌟 Врата Третьего Этажа ➔', 'btn-skill', () => {
+            player.unlockedFloors.floor3 = true;
+            changeZone('floor3');
+          });
+          container.appendChild(btnF3);
+        }
+
+        const btnTpTown = createActionButton('🏛️ Телепорт в Городок Начал ➔', '', () => changeZone('town'));
+        container.appendChild(btnTpTown);
+      }
+
+      // Floor 3 actions (Placeholder zone)
+      else if (player.currentZone === 'floor3') {
+        const btnReturnF2 = createActionButton('🌀 Вернуться на Второй Этаж', 'btn-defend', () => changeZone('floor2'));
+        container.appendChild(btnReturnF2);
+
+        const btnReturnTown = createActionButton('🏛️ Вернуться в Городок Начал', '', () => changeZone('town'));
+        container.appendChild(btnReturnTown);
+      }
+    }
+
+    function renderCombatButtons() {
+      const container = document.getElementById('actions-container');
+      const title = document.getElementById('actions-title');
+      const hint = document.getElementById('actions-hint');
+      container.innerHTML = '';
+
+      title.textContent = `БОЙ С: ${combatState.enemy.name.toUpperCase()}`;
+      hint.textContent = 'Ваш ход! Выберите боевое действие:';
+
+      // 1. Basic Attack
+      const btnAtk = createActionButton('⚔️ Обычная Атака (0 MP)', 'btn-attack', () => playerActionAttack());
+      container.appendChild(btnAtk);
+
+      // 2. Sword Skill 1: Горизонтальный Разрез (Horizontal)
+      const btnSkill1 = createActionButton('⚡ Разрез (12 MP)', 'btn-skill', () => playerActionSkill('slash', 12, 1.5, 5));
+      btnSkill1.disabled = player.mp < 12;
+      container.appendChild(btnSkill1);
+
+      // 3. Sword Skill 2: Звуковой Прыжок (Sonic Leap)
+      const btnSkill2 = createActionButton('💫 Звуковой Прыжок (22 MP)', 'btn-skill', () => playerActionSkill('sonic', 22, 2.2, 20));
+      btnSkill2.disabled = player.mp < 22;
+      container.appendChild(btnSkill2);
+
+      // 4. Sword Skill 3: Starburst Stream (Ultimate)
+      const btnSkill3 = createActionButton('🌟 Starburst Stream (40 MP)', 'btn-skill', () => playerActionSkill('starburst', 40, 3.5, 35));
+      btnSkill3.disabled = player.mp < 40;
+      container.appendChild(btnSkill3);
+
+      // 5. Defend
+      const btnDef = createActionButton('🛡️ Защита (+DEF, +8 MP)', 'btn-defend', () => playerActionDefend());
+      container.appendChild(btnDef);
+
+      // 6. Use Potion in Combat
+      const btnItem = createActionButton('🧪 Зелье HP/MP', 'btn-item', () => openQuickItemMenu());
+      container.appendChild(btnItem);
+
+      // 7. Escape (60% chance, disabled for bosses)
+      const btnEscape = createActionButton('🏃 Побег (60%)', '', () => playerActionEscape());
+      if (combatState.enemy.isBoss) {
+        btnEscape.disabled = true;
+        btnEscape.title = 'От босса этажа невозможно сбежать!';
+      }
+      container.appendChild(btnEscape);
+    }
+
+    function createActionButton(text, customClass, onClick) {
+      const btn = document.createElement('button');
+      btn.className = `sao-btn ${customClass || ''}`;
+      btn.innerHTML = text;
+      btn.onclick = () => {
+        playSound('click');
+        onClick();
+      };
+      return btn;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       7. EXPLORATION & ZONE TRANSITIONS
+       ══════════════════════════════════════════════════════════════ */
+    function changeZone(zoneId) {
+      player.currentZone = zoneId;
+      addLog(`[ЛОКАЦИЯ] Вы перешли в: ${ZONES_DB[zoneId].name}.`, 'system');
+      playSound('click');
+      saveGameAuto();
+      renderZone();
+      updateHUD();
+    }
+
+    function restAtCampfire() {
+      player.hp = player.maxHp;
+      player.mp = player.maxMp;
+      playSound('heal');
+      spawnFloatingNumber(`+${player.maxHp} HP`, 'floating-heal');
+      addLog(`[КОСТЁР] Вы согрелись у костра. Здоровье и Мана полностью восстановлены!`, 'heal');
+      updateHUD();
+      showToast("Здоровье и Мана полностью восстановлены!");
+    }
+
+    function exploreWilderness() {
+      const zone = ZONES_DB[player.currentZone];
+      if (!zone.spawns || zone.spawns.length === 0) return;
+
+      // Pick a random spawn
+      const enemyId = zone.spawns[Math.floor(Math.random() * zone.spawns.length)];
+      
+      // Random encounter roll
+      const roll = Math.random();
+      if (roll < 0.15) {
+        // Found small loot
+        const colFound = 15 + Math.floor(Math.random() * 25);
+        player.col += colFound;
+        playSound('heal');
+        addLog(`[НАХОДКА] Вы нашли брошенный кошель странника! Получено: +${colFound} Col.`, 'quest');
+        showToast(`Найдено: +${colFound} Col`);
+        updateHUD();
+      } else {
+        // Monster encounter
+        startCombat(enemyId);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       8. COMBAT SYSTEM (TURN-BASED, DAMAGE, SKILLS, CRIT)
+       ══════════════════════════════════════════════════════════════ */
+    function startCombat(enemyId) {
+      const template = ENEMIES_DB[enemyId];
+      if (!template) return;
+
+      combatState.active = true;
+      combatState.isDefending = false;
+      combatState.enemy = {
+        id: template.id,
+        name: template.name,
+        isBoss: template.isBoss || false,
+        hp: template.maxHp,
+        maxHp: template.maxHp,
+        atk: template.atk,
+        def: template.def,
+        exp: template.exp,
+        col: template.col,
+        svg: template.svg,
+        dropTable: template.dropTable || []
+      };
+
+      // Update Arena Display
+      document.getElementById('enemy-name').textContent = combatState.enemy.name;
+      document.getElementById('enemy-atk-preview').textContent = `ATK: ${combatState.enemy.atk} | DEF: ${combatState.enemy.def}`;
+      document.getElementById('enemy-avatar').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none">${combatState.enemy.svg}</svg>`;
+      updateEnemyHpBar();
+
+      document.getElementById('battle-stage').style.display = 'flex';
+      
+      if (combatState.enemy.isBoss) {
+        playSound('crit');
+        addLog(`[ТРЕВОГА БОССА] В покои ступил великий босс ${combatState.enemy.name}! Приготовьтесь к смертельному бою!`, 'danger');
+      } else {
+        addLog(`[БОЙ] На вашем пути появился свирепый монстр: ${combatState.enemy.name}!`, 'danger');
+      }
+
+      renderCombatButtons();
+    }
+
+    function updateEnemyHpBar() {
+      if (!combatState.enemy) return;
+      const enemy = combatState.enemy;
+      const pct = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
+      document.getElementById('enemy-hp-bar').style.width = `${pct}%`;
+      document.getElementById('enemy-hp-text').textContent = `${Math.max(0, enemy.hp)} / ${enemy.maxHp} HP`;
+    }
+
+    // 1. Basic Player Attack
+    function playerActionAttack() {
+      if (!combatState.active) return;
+      combatState.isDefending = false;
+
+      const isCrit = Math.random() * 100 < getTotalCrit();
+      const dmg = calculateDamage(getTotalAtk(), combatState.enemy.def, isCrit);
+
+      combatState.enemy.hp -= dmg;
+      triggerScreenShake();
+
+      if (isCrit) {
+        playSound('crit');
+        spawnFloatingNumber(`КРИТ! -${dmg}`, 'floating-crit');
+        addLog(`[КРИТИЧЕСКИЙ УДАР] KIRITO наносит смертоносный выпад по ${combatState.enemy.name} на ${dmg} урона!`, 'crit');
+      } else {
+        playSound('slash');
+        spawnFloatingNumber(`-${dmg}`, 'floating-dmg');
+        addLog(`[АТАКА] KIRITO атакует ${combatState.enemy.name} и наносит ${dmg} урона.`, 'player-action');
+      }
+
+      updateEnemyHpBar();
+
+      if (combatState.enemy.hp <= 0) {
+        handleVictory();
+      } else {
+        enemyTurn();
+      }
+    }
+
+    // 2. Sword Skills
+    function playerActionSkill(skillType, mpCost, dmgMultiplier, bonusCrit) {
+      if (!combatState.active) return;
+      if (player.mp < mpCost) {
+        showToast("Недостаточно MP!");
+        return;
+      }
+
+      player.mp -= mpCost;
+      updateHUD();
+      combatState.isDefending = false;
+
+      const isCrit = Math.random() * 100 < (getTotalCrit() + bonusCrit);
+      let baseDmg = calculateDamage(getTotalAtk() * dmgMultiplier, combatState.enemy.def, isCrit);
+
+      combatState.enemy.hp -= baseDmg;
+      triggerScreenShake();
+      playSound('skill');
+
+      let skillName = 'Горизонтальный разрез';
+      if (skillType === 'sonic') skillName = 'Звуковой Прыжок';
+      if (skillType === 'starburst') skillName = 'Starburst Stream (16-ударная комбо)';
+
+      if (isCrit) {
+        playSound('crit');
+        spawnFloatingNumber(`КРИТ МЕЧА! -${baseDmg}`, 'floating-crit');
+        addLog(`[НАВЫК МЕЧА: ${skillName}] Сокрушительный КРИТИЧЕСКИЙ удар по ${combatState.enemy.name} на ${baseDmg} урона!`, 'crit');
+      } else {
+        spawnFloatingNumber(`-${baseDmg}`, 'floating-dmg');
+        addLog(`[НАВЫК МЕЧА: ${skillName}] KIRITO высвобождает приём на ${baseDmg} урона!`, 'player-action');
+      }
+
+      updateEnemyHpBar();
+
+      if (combatState.enemy.hp <= 0) {
+        handleVictory();
+      } else {
+        enemyTurn();
+      }
+    }
+
+    // 3. Defend Action
+    function playerActionDefend() {
+      if (!combatState.active) return;
+      combatState.isDefending = true;
+      const mpGain = Math.min(player.maxMp - player.mp, 8);
+      player.mp += mpGain;
+      playSound('click');
+      spawnFloatingNumber(`+${mpGain} MP`, 'floating-mp');
+      addLog(`[ЗАЩИТА] KIRITO встал в глухую оборонительную стойку (+DEF) и восстановил +${mpGain} MP.`, 'system');
+      updateHUD();
+      enemyTurn();
+    }
+
+    // 4. Quick Item in Combat
+    function openQuickItemMenu() {
+      const potions = player.inventory.filter(i => i.count > 0 && ITEMS_DB[i.id] && (ITEMS_DB[i.id].healHp || ITEMS_DB[i.id].healMp || ITEMS_DB[i.id].fullHeal));
+      if (potions.length === 0) {
+        showToast("У вас нет лечебных зелий!");
+        return;
+      }
+      openModal('modal-inventory');
+    }
+
+    // 5. Escape Action
+    function playerActionEscape() {
+      if (!combatState.active) return;
+      if (combatState.enemy.isBoss) {
+        showToast("От босса этажа нельзя сбежать!");
+        return;
+      }
+
+      // 60% chance as required
+      const success = Math.random() < 0.6;
+      if (success) {
+        playSound('click');
+        addLog(`[ПОБЕГ] Вы успешно оторвались от ${combatState.enemy.name} и отступили в безопасную зону!`, 'system');
+        endCombat();
+      } else {
+        addLog(`[ПОБЕГ] Побег не удался! Враг преградил путь!`, 'danger');
+        enemyTurn();
+      }
+    }
+
+    // Enemy Turn AI
+    function enemyTurn() {
+      disableCombatButtons(true);
+
+      setTimeout(() => {
+        if (!combatState.active) {
+          disableCombatButtons(false);
+          return;
+        }
+
+        const enemy = combatState.enemy;
+        let def = getTotalDef();
+        if (combatState.isDefending) {
+          def *= 2; // Doubled defense while defending
+        }
+
+        const enemyDmg = calculateDamage(enemy.atk, def, false);
+        player.hp -= enemyDmg;
+
+        triggerScreenShake();
+        playSound('slash');
+        spawnFloatingNumber(`-${enemyDmg} HP`, 'floating-dmg');
+        addLog(`[АТАКА ВРАГА] ${enemy.name} атакует вас и наносит ${enemyDmg} урона!`, 'enemy-action');
+
+        combatState.isDefending = false;
+        updateHUD();
+
+        if (player.hp <= 0) {
+          player.hp = 0;
+          updateHUD();
+          handlePlayerDeath();
+        } else {
+          disableCombatButtons(false);
+          renderCombatButtons();
+        }
+      }, 400);
+    }
+
+    function disableCombatButtons(disabled) {
+      const btns = document.querySelectorAll('#actions-container button');
+      btns.forEach(b => b.disabled = disabled);
+    }
+
+    // Victory Handler
+    function handleVictory() {
+      const enemy = combatState.enemy;
+      playSound('levelup');
+      addLog(`[ПОБЕДА!] Монстр ${enemy.name} повержен в прах!`, 'victory');
+      
+      // Award EXP and Col
+      const expGained = enemy.exp;
+      const colGained = enemy.col;
+      player.exp += expGained;
+      player.col += colGained;
+      player.killsCount++;
+
+      addLog(`[НАГРАДА] Получено: +${expGained} EXP, +${colGained} Col.`, 'quest');
+
+      // Check drops
+      if (enemy.dropTable && enemy.dropTable.length > 0) {
+        enemy.dropTable.forEach(drop => {
+          if (Math.random() <= drop.chance) {
+            addItemToInventory(drop.id, 1);
+            const item = ITEMS_DB[drop.id];
+            addLog(`[ДРОП] Выпал редкий предмет: ${item.name}!`, 'quest');
+            showToast(`Получено: ${item.name}`);
+          }
+        });
+      }
+
+      // Check Boss Flags
+      if (enemy.id === 'boss_gleam_eyes') {
+        player.bossesDefeated.boss_gleam_eyes = true;
+        player.unlockedFloors.floor2 = true;
+        addLog(`[ДОСТИЖЕНИЕ] Первый Этаж Айнкрада пройден! Открыт телепорт на Второй Этаж!`, 'system');
+      } else if (enemy.id === 'boss_lich_king') {
+        player.bossesDefeated.boss_lich_king = true;
+        player.unlockedFloors.floor3 = true;
+        addLog(`[ДОСТИЖЕНИЕ] Второй Этаж зачищен! Портал на Третий Этаж активирован!`, 'system');
+      }
+
+      // Check Quests progress
+      checkQuestProgress(enemy.id);
+
+      // Check Level Up
+      checkLevelUp();
+
+      endCombat();
+      updateHUD();
+    }
+
+    function endCombat() {
+      combatState.active = false;
+      combatState.enemy = null;
+      combatState.isDefending = false;
+      document.getElementById('battle-stage').style.display = 'none';
+      renderZone();
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       9. LEVEL UP SYSTEM
+       ══════════════════════════════════════════════════════════════ */
+    function checkLevelUp() {
+      while (player.exp >= player.maxExp) {
+        player.exp -= player.maxExp;
+        player.level += 1;
+
+        // Stat growth as required: +30 HP, +10 MP, +10 ATK, +7 DEF
+        player.maxHp += 30;
+        player.hp = player.maxHp; // Full restore
+        player.maxMp += 10;
+        player.mp = player.maxMp; // Full restore
+        player.baseAtk += 10;
+        player.baseDef += 7;
+        player.critChance += 1.5; // Crit increases with level
+
+        player.maxExp = Math.round(player.maxExp * 1.5 + 40);
+
+        playSound('levelup');
+        addLog(`[LEVEL UP!] Поздравляем! Вы достигли Lv. ${player.level}! (+30 HP, +10 MP, +10 ATK, +7 DEF, +1.5% CRIT)`, 'system');
+        showToast(`LEVEL UP! Вы достигли Lv. ${player.level}!`);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       10. QUEST SYSTEM
+       ══════════════════════════════════════════════════════════════ */
+    function checkQuestProgress(killedEnemyId) {
+      if (player.currentQuestIdx >= QUESTS_DB.length) return;
+
+      const curQuest = QUESTS_DB[player.currentQuestIdx];
+      if (curQuest.targetType === killedEnemyId) {
+        player.questProgress++;
+        
+        if (player.questProgress >= curQuest.targetCount) {
+          // Complete quest
+          playSound('levelup');
+          addLog(`[КВЕСТ ВЫПОЛНЕН] «${curQuest.title}» завершён!`, 'quest');
+          
+          player.exp += curQuest.expReward;
+          player.col += curQuest.colReward;
+          
+          if (curQuest.itemRewards) {
+            curQuest.itemRewards.forEach(r => addItemToInventory(r.id, r.count));
+          }
+
+          showToast(`Квест выполнен! +${curQuest.expReward} EXP, +${curQuest.colReward} Col`);
+          
+          // Advance to next quest
+          player.currentQuestIdx++;
+          player.questProgress = 0;
+          checkLevelUp();
+        }
+      }
+      updateQuestDisplay();
+    }
+
+    function updateQuestDisplay() {
+      const curQuest = QUESTS_DB[player.currentQuestIdx];
+      const titleEl = document.getElementById('quest-title');
+      const descEl = document.getElementById('quest-desc');
+      const fillEl = document.getElementById('quest-fill');
+      const countEl = document.getElementById('quest-count-text');
+      const rewardEl = document.getElementById('quest-reward-text');
+
+      if (!curQuest) {
+        titleEl.textContent = 'Все квесты выполнены!';
+        descEl.textContent = 'Вы завершили всю текущую сюжетную линию Айнкрада!';
+        fillEl.style.width = '100%';
+        countEl.textContent = '100%';
+        rewardEl.textContent = 'Статус: Легендарный Мечник';
+        return;
+      }
+
+      titleEl.textContent = curQuest.title;
+      descEl.textContent = curQuest.desc;
+      const pct = Math.min(100, (player.questProgress / curQuest.targetCount) * 100);
+      fillEl.style.width = `${pct}%`;
+      countEl.textContent = `${player.questProgress} / ${curQuest.targetCount}`;
+      rewardEl.textContent = `Награда: ${curQuest.rewardDesc}`;
+    }
+
+    // Toggle Quest Drawer
+    let questExpanded = true;
+    document.getElementById('quest-header-toggle').addEventListener('click', () => {
+      questExpanded = !questExpanded;
+      document.getElementById('quest-body-content').style.display = questExpanded ? 'flex' : 'none';
+      document.getElementById('quest-toggle-arrow').textContent = questExpanded ? '▼' : '▲';
+      playSound('click');
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       11. INVENTORY & EQUIPMENT SYSTEM
+       ══════════════════════════════════════════════════════════════ */
+    function addItemToInventory(itemId, count = 1) {
+      const existing = player.inventory.find(i => i.id === itemId);
+      if (existing) {
+        existing.count += count;
+      } else {
+        player.inventory.push({ id: itemId, count });
+      }
+      updateHUD();
+    }
+
+    function removeItemFromInventory(itemId, count = 1) {
+      const existing = player.inventory.find(i => i.id === itemId);
+      if (!existing) return;
+      existing.count -= count;
+      if (existing.count <= 0) {
+        player.inventory = player.inventory.filter(i => i.id !== itemId);
+      }
+      updateHUD();
+    }
+
+    function renderInventoryModal() {
+      const equippedContainer = document.getElementById('equipped-items-list');
+      const bagContainer = document.getElementById('bag-items-list');
+      equippedContainer.innerHTML = '';
+      bagContainer.innerHTML = '';
+
+      // Render Equipped Weapon
+      const curWep = ITEMS_DB[player.equippedWeapon];
+      if (curWep) {
+        equippedContainer.appendChild(createItemCard(curWep, 1, true, 'weapon'));
+      }
+
+      // Render Equipped Armor
+      const curArm = ITEMS_DB[player.equippedArmor];
+      if (curArm) {
+        equippedContainer.appendChild(createItemCard(curArm, 1, true, 'armor'));
+      }
+
+      // Render Bag Items
+      if (player.inventory.length === 0) {
+        bagContainer.innerHTML = `<div style="color:var(--text-dim); font-size:0.85rem; padding:8px;">Инвентарь пуст.</div>`;
+      } else {
+        player.inventory.forEach(invItem => {
+          const item = ITEMS_DB[invItem.id];
+          if (item) {
+            bagContainer.appendChild(createItemCard(item, invItem.count, false));
+          }
+        });
+      }
+    }
+
+    function createItemCard(item, count, isEquipped, slotType) {
+      const div = document.createElement('div');
+      div.className = `item-card ${isEquipped ? 'equipped' : ''}`;
+
+      let statsBadge = '';
+      if (item.atk) statsBadge += `+${item.atk} ATK `;
+      if (item.def) statsBadge += `+${item.def} DEF `;
+      if (item.healHp) statsBadge += `+${item.healHp} HP `;
+      if (item.healMp) statsBadge += `+${item.healMp} MP `;
+      if (item.fullHeal) statsBadge += `100% HP/MP `;
+
+      let tagLabel = 'Предмет';
+      if (item.type === 'weapon') tagLabel = 'Оружие';
+      if (item.type === 'armor') tagLabel = 'Броня';
+      if (item.type === 'consumable') tagLabel = 'Зелье';
+      if (item.type === 'valuable') tagLabel = 'Материал';
+
+      div.innerHTML = `
+        <div class="item-main">
+          <div class="item-name-row">
+            <span class="item-name ${item.legendary ? 'legendary' : ''}">${item.name}</span>
+            <span class="item-tag">${tagLabel}</span>
+            ${count > 1 ? `<span style="font-size:0.75rem; color:#94a3b8;">x${count}</span>` : ''}
+          </div>
+          <div class="item-desc">${item.desc}</div>
+          ${statsBadge ? `<div class="item-stat-badge">${statsBadge}</div>` : ''}
+        </div>
+        <div class="item-actions" id="btn-group-${item.id}"></div>
+      `;
+
+      const actions = div.querySelector(`#btn-group-${item.id}`);
+
+      if (isEquipped) {
+        const unequipBtn = document.createElement('button');
+        unequipBtn.className = 'sao-btn mini-btn';
+        unequipBtn.textContent = 'Снять';
+        unequipBtn.onclick = () => unequipSlot(slotType);
+        actions.appendChild(unequipBtn);
+      } else {
+        if (item.type === 'weapon' || item.type === 'armor') {
+          const equipBtn = document.createElement('button');
+          equipBtn.className = 'sao-btn mini-btn btn-skill';
+          equipBtn.textContent = 'Надеть';
+          equipBtn.onclick = () => equipItem(item.id);
+          actions.appendChild(equipBtn);
+        } else if (item.type === 'consumable') {
+          const useBtn = document.createElement('button');
+          useBtn.className = 'sao-btn mini-btn btn-item';
+          useBtn.textContent = 'Использовать';
+          useBtn.onclick = () => useItem(item.id);
+          actions.appendChild(useBtn);
+        }
+      }
+
+      return div;
+    }
+
+    function equipItem(itemId) {
+      const item = ITEMS_DB[itemId];
+      if (!item) return;
+
+      if (item.type === 'weapon') {
+        // Return previous equipped weapon to bag if not default rusty
+        if (player.equippedWeapon && player.equippedWeapon !== 'w_rusty') {
+          addItemToInventory(player.equippedWeapon, 1);
+        }
+        player.equippedWeapon = itemId;
+        removeItemFromInventory(itemId, 1);
+        playSound('click');
+        showToast(`Экипировано: ${item.name}`);
+        addLog(`[ЭКИПИРОВКА] Вы взяли в руку клинок ${item.name}.`, 'system');
+      } else if (item.type === 'armor') {
+        if (player.equippedArmor && player.equippedArmor !== 'a_cloth') {
+          addItemToInventory(player.equippedArmor, 1);
+        }
+        player.equippedArmor = itemId;
+        removeItemFromInventory(itemId, 1);
+        playSound('click');
+        showToast(`Экипировано: ${item.name}`);
+        addLog(`[ЭКИПИРОВКА] Вы надели доспех ${item.name}.`, 'system');
+      }
+
+      renderInventoryModal();
+      updateHUD();
+    }
+
+    function unequipSlot(slotType) {
+      if (slotType === 'weapon') {
+        if (player.equippedWeapon === 'w_rusty') {
+          showToast("Нельзя снять стартовый клинок без замены!");
+          return;
+        }
+        addItemToInventory(player.equippedWeapon, 1);
+        player.equippedWeapon = 'w_rusty';
+      } else if (slotType === 'armor') {
+        if (player.equippedArmor === 'a_cloth') {
+          showToast("Нельзя снять стартовую тунику без замены!");
+          return;
+        }
+        addItemToInventory(player.equippedArmor, 1);
+        player.equippedArmor = 'a_cloth';
+      }
+      playSound('click');
+      renderInventoryModal();
+      updateHUD();
+    }
+
+    function useItem(itemId) {
+      const item = ITEMS_DB[itemId];
+      if (!item) return;
+
+      let used = false;
+
+      if (item.healHp) {
+        if (player.hp >= player.maxHp) {
+          showToast("У вас уже полное здоровье!");
+          return;
+        }
+        const healAmt = Math.min(player.maxHp - player.hp, item.healHp);
+        player.hp += healAmt;
+        spawnFloatingNumber(`+${healAmt} HP`, 'floating-heal');
+        addLog(`[ИСПОЛЬЗОВАНИЕ] Вы выпили ${item.name} и восстановили +${healAmt} HP.`, 'heal');
+        used = true;
+      }
+
+      if (item.healMp) {
+        if (player.mp >= player.maxMp) {
+          showToast("У вас уже полная мана!");
+          return;
+        }
+        const mpAmt = Math.min(player.maxMp - player.mp, item.healMp);
+        player.mp += mpAmt;
+        spawnFloatingNumber(`+${mpAmt} MP`, 'floating-mp');
+        addLog(`[ИСПОЛЬЗОВАНИЕ] Вы выпили ${item.name} и восстановили +${mpAmt} MP.`, 'heal');
+        used = true;
+      }
+
+      if (item.fullHeal) {
+        player.hp = player.maxHp;
+        player.mp = player.maxMp;
+        spawnFloatingNumber(`FULL RECOVER`, 'floating-heal');
+        addLog(`[КРИСТАЛЛ] Кристалл Исцеления полностью восстановил все HP и MP!`, 'heal');
+        used = true;
+      }
+
+      if (item.teleportTown) {
+        if (combatState.active && combatState.enemy.isBoss) {
+          showToast("Нельзя телепортироваться из комнаты босса!");
+          return;
+        }
+        if (combatState.active) {
+          endCombat();
+        }
+        changeZone('town');
+        addLog(`[ТЕЛЕПОРТ] Сияние кристалла перенесло вас в Городок Начал!`, 'system');
+        used = true;
+      }
+
+      if (used) {
+        playSound('heal');
+        removeItemFromInventory(itemId, 1);
+        renderInventoryModal();
+        updateHUD();
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       12. SHOP SYSTEM (AGIL'S SHOP - BUY & SELL TABS)
+       ══════════════════════════════════════════════════════════════ */
+    const SHOP_STOCK = [
+      'p_hp_small',
+      'p_hp_large',
+      'p_mp_small',
+      'p_mp_large',
+      'p_crystal_heal',
+      'p_crystal_tp',
+      'w_iron',
+      'w_steel',
+      'a_leather',
+      'a_iron'
+    ];
+
+    function openShop() {
+      switchShopTab('buy');
+      openModal('modal-shop');
+    }
+
+    function switchShopTab(tab) {
+      currentShopTab = tab;
+      document.getElementById('tab-buy').className = `shop-tab ${tab === 'buy' ? 'active' : ''}`;
+      document.getElementById('tab-sell').className = `shop-tab ${tab === 'sell' ? 'active' : ''}`;
+      document.getElementById('shop-player-col').textContent = `${player.col} Col`;
+      renderShopItems();
+    }
+
+    function renderShopItems() {
+      const container = document.getElementById('shop-items-container');
+      container.innerHTML = '';
+      document.getElementById('shop-player-col').textContent = `${player.col} Col`;
+
+      if (currentShopTab === 'buy') {
+        SHOP_STOCK.forEach(itemId => {
+          const item = ITEMS_DB[itemId];
+          if (!item) return;
+
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div class="item-main">
+              <div class="item-name-row">
+                <span class="item-name ${item.legendary ? 'legendary' : ''}">${item.name}</span>
+                <span class="item-tag">${item.type.toUpperCase()}</span>
+              </div>
+              <div class="item-desc">${item.desc}</div>
+              <div class="item-stat-badge">${item.price} Col</div>
+            </div>
+            <div class="item-actions">
+              <button class="sao-btn mini-btn btn-item" onclick="buyShopItem('${item.id}')">Купить (${item.price} Col)</button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } else {
+        // Sell tab - list all items in inventory
+        if (player.inventory.length === 0) {
+          container.innerHTML = `<div style="color:var(--text-dim); padding:10px;">В инвентаре нет предметов для продажи.</div>`;
+          return;
+        }
+
+        player.inventory.forEach(invItem => {
+          const item = ITEMS_DB[invItem.id];
+          if (!item) return;
+          const sellPrice = Math.max(1, Math.floor(item.price * 0.5)); // 50% price as required
+
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div class="item-main">
+              <div class="item-name-row">
+                <span class="item-name">${item.name}</span>
+                <span style="font-size:0.75rem; color:#94a3b8;">x${invItem.count}</span>
+              </div>
+              <div class="item-desc">Цена скупки: ${sellPrice} Col за шт.</div>
+            </div>
+            <div class="item-actions">
+              <button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${sellPrice})">Продать 1 шт (+${sellPrice} Col)</button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+    }
+
+    function buyShopItem(itemId) {
+      const item = ITEMS_DB[itemId];
+      if (!item) return;
+
+      if (player.col < item.price) {
+        showToast("Недостаточно Col для покупки!");
+        return;
+      }
+
+      player.col -= item.price;
+      addItemToInventory(itemId, 1);
+      playSound('click');
+      addLog(`[МАГАЗИН] Вы купили ${item.name} за ${item.price} Col у Эгиля.`, 'system');
+      showToast(`Куплено: ${item.name}`);
+      renderShopItems();
+      updateHUD();
+    }
+
+    function sellShopItem(itemId, price) {
+      const item = ITEMS_DB[itemId];
+      if (!item) return;
+
+      removeItemFromInventory(itemId, 1);
+      player.col += price;
+      playSound('click');
+      addLog(`[МАГАЗИН] Вы продали 1x ${item.name} за +${price} Col.`, 'quest');
+      showToast(`Продано за +${price} Col`);
+      renderShopItems();
+      updateHUD();
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       13. NPC DIALOGUES (ARGO, KLEIN, AGIL)
+       ══════════════════════════════════════════════════════════════ */
+    function talkNpc(npcId) {
+      const title = document.getElementById('npc-name-title');
+      const text = document.getElementById('npc-speech-text');
+
+      if (npcId === 'argo') {
+        title.textContent = 'Арго «Крыса» (Торговка Информацией)';
+        text.innerHTML = `
+          «Хе-хе, здорово, Кирито-кун! Ищешь свежую информацию о боссах Айнкрада?<br><br>
+          Запомни: у <b>The Gleam Eyes</b> в Лабиринте 1-го этажа огромный запас HP (420) и сокрушительный удар меча. Обязательно запасись большими зельями HP и изучи мечевой навык «Звуковой Прыжок»!<br><br>
+          А на Втором Этаже правит <b>The Lich King</b> — его магия бьёт сквозь обычную броню. Плащ Биттера даёт колоссальные +30 защиты!»
+        `;
+      } else if (npcId === 'klein') {
+        title.textContent = 'Кляйн (Лидер Гильдии Фуринказан)';
+        text.innerHTML = `
+          «Эй, Кирито! Как успехи на фронте? Мои ребята готовятся к штурму Лабиринта.<br><br>
+          Не забывай защищаться (кнопка <b>Защита</b> удваивает DEF и восполняет MP), если видишь, что здоровье на исходе. И держи в сумке Кристалл Телепорта на случай беды!»
+        `;
+      }
+
+      playSound('click');
+      openModal('modal-dialogue');
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       14. CHARACTER STATUS MODAL
+       ══════════════════════════════════════════════════════════════ */
+    function renderStatusModal() {
+      const container = document.getElementById('status-modal-content');
+      const wep = ITEMS_DB[player.equippedWeapon] || { name: 'Нет', atk: 0 };
+      const arm = ITEMS_DB[player.equippedArmor] || { name: 'Нет', def: 0 };
+
+      container.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(110,231,255,0.2); padding-bottom:8px;">
+          <div>
+            <div style="font-size:1.2rem; font-weight:bold; color:#fff;">[BEATER] ${player.name}</div>
+            <div style="font-size:0.8rem; color:var(--cyan-neon);">Чёрный Мечник • Одиночка</div>
+          </div>
+          <div class="player-level-badge">Уровень: ${player.level}</div>
+        </div>
+
+        <div class="stats-grid" style="margin-top:10px;">
+          <div class="stat-box">
+            <span class="stat-label">ОЧКИ ЗДОРОВЬЯ (HP)</span>
+            <span class="stat-val" style="color:#4ade80;">${player.hp} / ${player.maxHp}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">ОЧКИ МАНЫ (MP)</span>
+            <span class="stat-val" style="color:#60a5fa;">${player.mp} / ${player.maxMp}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">АТАКА (ИТОГО)</span>
+            <span class="stat-val atk">${getTotalAtk()} (Базовая: ${player.baseAtk} + Оружие: ${wep.atk})</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">ЗАЩИТА (ИТОГО)</span>
+            <span class="stat-val def">${getTotalDef()} (Базовая: ${player.baseDef} + Броня: ${arm.def})</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">ШАНС КРИТА</span>
+            <span class="stat-val crit">${getTotalCrit().toFixed(1)}% (×1.9 урона)</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">БАЛАНС COL</span>
+            <span class="stat-val" style="color:#f59e0b;">${player.col} Col</span>
+          </div>
+        </div>
+
+        <div style="font-size:0.8rem; color:var(--cyan-neon); margin-top:10px; letter-spacing:1px;">
+          БОЕВАЯ СТАТИСТИКА
+        </div>
+        <div style="background:rgba(15,23,42,0.6); padding:10px; border-radius:3px; font-size:0.82rem; line-height:1.6; color:#cbd5e1;">
+          <div>• Убито монстров: <b>${player.killsCount}</b></div>
+          <div>• Пройдено квестов: <b>${player.currentQuestIdx} / ${QUESTS_DB.length}</b></div>
+          <div>• Босс 1-го Этажа (The Gleam Eyes): <b>${player.bossesDefeated.boss_gleam_eyes ? 'ПОБЕЖДЁН ✓' : 'НЕ ПОБЕЖДЁН'}</b></div>
+          <div>• Босс 2-го Этажа (The Lich King): <b>${player.bossesDefeated.boss_lich_king ? 'ПОБЕЖДЁН ✓' : 'НЕ ПОБЕЖДЁН'}</b></div>
+        </div>
+      `;
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       15. PLAYER DEATH & RESPAWN
+       ══════════════════════════════════════════════════════════════ */
+    function handlePlayerDeath() {
+      combatState.active = false;
+      playSound('defeat');
+      document.getElementById('death-overlay').classList.add('active');
+    }
+
+    function respawnPlayer() {
+      document.getElementById('death-overlay').classList.remove('active');
+      player.hp = Math.round(player.maxHp * 0.7); // 70% HP on respawn
+      player.mp = Math.round(player.maxMp * 0.7);
+      player.currentZone = 'town';
+      addLog(`[ВОЗРОЖДЕНИЕ] Вы очнулись у костра в Городке Начал. Здоровье частично восстановлено.`, 'heal');
+      renderZone();
+      updateHUD();
+      showToast("Возрождение в Городке Начал");
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       16. SAVE & LOAD SYSTEM (LOCALSTORAGE)
+       ══════════════════════════════════════════════════════════════ */
+    const SAVE_KEY = 'sao_aincrad_rpg_save_v1';
+
+    function saveGame(isAuto = false) {
+      try {
+        const data = JSON.stringify(player);
+        localStorage.setItem(SAVE_KEY, data);
+        if (!isAuto) {
+          playSound('click');
+          showToast("Игра успешно сохранена!");
+          addLog(`[СИСТЕМА] Прогресс игры успешно сохранён в память браузера.`, 'system');
+        }
+      } catch (e) {
+        console.error("Save error:", e);
+        showToast("Ошибка сохранения!");
+      }
+    }
+
+    function saveGameAuto() {
+      saveGame(true);
+    }
+
+    function loadGame() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) {
+          showToast("Сохранение не найдено!");
+          return;
+        }
+        const loaded = JSON.parse(raw);
+        // Merge state safely
+        player = Object.assign(player, loaded);
+
+        if (combatState.active) {
+          endCombat();
+        }
+
+        playSound('heal');
+        showToast("Игра успешно загружена!");
+        addLog(`[СИСТЕМА] Сохранение загружено. Добро пожаловать обратно, ${player.name}!`, 'system');
+        
+        renderZone();
+        updateHUD();
+      } catch (e) {
+        console.error("Load error:", e);
+        showToast("Ошибка загрузки данных!");
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       17. MODAL UTILITIES & EVENT LISTENERS
+       ══════════════════════════════════════════════════════════════ */
+    function openModal(modalId) {
+      playSound('click');
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      playSound('click');
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Modal buttons wiring
+    document.getElementById('btn-open-inventory').addEventListener('click', () => {
+      renderInventoryModal();
+      openModal('modal-inventory');
+    });
+
+    document.getElementById('btn-open-status').addEventListener('click', () => {
+      renderStatusModal();
+      openModal('modal-status');
+    });
+
+    document.getElementById('btn-save-game').addEventListener('click', () => saveGame(false));
+    document.getElementById('btn-load-game').addEventListener('click', () => loadGame());
+
+    // Close modals on overlay backdrop click
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       18. GAME START
+       ══════════════════════════════════════════════════════════════ */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Auto load if save exists, else fresh start
+      if (localStorage.getItem(SAVE_KEY)) {
+        loadGame();
+      } else {
+        renderZone();
+        updateHUD();
+      }
+    });
+  </script>
+</body>
+</html>
