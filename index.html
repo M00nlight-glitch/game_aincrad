@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAO: Aincrad Chronicles | 50 Floors + Heroes of Envell (FIXED)</title>
+<title>SAO: Aincrad Chronicles v5.0 | 100 Floors + AI Oracle</title>
 <style>
   :root {
     --bg-dark: #0a0e1a; --bg-panel: rgba(14, 23, 42, 0.88);
@@ -13,7 +13,7 @@
     --legendary-gold: #ffd700; --elite-purple: #c084fc; --miniboss-red: #ff3366;
     --donate-pink: #ff69b4; --admin-red: #ff4444; --race-teal: #2dd4bf;
     --male-blue: #60a5fa; --female-pink: #f472b6;
-    --envell-blue: #60a5fa;
+    --envell-blue: #60a5fa; --ai-purple: #a855f7;
     --text-main: #e2e8f0; --text-dim: #94a3b8;
     --border-cyan: rgba(110, 231, 255, 0.35);
     --font-mono: 'Consolas', 'Courier New', 'Fira Code', 'Segoe UI Mono', monospace;
@@ -34,12 +34,13 @@
   ::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--cyan-neon); }
 
-  #app-container { width: 100%; max-width: 1780px; height: 100vh; max-height: calc(100vh - 12px); display: flex; flex-direction: column; gap: 5px; }
+  #app-container { width: 100%; max-width: 1820px; height: 100vh; max-height: calc(100vh - 12px); display: flex; flex-direction: column; gap: 5px; }
 
   .sao-panel { background: var(--bg-panel); border: 1px solid var(--border-cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.08), inset 0 0 12px rgba(0, 240, 255, 0.03); backdrop-filter: blur(8px); border-radius: 5px; position: relative; }
   .sao-panel::before { content: ''; position: absolute; top: -1px; left: -1px; width: 9px; height: 9px; border-top: 2px solid var(--cyan-neon); border-left: 2px solid var(--cyan-neon); }
   .sao-panel::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 9px; height: 9px; border-bottom: 2px solid var(--cyan-neon); border-right: 2px solid var(--cyan-neon); }
 
+  /* ═══ TOP HUD ═══ */
   .hud-header { padding: 6px 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0; }
   .hud-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .player-tag { display: flex; align-items: center; gap: 6px; }
@@ -76,21 +77,34 @@
   .audio-btn { background: transparent; border: 1px solid var(--border-cyan); color: var(--cyan-neon); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 3px; }
   .audio-btn:hover { background: rgba(110, 231, 255, 0.2); }
 
-  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 5px; flex: 1; min-height: 0; }
+  /* ═══ MAIN GRID ═══ */
+  .main-grid { display: grid; grid-template-columns: 1fr 360px; gap: 5px; flex: 1; min-height: 0; }
   .scene-column { display: flex; flex-direction: column; gap: 5px; min-height: 0; }
   .side-column { display: flex; flex-direction: column; gap: 5px; min-height: 0; overflow-y: auto; }
 
-  .zone-card { padding: 8px 12px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  /* ═══ ZONE CARD ═══ */
+  .zone-card { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
   .zone-header-row { display: flex; justify-content: space-between; align-items: center; }
   .zone-floor-tag { font-size: 0.72rem; letter-spacing: 1.5px; color: var(--cyan-neon); text-transform: uppercase; opacity: 0.85; }
-  .zone-title { font-size: 1.05rem; font-weight: bold; color: #fff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(110, 231, 255, 0.4); }
-  .zone-status-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; font-weight: bold; }
+  .zone-title { font-size: 1.15rem; font-weight: bold; color: #fff; letter-spacing: 1px; text-shadow: 0 0 8px rgba(110, 231, 255, 0.4); }
+  .zone-status-badge { font-size: 0.72rem; padding: 3px 10px; border-radius: 3px; font-weight: bold; }
   .badge-safe { background: rgba(34, 197, 94, 0.15); border: 1px solid #22c55e; color: #4ade80; }
   .badge-danger { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #f87171; }
   .badge-boss { background: rgba(217, 70, 239, 0.2); border: 1px solid #d946ef; color: #f0abfc; animation: bossPulse 1.5s infinite; }
   @keyframes bossPulse { 0%, 100% { box-shadow: 0 0 4px rgba(217, 70, 239, 0.3); } 50% { box-shadow: 0 0 10px rgba(217, 70, 239, 0.8); } }
-  .zone-description { font-size: 0.8rem; line-height: 1.35; color: #cbd5e1; }
+  .zone-description { font-size: 0.82rem; line-height: 1.4; color: #cbd5e1; }
 
+  /* ═══ AI ORACLE ═══ */
+  .oracle-panel { padding: 8px 12px; display: flex; align-items: flex-start; gap: 10px; flex-shrink: 0; background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(15, 23, 42, 0.9)); border-color: rgba(168, 85, 247, 0.4); }
+  .oracle-panel::before { border-color: var(--ai-purple); }
+  .oracle-panel::after { border-color: var(--ai-purple); }
+  .oracle-avatar { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, rgba(168, 85, 247, 0.4), rgba(88, 28, 135, 0.6)); border: 2px solid var(--ai-purple); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.3rem; box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); animation: oraclePulse 2.5s infinite; }
+  @keyframes oraclePulse { 0%, 100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.5); } 50% { box-shadow: 0 0 20px rgba(168, 85, 247, 1); } }
+  .oracle-content { flex: 1; min-width: 0; }
+  .oracle-title { font-size: 0.75rem; color: var(--ai-purple); letter-spacing: 2px; font-weight: bold; }
+  .oracle-text { font-size: 0.82rem; color: #e9d5ff; line-height: 1.4; font-style: italic; }
+
+  /* ═══ BATTLE STAGE ═══ */
   .battle-stage { background: rgba(6, 11, 25, 0.85); border: 1px solid rgba(110, 231, 255, 0.25); border-radius: 5px; padding: 8px; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; flex-shrink: 0; }
   .battle-stage.shake { animation: screenShake 0.3s; }
   @keyframes screenShake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
@@ -113,6 +127,7 @@
   .tier-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 3px; font-weight: bold; }
   .tier-tag.elite { background: rgba(192, 132, 252, 0.2); border: 1px solid var(--elite-purple); color: var(--elite-purple); }
   .tier-tag.miniboss { background: rgba(255, 51, 102, 0.2); border: 1px solid var(--miniboss-red); color: var(--miniboss-red); animation: tagPulse 1s infinite; }
+  .tier-tag.boss { background: rgba(255, 215, 0, 0.2); border: 1px solid #ffd700; color: #ffd700; animation: tagPulse 1s infinite; }
   @keyframes tagPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
   .enemy-mods-row { display: flex; gap: 4px; flex-wrap: wrap; }
   .mod-tag { font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
@@ -120,6 +135,7 @@
   .enemy-hp-bar-fill { height: 100%; background: linear-gradient(90deg, #991b1b, #ef4444); transition: width 0.25s; }
   .enemy-hp-bar-fill.elite { background: linear-gradient(90deg, #6b21a8, #c084fc); }
   .enemy-hp-bar-fill.miniboss { background: linear-gradient(90deg, #7f1d1d, #ff3366); }
+  .enemy-hp-bar-fill.boss { background: linear-gradient(90deg, #7c2d12, #fbbf24); }
   .enemy-hp-text { position: absolute; width: 100%; top: 0; left: 0; text-align: center; font-size: 0.72rem; line-height: 13px; font-weight: bold; color: #fff; text-shadow: 0 0 3px #000; }
   .enemy-debuff-row { display: flex; gap: 4px; flex-wrap: wrap; min-height: 16px; }
   .debuff-tag { font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; background: rgba(251, 191, 36, 0.15); border: 1px solid #fbbf24; color: #fde047; font-weight: bold; }
@@ -132,6 +148,7 @@
   .floating-mp { color: #60a5fa; }
   @keyframes floatUpFade { 0% { opacity: 0; transform: translateY(8px) scale(0.7); } 20% { opacity: 1; transform: translateY(-5px) scale(1.1); } 100% { opacity: 0; transform: translateY(-45px) scale(0.9); } }
 
+  /* ═══ LOG ═══ */
   .log-panel { flex: 1; min-height: 0; background: rgba(8, 13, 25, 0.9); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 5px; padding: 8px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; font-size: 0.78rem; line-height: 1.35; }
   .log-entry { padding: 1px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); word-break: break-word; animation: fadeInLog 0.2s; }
   @keyframes fadeInLog { from { opacity: 0; } to { opacity: 1; } }
@@ -154,8 +171,9 @@
   .log-entry.race { color: var(--race-teal); font-weight: bold; }
   .log-entry.mastery { color: #fde047; font-weight: bold; background: rgba(253, 224, 71, 0.08); padding: 2px 6px; border-left: 3px solid #fde047; border-radius: 2px; }
   .log-entry.sidequest { color: #f472b6; font-weight: 900; background: rgba(244, 114, 182, 0.1); padding: 4px 8px; border-left: 3px solid #f472b6; border-radius: 3px; }
-  .log-entry.envell { color: var(--envell-blue); font-weight: bold; }
+  .log-entry.ai { color: var(--ai-purple); font-weight: bold; background: rgba(168, 85, 247, 0.08); padding: 3px 6px; border-left: 3px solid var(--ai-purple); border-radius: 3px; }
 
+  /* ═══ SIDE CARDS ═══ */
   .quest-card { padding: 8px 10px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
   .quest-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
   .quest-title-badge { display: flex; align-items: center; gap: 5px; font-weight: bold; color: var(--cyan-neon); font-size: 0.85rem; }
@@ -190,7 +208,8 @@
   .sidequest-mini-title { font-size: 0.78rem; font-weight: bold; color: #f472b6; margin-bottom: 2px; }
   .sidequest-mini-desc { font-size: 0.72rem; color: #fce7f3; line-height: 1.35; }
 
-  .actions-panel { padding: 6px 10px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  /* ═══ ACTIONS PANEL (BOTTOM) ═══ */
+  .actions-panel { padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
   .actions-header { font-size: 0.78rem; color: var(--cyan-neon); letter-spacing: 1px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
   .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 5px; }
 
@@ -217,12 +236,16 @@
   .sao-btn.btn-race { border-color: var(--race-teal); background: linear-gradient(135deg, rgba(15, 60, 55, 0.9) 0%, rgba(8, 35, 30, 1) 100%); color: var(--race-teal); font-weight: 900; }
   .sao-btn.btn-sidequest { border-color: #f472b6; background: linear-gradient(135deg, rgba(60, 20, 40, 0.9) 0%, rgba(35, 10, 25, 1) 100%); color: #f9a8d4; font-weight: 900; animation: sidequestPulse 2s infinite; }
   @keyframes sidequestPulse { 0%, 100% { box-shadow: 0 0 6px rgba(244, 114, 182, 0.4); } 50% { box-shadow: 0 0 14px rgba(244, 114, 182, 0.9); } }
+  .sao-btn.btn-teleport { border-color: var(--ai-purple); background: linear-gradient(135deg, rgba(50, 20, 80, 0.9) 0%, rgba(30, 10, 50, 1) 100%); color: #d8b4fe; font-weight: 900; animation: teleportPulse 2.5s infinite; }
+  @keyframes teleportPulse { 0%, 100% { box-shadow: 0 0 6px rgba(168, 85, 247, 0.4); } 50% { box-shadow: 0 0 16px rgba(168, 85, 247, 0.9); } }
 
+  /* ═══ FOOTER ═══ */
   .footer-bar { padding: 6px 10px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px; flex-shrink: 0; }
   .footer-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
   .footer-btn { padding: 6px 12px; font-size: 0.78rem; }
   .version-tag { font-size: 0.7rem; color: var(--text-dim); opacity: 0.7; }
 
+  /* ═══ MODALS ═══ */
   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.88); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 12px; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.active { opacity: 1; pointer-events: auto; }
   .modal-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 25px rgba(0, 240, 255, 0.2); border-radius: 5px; width: 100%; max-width: 1000px; max-height: 92vh; display: flex; flex-direction: column; transform: translateY(15px) scale(0.97); transition: transform 0.2s; }
@@ -230,21 +253,32 @@
   .modal-window.admin-window { border-color: var(--admin-red); box-shadow: 0 0 35px rgba(255, 68, 68, 0.4); }
   .modal-window.race-window { border-color: var(--race-teal); box-shadow: 0 0 35px rgba(45, 212, 191, 0.4); }
   .modal-window.lily-window { border-color: #f472b6; box-shadow: 0 0 40px rgba(244, 114, 182, 0.6); }
+  .modal-window.teleport-window { border-color: var(--ai-purple); box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
   .modal-overlay.active .modal-window { transform: translateY(0) scale(1); }
   .modal-header { padding: 12px 16px; border-bottom: 1px solid rgba(110, 231, 255, 0.25); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
   .modal-window.donate-window .modal-header { border-bottom-color: var(--donate-pink); }
   .modal-window.admin-window .modal-header { border-bottom-color: var(--admin-red); }
   .modal-window.race-window .modal-header { border-bottom-color: var(--race-teal); }
   .modal-window.lily-window .modal-header { border-bottom-color: #f472b6; }
+  .modal-window.teleport-window .modal-header { border-bottom-color: var(--ai-purple); }
   .modal-title { font-size: 1.05rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
   .modal-window.donate-window .modal-title { color: var(--donate-pink); }
   .modal-window.admin-window .modal-title { color: var(--admin-red); }
   .modal-window.race-window .modal-title { color: var(--race-teal); }
   .modal-window.lily-window .modal-title { color: #f472b6; }
+  .modal-window.teleport-window .modal-title { color: var(--ai-purple); }
   .modal-close-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #94a3b8; width: 28px; height: 28px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
   .modal-close-btn:hover { border-color: #ef4444; color: #ef4444; }
   .modal-body { padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; }
 
+  /* ═══ TABS ═══ */
+  .modal-tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid rgba(110, 231, 255, 0.2); padding-bottom: 8px; }
+  .modal-tab { padding: 7px 14px; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; font-weight: bold; border-radius: 3px; font-size: 0.82rem; }
+  .modal-tab.active { background: rgba(110, 231, 255, 0.15); border-color: var(--cyan-neon); color: var(--cyan-bright); }
+  .modal-tab.donate.active { background: rgba(255, 105, 180, 0.15); border-color: var(--donate-pink); color: var(--donate-pink); }
+  .modal-tab.admin.active { background: rgba(255, 68, 68, 0.15); border-color: var(--admin-red); color: #ff8888; }
+
+  /* ═══ ITEMS ═══ */
   .items-list { display: flex; flex-direction: column; gap: 6px; }
   .item-card { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.15); border-radius: 4px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .item-card:hover { border-color: var(--cyan-neon); }
@@ -261,6 +295,7 @@
   .item-tag.type { background: rgba(251, 191, 36, 0.15); color: #fde047; }
   .item-desc { font-size: 0.75rem; color: var(--text-dim); }
   .item-stat-badge { font-size: 0.75rem; color: #4ade80; }
+  .item-stat-badge.donate { color: var(--donate-pink); }
   .item-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; flex-wrap: wrap; }
   .mini-btn { padding: 4px 10px; font-size: 0.75rem; }
 
@@ -268,6 +303,21 @@
   .shop-tab { padding: 6px 14px; background: transparent; border: 1px solid transparent; color: var(--text-dim); cursor: pointer; font-weight: bold; border-radius: 3px; font-size: 0.82rem; }
   .shop-tab.active { background: rgba(110, 231, 255, 0.15); border-color: var(--cyan-neon); color: var(--cyan-bright); }
 
+  /* ═══ TELEPORT GRID ═══ */
+  .teleport-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 6px; }
+  .teleport-floor { aspect-ratio: 1; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: all 0.15s; border: 2px solid; position: relative; padding: 4px; }
+  .teleport-floor.unlocked { border-color: var(--cyan-neon); background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(30, 58, 138, 0.2)); color: var(--cyan-bright); }
+  .teleport-floor.unlocked:hover { transform: scale(1.08); box-shadow: 0 0 15px var(--cyan-glow); border-color: var(--cyan-bright); }
+  .teleport-floor.locked { border-color: rgba(148, 163, 184, 0.2); background: rgba(15, 23, 42, 0.5); color: #475569; cursor: not-allowed; }
+  .teleport-floor.current { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(180, 130, 0, 0.15)); color: var(--legendary-gold); animation: currentPulse 1.5s infinite; }
+  @keyframes currentPulse { 0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 1); } }
+  .teleport-floor.completed { border-color: #22c55e; background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+  .teleport-floor-num { font-size: 1rem; }
+  .teleport-floor-icon { font-size: 0.7rem; margin-top: 2px; }
+
+  .biome-header { font-size: 0.85rem; font-weight: bold; color: var(--ai-purple); letter-spacing: 1.5px; margin-top: 8px; margin-bottom: 4px; padding-bottom: 3px; border-bottom: 1px solid rgba(168, 85, 247, 0.3); }
+
+  /* ═══ ACHIEVEMENTS ═══ */
   .ach-category { margin-bottom: 6px; }
   .ach-category-title { font-size: 0.85rem; font-weight: bold; color: var(--legendary-gold); letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid rgba(255, 215, 0, 0.2); margin-bottom: 6px; }
   .ach-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px; }
@@ -286,6 +336,7 @@
   .ach-progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #ffd700); transition: width 0.3s; }
   .ach-progress-text { font-size: 0.68rem; color: #94a3b8; }
 
+  /* ═══ SKILLS ═══ */
   .skill-shop-item { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(110, 231, 255, 0.2); border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
   .skill-shop-item.locked { opacity: 0.6; border-style: dashed; }
   .skill-shop-item.unlocked { border-color: #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(20, 60, 30, 0.05)); }
@@ -304,10 +355,13 @@
   .mastery-progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #fde047); }
   .mastery-text { font-size: 0.68rem; color: #fbbf24; min-width: 50px; text-align: right; }
 
-  .donate-hero { text-align: center; padding: 12px; background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(60, 20, 50, 0.1)); border: 2px solid var(--donate-pink); border-radius: 6px; }
+  /* ═══ DONATE ═══ */
+  .donate-hero { text-align: center; padding: 14px; background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(60, 20, 50, 0.1)); border: 2px solid var(--donate-pink); border-radius: 6px; }
   .donate-hero-title { font-size: 1.3rem; font-weight: 900; color: var(--donate-pink); letter-spacing: 3px; text-shadow: 0 0 15px var(--donate-pink); }
-  .donate-balance { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 105, 180, 0.1); border: 1px solid var(--donate-pink); border-radius: 4px; padding: 8px 12px; font-size: 0.95rem; font-weight: bold; color: var(--donate-pink); }
+  .donate-balance { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 105, 180, 0.1); border: 1px solid var(--donate-pink); border-radius: 4px; padding: 10px 14px; font-size: 0.95rem; font-weight: bold; color: var(--donate-pink); }
+  .donate-category { font-size: 0.88rem; font-weight: bold; color: var(--donate-pink); letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid rgba(255, 105, 180, 0.3); margin-top: 6px; }
 
+  /* ═══ RACE / GENDER ═══ */
   .race-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
   .race-card { background: rgba(15, 23, 42, 0.7); border: 2px solid rgba(45, 212, 191, 0.3); border-radius: 5px; padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; text-align: center; transition: all 0.15s; }
   .race-card:hover { border-color: var(--race-teal); background: rgba(15, 60, 55, 0.5); transform: translateY(-3px); box-shadow: 0 0 20px rgba(45, 212, 191, 0.5); }
@@ -327,9 +381,11 @@
   .gender-card.male .gender-name { color: var(--male-blue); }
   .gender-card.female .gender-name { color: var(--female-pink); }
 
+  /* ═══ ADMIN ═══ */
   .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 6px; }
   .admin-section-title { font-size: 0.88rem; font-weight: bold; color: var(--admin-red); letter-spacing: 1.5px; padding-bottom: 4px; border-bottom: 1px solid rgba(255, 68, 68, 0.3); margin-top: 8px; margin-bottom: 4px; }
 
+  /* ═══ CREATION ═══ */
   .creation-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(4, 7, 15, 0.97); z-index: 300; display: none; align-items: center; justify-content: center; padding: 12px; overflow-y: auto; }
   .creation-overlay.active { display: flex; }
   .creation-window { background: var(--bg-panel); border: 1px solid var(--cyan-neon); box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-radius: 6px; width: 100%; max-width: 1200px; padding: 18px; display: flex; flex-direction: column; gap: 12px; max-height: 96vh; overflow-y: auto; }
@@ -357,6 +413,7 @@
   .creation-actions { display: flex; justify-content: center; gap: 12px; }
   .creation-error { color: #f87171; text-align: center; font-size: 0.82rem; min-height: 1em; font-weight: bold; }
 
+  /* ═══ DEATH ═══ */
   .death-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(12, 0, 4, 0.97); z-index: 250; display: flex; align-items: center; justify-content: center; padding: 12px; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.5s; }
   .death-overlay.active { opacity: 1; pointer-events: auto; }
   .death-banner { border: 2px solid #ef4444; background: rgba(185, 28, 28, 0.2); box-shadow: 0 0 40px rgba(239, 68, 68, 0.7); padding: 24px 32px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 520px; width: 100%; }
@@ -364,9 +421,68 @@
   .death-subtitle { font-size: 0.92rem; color: #fca5a5; }
   .death-warning { border: 1px solid #fbbf24; background: rgba(251, 191, 36, 0.1); color: #fde047; padding: 8px 12px; border-radius: 3px; font-size: 0.85rem; font-weight: bold; }
 
-  .toast-box { position: fixed; bottom: 16px; right: 16px; background: rgba(14, 23, 42, 0.96); border: 1px solid var(--cyan-neon); box-shadow: 0 0 18px rgba(110, 231, 255, 0.35); padding: 10px 16px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; z-index: 150; transform: translateY(50px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 360px; }
+  /* ═══ TOAST ═══ */
+  .toast-box { position: fixed; bottom: 16px; right: 16px; background: rgba(14, 23, 42, 0.96); border: 1px solid var(--cyan-neon); box-shadow: 0 0 18px rgba(110, 231, 255, 0.35); padding: 10px 16px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; z-index: 150; transform: translateY(50px);opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 360px; }
   .toast-box.show { transform: translateY(0); opacity: 1; }
   .toast-box.achievement { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(60, 45, 8, 0.98), rgba(40, 25, 5, 0.98)); color: var(--legendary-gold); font-weight: 900; }
+  .toast-box.ai { border-color: var(--ai-purple); background: linear-gradient(135deg, rgba(60, 30, 90, 0.98), rgba(30, 10, 50, 0.98)); color: #d8b4fe; font-weight: 900; }
+
+  /* ═══ AI ORACLE MESSAGES ═══ */
+  .ai-message { background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(88, 28, 135, 0.06)); border-left: 3px solid var(--ai-purple); border-radius: 3px; padding: 6px 10px; font-size: 0.78rem; color: #e9d5ff; line-height: 1.4; font-style: italic; }
+  
+  /* ═══ WORLD CLOCK ═══ */
+  .world-badge { display: flex; align-items: center; gap: 4px; background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(30, 58, 138, 0.25)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 4px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; cursor: help; letter-spacing: 0.5px; }
+  .world-badge:hover { box-shadow: 0 0 10px var(--cyan-glow); }
+
+  body { transition: background-color 0.8s ease, background-image 0.8s ease; }
+  body.world-night {
+    background-color: #050810;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(80, 100, 180, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(30, 30, 80, 0.08) 0%, transparent 50%),
+      linear-gradient(rgba(5, 8, 16, 0.96), rgba(5, 8, 16, 0.96)),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(80, 120, 255, 0.02) 2px, rgba(80, 120, 255, 0.02) 4px);
+  }
+  body.world-rain::before,
+  body.world-snow::before,
+  body.world-storm::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  }
+  body.world-rain::before {
+    background-image: repeating-linear-gradient(105deg, transparent 0 8px, rgba(110, 200, 255, 0.35) 8px 9px);
+    opacity: 0.35;
+    animation: rainFall 0.5s linear infinite;
+  }
+  @keyframes rainFall {
+    from { background-position: 0 0; }
+    to { background-position: -20px 60px; }
+  }
+  body.world-snow::before {
+    background-image:
+      radial-gradient(circle, #fff 1px, transparent 1.5px),
+      radial-gradient(circle, #fff 0.7px, transparent 1px);
+    background-size: 40px 40px, 80px 80px;
+    background-position: 0 0, 20px 20px;
+    opacity: 0.5;
+    animation: snowFall 6s linear infinite;
+  }
+  @keyframes snowFall {
+    from { background-position: 0 0, 20px 20px; }
+    to { background-position: 10px 100vh, 30px calc(100vh + 20px); }
+  }
+  body.world-storm::before {
+    background-image: repeating-linear-gradient(100deg, transparent 0 10px, rgba(180, 220, 255, 0.45) 10px 11px);
+    opacity: 0.4;
+    animation: rainFall 0.35s linear infinite, stormFlash 4s ease-in-out infinite;
+  }
+  @keyframes stormFlash {
+    0%, 100% { filter: brightness(1); }
+    96% { filter: brightness(1); }
+    97% { filter: brightness(2.5); }
+    98% { filter: brightness(1); }
+    99% { filter: brightness(1.8); }
+  }
+  .world-badge.night { border-color: #8b7cf6; color: #c4b5fd; background: linear-gradient(135deg, rgba(139, 124, 246, 0.2), rgba(30, 20, 80, 0.3)); }
 
   @media (max-width: 1100px) {
     html, body { overflow: auto; height: auto; }
@@ -384,7 +500,7 @@
   <div class="creation-window">
     <div>
       <div class="creation-title">СОЗДАНИЕ ПЕРСОНАЖА</div>
-      <div class="creation-subtitle">15 КЛАССОВ • 50 ЭТАЖЕЙ • ГЕРОИ ЭНВЕЛЛА</div>
+      <div class="creation-subtitle">15 КЛАССОВ • 100 ЭТАЖЕЙ • ГЕРОИ ЭНВЕЛЛА • ИИ ОРАКУЛ</div>
     </div>
     <div>
       <div class="creation-section-label">Имя игрока</div>
@@ -427,7 +543,7 @@
           </span>
         </div>
         <span class="player-level-badge" id="hud-level">Lv. 1</span>
-        <span class="floor-badge" id="hud-floor">Этаж 1</span>
+        <span class="floor-badge" id="hud-floor">Этаж 1/100</span>
         <span class="ach-badge" id="hud-ach-badge" onclick="openAchievements()">🏆 0</span>
       </div>
     </div>
@@ -435,8 +551,8 @@
       <div class="bar-group"><span class="bar-label hp">HP</span><div class="bar-container"><div class="bar-fill hp-fill" id="hud-hp-bar" style="width: 100%;"></div></div><span class="bar-text" id="hud-hp-text">140 / 140</span></div>
       <div class="bar-group"><span class="bar-label mp">MP</span><div class="bar-container"><div class="bar-fill mp-fill" id="hud-mp-bar" style="width: 100%;"></div></div><span class="bar-text" id="hud-mp-text">60 / 60</span></div>
       <div class="bar-group"><span class="bar-label exp">EXP</span><div class="bar-container"><div class="bar-fill exp-fill" id="hud-exp-bar" style="width: 0%;"></div></div><span class="bar-text" id="hud-exp-text">0 / 100</span></div>
-    </div>
-    <div class="hud-right">
+    </div><div class="hud-right">
+      <div class="world-badge" id="hud-world" title="">🌞☀️ 3:00</div>
       <div class="currency-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M15 9.5a3.5 3.5 0 0 0-6 0v5a3.5 3.5 0 0 0 6 0"/></svg><span id="hud-col">500</span></div>
       <div class="donate-currency-box"><span>💎</span><span id="hud-donate">0 ДК</span></div>
       <button class="audio-btn" id="audio-toggle-btn">
@@ -455,6 +571,16 @@
         </div>
         <div class="zone-description" id="zone-desc">Центральная площадь Стартового Города.</div>
       </div>
+
+      <!-- AI ORACLE PANEL -->
+      <div class="sao-panel oracle-panel">
+        <div class="oracle-avatar">🤖</div>
+        <div class="oracle-content">
+          <div class="oracle-title">🔮 ОРАКУЛ КАРДИНАЛА</div>
+          <div class="oracle-text" id="oracle-text">Добро пожаловать в Айнкрад, игрок. Я — Оракул. Я буду направлять тебя.</div>
+        </div>
+      </div>
+
       <div class="battle-stage" id="battle-stage" style="display: none;">
         <div class="floating-dmg-container" id="floating-numbers"></div>
         <div class="enemy-card" id="enemy-card-container">
@@ -469,7 +595,7 @@
         </div>
       </div>
       <div class="log-panel" id="game-log">
-        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в SAO: Aincrad — 50 Floors + Heroes of Envell (FIXED).</div>
+        <div class="log-entry system">[СИСТЕМА] Добро пожаловать в SAO: Aincrad — 100 Floors + AI Oracle.</div>
       </div>
     </section>
 
@@ -486,8 +612,7 @@
           <div class="quest-item">
             <div class="quest-name" id="quest-title">Зачистка окраин</div>
             <div class="quest-desc" id="quest-desc">Уничтожьте 5 слаймов.</div>
-            <div class="quest-progress-bar"><div class="quest-progress-fill" id="quest-fill" style="width: 0%;"></div></div>
-            <div style="font-size: 0.72rem; color: #94a3b8; display:flex; justify-content:space-between; margin-top:2px;"><span>Прогресс:</span><span id="quest-count-text">0 / 5</span></div>
+            <div class="quest-progress-bar"><div class="quest-progress-fill" id="quest-fill" style="width: 0%;"></div></div><div style="font-size: 0.72rem; color: #94a3b8; display:flex; justify-content:space-between; margin-top:2px;"><span>Прогресс:</span><span id="quest-count-text">0 / 5</span></div>
             <div class="quest-rewards" id="quest-reward-text">+90 EXP, +60 Col</div>
           </div>
         </div>
@@ -533,6 +658,7 @@
 
   <footer class="sao-panel footer-bar">
     <div class="footer-buttons">
+      <button class="sao-btn footer-btn btn-teleport" id="btn-open-teleport">🌀 ТЕЛЕПОРТ</button>
       <button class="sao-btn footer-btn" id="btn-open-inventory">🎒 Инв (<span id="inv-count-badge">0</span>)</button>
       <button class="sao-btn footer-btn" id="btn-open-status">👤 Статус</button>
       <button class="sao-btn footer-btn btn-achievement" id="btn-open-achievements">🏆 Ачивки</button>
@@ -542,14 +668,27 @@
       <button class="sao-btn footer-btn" id="btn-save-game">💾</button>
       <button class="sao-btn footer-btn" id="btn-load-game">📂</button>
     </div>
-    <div class="version-tag">AINCRAD v4.1 • FIXED ORDER • 50 FLOORS</div>
+    <div class="version-tag">AINCRAD v5.0 • 100 FLOORS • AI ORACLE</div>
   </footer>
+</div>
+
+<!-- TELEPORT MODAL -->
+<div class="modal-overlay" id="modal-teleport">
+  <div class="modal-window teleport-window" style="max-width: 1200px;"><div class="modal-header"><div class="modal-title">🌀 ТЕЛЕПОРТАЦИЯ ПО ЭТАЖАМ</div><button class="modal-close-btn" onclick="closeModal('modal-teleport')">✕</button></div>
+    <div class="modal-body">
+      <div style="background:linear-gradient(135deg, rgba(168,85,247,0.15), rgba(88,28,135,0.08)); border:1px solid #a855f7; border-radius:4px; padding:10px;">
+        <div style="font-size:0.9rem; font-weight:bold; color:#d8b4fe;">🌀 СИСТЕМА ТЕЛЕПОРТАЦИИ</div>
+        <div style="font-size:0.78rem; color:#cbd5e1; margin-top:3px;">Телепортация бесплатна в открытые этажи. 100 этажей / 10 биомов. Боссы каждые 5 этажей.</div>
+      </div>
+      <div id="teleport-container"></div>
+    </div>
+  </div>
 </div>
 
 <!-- INVENTORY -->
 <div class="modal-overlay" id="modal-inventory">
   <div class="modal-window">
-    <div class="modal-header"><div class="modal-title">ИНВЕНТАРЬ</div><button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button></div>
+    <div class="modal-header"><div class="modal-title">🎒 ИНВЕНТАРЬ</div><button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button></div>
     <div class="modal-body">
       <div style="font-size:0.82rem; color:var(--cyan-neon);">ЭКИПИРОВАНО</div>
       <div class="items-list" id="equipped-items-list"></div>
@@ -594,7 +733,7 @@
 <!-- STATUS -->
 <div class="modal-overlay" id="modal-status">
   <div class="modal-window">
-    <div class="modal-header"><div class="modal-title">ПРОФИЛЬ</div><button class="modal-close-btn" onclick="closeModal('modal-status')">✕</button></div>
+    <div class="modal-header"><div class="modal-title">👤 ПРОФИЛЬ</div><button class="modal-close-btn" onclick="closeModal('modal-status')">✕</button></div>
     <div class="modal-body" id="status-modal-content"></div>
   </div>
 </div>
@@ -603,8 +742,7 @@
 <div class="modal-overlay" id="modal-achievements">
   <div class="modal-window" style="max-width: 1200px;">
     <div class="modal-header"><div class="modal-title">🏆 ДОСТИЖЕНИЯ</div><button class="modal-close-btn" onclick="closeModal('modal-achievements')">✕</button></div>
-    <div class="modal-body">
-      <div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(180,130,0,0.06)); border:1px solid #ffd700; border-radius:3px; padding:10px;">
+    <div class="modal-body"><div style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(180,130,0,0.06)); border:1px solid #ffd700; border-radius:3px; padding:10px;">
         <div style="font-size:1rem; font-weight:900; color:#ffd700;">ОТКРЫТО: <span id="ach-modal-progress">0 / 0</span></div>
         <div style="font-size:0.82rem; color:#fef3c7; margin-top:3px;">Бонусы: <span id="ach-modal-bonus">—</span></div>
       </div>
@@ -618,8 +756,14 @@
   <div class="modal-window donate-window" style="max-width: 1000px;">
     <div class="modal-header"><div class="modal-title">💎 ДОНАТ-МАГАЗИН</div><button class="modal-close-btn" onclick="closeModal('modal-donate')">✕</button></div>
     <div class="modal-body">
-      <div class="donate-hero"><div class="donate-hero-title">💎 ЭКСКЛЮЗИВ</div></div>
+      <div class="donate-hero"><div class="donate-hero-title">💎 EXCLUSIVE SHOP</div></div>
       <div class="donate-balance"><span>Баланс:</span><span>💎 <span id="donate-player-balance">0</span> ДК</span></div>
+      <div class="modal-tabs" id="donate-tabs">
+        <button class="modal-tab donate active" data-donate-tab="weapons" onclick="switchDonateTab('weapons')">⚔️ Оружие</button>
+        <button class="modal-tab donate" data-donate-tab="armors" onclick="switchDonateTab('armors')">🛡️ Броня</button>
+        <button class="modal-tab donate" data-donate-tab="consumables" onclick="switchDonateTab('consumables')">🧪 Расходники</button>
+        <button class="modal-tab donate" data-donate-tab="vip" onclick="switchDonateTab('vip')">👑 VIP</button>
+      </div>
       <div class="items-list" id="donate-items-container"></div>
     </div>
   </div>
@@ -645,6 +789,12 @@
     <div class="modal-body">
       <div style="text-align:center; padding:8px; background:linear-gradient(135deg, rgba(255,68,68,0.15), rgba(60,15,15,0.1)); border:2px solid var(--admin-red); border-radius:5px;">
         <div style="font-size:1.1rem; font-weight:900; color:#ff6666; letter-spacing:3px;">🔧 ADMIN ACCESS</div>
+      </div>
+      <div class="modal-tabs" id="admin-tabs">
+        <button class="modal-tab admin active" data-admin-tab="economy" onclick="switchAdminTab('economy')">💰 Экономика</button>
+        <button class="modal-tab admin" data-admin-tab="progression" onclick="switchAdminTab('progression')">⭐ Прокачка</button>
+        <button class="modal-tab admin" data-admin-tab="items" onclick="switchAdminTab('items')">🎒 Предметы</button>
+        <button class="modal-tab admin" data-admin-tab="floors" onclick="switchAdminTab('floors')">🗼 Этажи</button><button class="modal-tab admin" data-admin-tab="system" onclick="switchAdminTab('system')">⚙️ Система</button>
       </div>
       <div id="admin-panel-content"></div>
     </div>
@@ -716,8 +866,7 @@ function playSound(type) {
   else if (type === 'crit') [880, 1320, 1760].forEach((f, i) => tone(f, 0.2, 'square', 0.12, i * 0.04));
   else if (type === 'heal') [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.25, 'sine', 0.1, i * 0.06));
   else if (type === 'levelup') [440, 554, 659, 880, 1109].forEach((f, i) => tone(f, 0.35, 'triangle', 0.18, i * 0.09));
-  else if (type === 'defeat') tone(150, 0.8, 'sawtooth', 0.28);
-  else if (type === 'skill') { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(400, now); o.frequency.linearRampToValueAtTime(1600, now + 0.18); g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.22); o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + 0.24); }
+  else if (type === 'defeat') tone(150, 0.8, 'sawtooth', 0.28);else if (type === 'skill') { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(400, now); o.frequency.linearRampToValueAtTime(1600, now + 0.18); g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.22); o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + 0.24); }
   else if (type === 'classSkill') [400, 800, 1200, 1600].forEach((f, i) => tone(f, 0.25, 'sawtooth', 0.09, i * 0.05));
   else if (type === 'achievement') [523, 659, 784, 1046, 1318].forEach((f, i) => tone(f, 0.6, 'triangle', 0.2, i * 0.1));
   else if (type === 'elite') [220, 330, 440].forEach((f, i) => tone(f, 0.3, 'sawtooth', 0.16, i * 0.08));
@@ -728,6 +877,8 @@ function playSound(type) {
   else if (type === 'race') [440, 554, 659].forEach((f, i) => tone(f, 0.3, 'triangle', 0.15, i * 0.08));
   else if (type === 'mastery') [659, 784, 988, 1318].forEach((f, i) => tone(f, 0.4, 'triangle', 0.2, i * 0.09));
   else if (type === 'lily') [784, 988, 1175, 1568].forEach((f, i) => tone(f, 0.5, 'sine', 0.22, i * 0.12));
+  else if (type === 'ai') [1200, 1400, 1600, 1800].forEach((f, i) => tone(f, 0.15, 'sine', 0.08, i * 0.04));
+  else if (type === 'teleport') { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(200, now); o.frequency.exponentialRampToValueAtTime(2400, now + 0.4); g.gain.setValueAtTime(0.15, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.45); o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + 0.5); }
 }
 
 const audioBtn = document.getElementById('audio-toggle-btn');
@@ -741,8 +892,12 @@ audioBtn.addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   WEAPON TYPES
+   CONSTANTS
    ═══════════════════════════════════════════════════════════════ */
+const MAX_FLOOR = 100;
+const FLOORS_PER_BIOME = 10;
+const BOSS_INTERVAL = 5; // боссы на 5,10,15...100
+
 const WEAPON_TYPES = {
   'sword': { name: 'Меч', icon: '⚔️' },
   'greatsword': { name: 'Двуручный', icon: '⚜️' },
@@ -759,16 +914,12 @@ const WEAPON_TYPES = {
   'electron_hammer': { name: 'Электро-молот', icon: '⚡' }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   RACES
-   ═══════════════════════════════════════════════════════════════ */
 const RACES_DB = {
   'human': { id: 'human', name: 'ЧЕЛОВЕК', icon: '🧑', desc: 'Универсал.', bonusText: '+5% HP/MP/ATK/DEF/CRIT' },
   'elf': { id: 'elf', name: 'ЭЛЬФ', icon: '🧝', desc: 'Магия.', bonusText: '+20% MP, +15% урон навыков' },
   'dwarf': { id: 'dwarf', name: 'ГНОМ', icon: '⚒️', desc: 'Крепкий.', bonusText: '+25% HP, +15% DEF' },
   'dragonkin': { id: 'dragonkin', name: 'ДРАКОНИД', icon: '🐉', desc: 'Мощь.', bonusText: '+20% ATK, +10% крит' },
-  'halfelf': { id: 'halfelf', name: 'ПОЛУЭЛЬФ', icon: '🌙', desc: 'Любознательный.', bonusText: '+10% MP, +15% EXP' },
-  'undead_race': { id: 'undead_race', name: 'НЕЖИТЬ', icon: '💀', desc: 'Проклятый.', bonusText: '+25% урона, -10% HP' },
+  'halfelf': { id: 'halfelf', name: 'ПОЛУЭЛЬФ', icon: '🌙', desc: 'Любознательный.', bonusText: '+10% MP, +15% EXP' },'undead_race': { id: 'undead_race', name: 'НЕЖИТЬ', icon: '💀', desc: 'Проклятый.', bonusText: '+25% урона, -10% HP' },
   'angel': { id: 'angel', name: 'АНГЕЛ', icon: '🌟', desc: 'Святой.', bonusText: '+20% лечения, реген 2% HP/ход' },
   'demon': { id: 'demon', name: 'ДЕМОН', icon: '😈', desc: 'Кровожадный.', bonusText: '+20% крит-урон, +25% Col' }
 };
@@ -787,9 +938,6 @@ function getRaceBonus(raceId) {
   return b;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   BASE ITEMS
-   ═══════════════════════════════════════════════════════════════ */
 const ITEMS_DB = {};
 Object.assign(ITEMS_DB, {
   'w_rusty': { id: 'w_rusty', name: 'Ржавый клинок', type: 'weapon', weaponType: 'sword', atk: 0, price: 10, desc: 'Базовый меч.' },
@@ -813,41 +961,36 @@ Object.assign(ITEMS_DB, {
   'don_w_cosmic': { id: 'don_w_cosmic', name: '💎 Космический Разрушитель', type: 'weapon', weaponType: 'greatsword', atk: 1200, donatePrice: 400, donate: true, desc: '+1200 ATK.' },
   'don_w_gods': { id: 'don_w_gods', name: '💎 Оружие Богов', type: 'weapon', weaponType: 'sword', atk: 1800, donatePrice: 1000, donate: true, desc: '+1800 ATK.' },
   'don_w_admin': { id: 'don_w_admin', name: '💎 Клинок Разработчика', type: 'weapon', weaponType: 'sword', atk: 9999, donatePrice: 5000, donate: true, desc: '+9999 ATK.' },
-  'don_a_guardian': { id: 'don_a_guardian', name: '💎 Броня Хранителя', type: 'armor', def: 350, donatePrice: 50, donate: true, desc: '+350 DEF.' },
-  'don_a_void': { id: 'don_a_void', name: '💎 Плащ Пустоты', type: 'armor', def: 600, donatePrice: 150, donate: true, desc: '+600 DEF.' },
+  'don_a_guardian': { id: 'don_a_guardian', name: '💎 Броня Хранителя', type: 'armor', def: 350, donatePrice: 50, donate: true, desc: '+350 DEF.' },'don_a_void': { id: 'don_a_void', name: '💎 Плащ Пустоты', type: 'armor', def: 600, donatePrice: 150, donate: true, desc: '+600 DEF.' },
   'don_a_gods': { id: 'don_a_gods', name: '💎 Броня Богов', type: 'armor', def: 1200, donatePrice: 300, donate: true, desc: '+1200 DEF.' },
   'don_p_crystal': { id: 'don_p_crystal', name: '💎 Донат-кристалл', type: 'consumable', fullHeal: true, donatePrice: 5, donate: true, desc: '100% HP/MP.' },
   'don_p_kit': { id: 'don_p_kit', name: '💎 Набор выживания', type: 'consumable', healHp: 2000, donatePrice: 10, donate: true, desc: '+2000 HP.' }
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   BUILD WEAPONS BY FLOOR
-   ═══════════════════════════════════════════════════════════════ */
 function buildWeapons() {
   const WEAPONS_BY_FLOOR = {};
   const weaponProgressions = {
-    'sword':       [ {n:'Железный меч',a:12}, {n:'Стальной меч',a:30}, {n:'Мифриловый клинок',a:60}, {n:'Эльфийский меч',a:110}, {n:'Тёмный клинок',a:180}, {n:'Орихалковый меч',a:280}, {n:'Морозный клинок',a:420}, {n:'Драконобой',a:600}, {n:'Клинок Кардинала',a:850}, {n:'Экскалибур',a:1200} ],
-    'greatsword':  [ {n:'Рыцарский меч',a:18}, {n:'Тяжёлый меч',a:40}, {n:'Двуручник Стали',a:80}, {n:'Клинок Гиганта',a:140}, {n:'Меч Короля',a:220}, {n:'Разрушитель',a:340}, {n:'Морозный Двуручник',a:500}, {n:'Драконий Клинок',a:700}, {n:'Меч Титанов',a:1000}, {n:'Экскалибур II',a:1400} ],
-    'staff':       [ {n:'Огненный посох',a:14}, {n:'Посох Пламени',a:35}, {n:'Магический посох',a:70}, {n:'Посох Бури',a:120}, {n:'Посох Хаоса',a:200}, {n:'Посох Метеора',a:300}, {n:'Посох Вселенной',a:460}, {n:'Посох Апокалипсиса',a:650}, {n:'Жезл Армагеддона',a:900}, {n:'Посох Творца',a:1300} ],
-    'holy_staff':  [ {n:'Жезл Веры',a:12}, {n:'Святой жезл',a:30}, {n:'Жезл Света',a:60}, {n:'Скипетр Света',a:110}, {n:'Жезл Ангелов',a:180}, {n:'Жезл Богов',a:290}, {n:'Скипетр Десницы',a:440}, {n:'Скипетр Господа',a:620}, {n:'Жезл Архангела',a:850}, {n:'Скипетр Творца',a:1200} ],
-    'bow':         [ {n:'Охотничий лук',a:13}, {n:'Тисовый лук',a:32}, {n:'Лук Ветра',a:65}, {n:'Лук Молний',a:115}, {n:'Лук Бури',a:190}, {n:'Лук Снайпера',a:300}, {n:'Ледяной Лук',a:460}, {n:'Лук Дракона',a:640}, {n:'Лук Гнев Богов',a:900}, {n:'Лук Вселенной',a:1250} ],
-    'dagger':      [ {n:'Стальной кинжал',a:11}, {n:'Кинжал Тени',a:28}, {n:'Кинжал Яда',a:55}, {n:'Кинжал Убийцы',a:100}, {n:'Кинжал Крови',a:170}, {n:'Кинжал Смерти',a:270}, {n:'Морозный Кинжал',a:410}, {n:'Драконий Кинжал',a:580}, {n:'Кинжал Бездны',a:820}, {n:'Кинжал Теней',a:1150} ],
-    'twin_dagger': [ {n:'Парные клинки',a:15}, {n:'Двойные кинжалы',a:35}, {n:'Парные серпы',a:68}, {n:'Двойной разрез',a:120}, {n:'Клинки Тьмы',a:195}, {n:'Парные Смерти',a:310}, {n:'Ледяные Клинки',a:470}, {n:'Двойные Драконы',a:660}, {n:'Парные Бездны',a:920}, {n:'Парные Богов',a:1280} ],
-    'hammer':      [ {n:'Молот Войны',a:16}, {n:'Тяжёлый молот',a:38}, {n:'Молот Стихий',a:72}, {n:'Молот Грома',a:125}, {n:'Молот Титана',a:205}, {n:'Молот Рагнарёка',a:320}, {n:'Ледяной Молот',a:490}, {n:'Драконий Молот',a:680}, {n:'Молот Титанов',a:950}, {n:'Молот Миров',a:1350} ],
-    'scythe':      [ {n:'Коса Смерти',a:14}, {n:'Тёмная коса',a:34}, {n:'Коса Крови',a:66}, {n:'Коса Душ',a:118}, {n:'Коса Жнеца',a:195}, {n:'Коса Тьмы',a:305}, {n:'Ледяная Коса',a:465}, {n:'Коса Дракона',a:650}, {n:'Коса Жнеца Душ',a:900}, {n:'Коса Богов',a:1250} ],
-    'cyber_sword': [ {n:'Кибер-меч',a:20}, {n:'Взломщик-1',a:42}, {n:'Цифровой клинок',a:85}, {n:'Нейро-меч',a:145}, {n:'Квантовый разрез',a:230}, {n:'Меч Хакера',a:355}, {n:'Кибер-ледник',a:520}, {n:'Цифровой Дракон',a:720}, {n:'Клинок Системы',a:990}, {n:'Нейро-Уничтожитель',a:1350} ],
-    'legendary_shield': [ {n:'Базовый щит',a:8,def:15}, {n:'Стальной щит',a:18,def:35}, {n:'Щит Защитника',a:35,def:70}, {n:'Щит Грома',a:60,def:120}, {n:'Щит Титан',a:105,def:200}, {n:'Щит Крепости',a:165,def:310}, {n:'Ледяной Щит',a:250,def:450}, {n:'Щит Дракона',a:355,def:620}, {n:'Щит Богов',a:505,def:850}, {n:'Щит Мироздания',a:720,def:1200} ],
-    'magic_wand':  [ {n:'Магический жезл',a:13}, {n:'Жезл Чар',a:32}, {n:'Жезл Молний',a:64}, {n:'Жезл Льда',a:112}, {n:'Жезл Огня',a:185}, {n:'Жезл Грома',a:295}, {n:'Ледяной Жезл',a:455}, {n:'Жезл Дракона',a:635}, {n:'Жезл Вселенной',a:880}, {n:'Жезл Богов',a:1220} ],
-    'electron_hammer': [ {n:'Электро-молот',a:18}, {n:'Молот Разряда',a:40}, {n:'Молот Молний',a:78}, {n:'Электро-Гроза',a:138}, {n:'Молот Бури',a:225}, {n:'Молот Шторма',a:345}, {n:'Электро-Ураган',a:515}, {n:'Электро-Дракон',a:710}, {n:'Молот Титанов',a:970}, {n:'Молот Небес',a:1320} ]
+    'sword':       [ {n:'Железный меч',a:12}, {n:'Стальной меч',a:30}, {n:'Мифриловый клинок',a:60}, {n:'Эльфийский меч',a:110}, {n:'Тёмный клинок',a:180}, {n:'Орихалковый меч',a:280}, {n:'Морозный клинок',a:420}, {n:'Драконобой',a:600}, {n:'Клинок Кардинала',a:850}, {n:'Экскалибур',a:1200}, {n:'Клинок Творца',a:1700}, {n:'Меч Богов',a:2400} ],
+    'greatsword':  [ {n:'Рыцарский меч',a:18}, {n:'Тяжёлый меч',a:40}, {n:'Двуручник Стали',a:80}, {n:'Клинок Гиганта',a:140}, {n:'Меч Короля',a:220}, {n:'Разрушитель',a:340}, {n:'Морозный Двуручник',a:500}, {n:'Драконий Клинок',a:700}, {n:'Меч Титанов',a:1000}, {n:'Экскалибур II',a:1400}, {n:'Двуручник Творца',a:1900}, {n:'Разрушитель Миров',a:2600} ],
+    'staff':       [ {n:'Огненный посох',a:14}, {n:'Посох Пламени',a:35}, {n:'Магический посох',a:70}, {n:'Посох Бури',a:120}, {n:'Посох Хаоса',a:200}, {n:'Посох Метеора',a:300}, {n:'Посох Вселенной',a:460}, {n:'Посох Апокалипсиса',a:650}, {n:'Жезл Армагеддона',a:900}, {n:'Посох Творца',a:1300}, {n:'Посох Богов',a:1800}, {n:'Жезл Мироздания',a:2500} ],
+    'holy_staff':  [ {n:'Жезл Веры',a:12}, {n:'Святой жезл',a:30}, {n:'Жезл Света',a:60}, {n:'Скипетр Света',a:110}, {n:'Жезл Ангелов',a:180}, {n:'Жезл Богов',a:290}, {n:'Скипетр Десницы',a:440}, {n:'Скипетр Господа',a:620}, {n:'Жезл Архангела',a:850}, {n:'Скипетр Творца',a:1200}, {n:'Жезл Божества',a:1700}, {n:'Скипетр Вселенной',a:2400} ],
+    'bow':         [ {n:'Охотничий лук',a:13}, {n:'Тисовый лук',a:32}, {n:'Лук Ветра',a:65}, {n:'Лук Молний',a:115}, {n:'Лук Бури',a:190}, {n:'Лук Снайпера',a:300}, {n:'Ледяной Лук',a:460}, {n:'Лук Дракона',a:640}, {n:'Лук Гнев Богов',a:900}, {n:'Лук Вселенной',a:1250}, {n:'Лук Творца',a:1750}, {n:'Лук Мироздания',a:2450} ],
+    'dagger':      [ {n:'Стальной кинжал',a:11}, {n:'Кинжал Тени',a:28}, {n:'Кинжал Яда',a:55}, {n:'Кинжал Убийцы',a:100}, {n:'Кинжал Крови',a:170}, {n:'Кинжал Смерти',a:270}, {n:'Морозный Кинжал',a:410}, {n:'Драконий Кинжал',a:580}, {n:'Кинжал Бездны',a:820}, {n:'Кинжал Теней',a:1150}, {n:'Кинжал Творца',a:1650}, {n:'Кинжал Богов',a:2300} ],
+    'twin_dagger': [ {n:'Парные клинки',a:15}, {n:'Двойные кинжалы',a:35}, {n:'Парные серпы',a:68}, {n:'Двойной разрез',a:120}, {n:'Клинки Тьмы',a:195}, {n:'Парные Смерти',a:310}, {n:'Ледяные Клинки',a:470}, {n:'Двойные Драконы',a:660}, {n:'Парные Бездны',a:920}, {n:'Парные Богов',a:1280}, {n:'Парные Творца',a:1780}, {n:'Парные Мироздания',a:2480} ],
+    'hammer':      [ {n:'Молот Войны',a:16}, {n:'Тяжёлый молот',a:38}, {n:'Молот Стихий',a:72}, {n:'Молот Грома',a:125}, {n:'Молот Титана',a:205}, {n:'Молот Рагнарёка',a:320}, {n:'Ледяной Молот',a:490}, {n:'Драконий Молот',a:680}, {n:'Молот Титанов',a:950}, {n:'Молот Миров',a:1350}, {n:'Молот Творца',a:1850}, {n:'Молот Богов',a:2550} ],
+    'scythe':      [ {n:'Коса Смерти',a:14}, {n:'Тёмная коса',a:34}, {n:'Коса Крови',a:66}, {n:'Коса Душ',a:118}, {n:'Коса Жнеца',a:195}, {n:'Коса Тьмы',a:305}, {n:'Ледяная Коса',a:465}, {n:'Коса Дракона',a:650}, {n:'Коса Жнеца Душ',a:900}, {n:'Коса Богов',a:1250}, {n:'Коса Творца',a:1750}, {n:'Коса Мироздания',a:2450} ],'cyber_sword': [ {n:'Кибер-меч',a:20}, {n:'Взломщик-1',a:42}, {n:'Цифровой клинок',a:85}, {n:'Нейро-меч',a:145}, {n:'Квантовый разрез',a:230}, {n:'Меч Хакера',a:355}, {n:'Кибер-ледник',a:520}, {n:'Цифровой Дракон',a:720}, {n:'Клинок Системы',a:990}, {n:'Нейро-Уничтожитель',a:1350}, {n:'Меч Творца',a:1850}, {n:'Нейро-Бог',a:2550} ],
+    'legendary_shield': [ {n:'Базовый щит',a:8,def:15}, {n:'Стальной щит',a:18,def:35}, {n:'Щит Защитника',a:35,def:70}, {n:'Щит Грома',a:60,def:120}, {n:'Щит Титан',a:105,def:200}, {n:'Щит Крепости',a:165,def:310}, {n:'Ледяной Щит',a:250,def:450}, {n:'Щит Дракона',a:355,def:620}, {n:'Щит Богов',a:505,def:850}, {n:'Щит Мироздания',a:720,def:1200}, {n:'Щит Творца',a:1000,def:1700}, {n:'Щит Абсолюта',a:1400,def:2400} ],
+    'magic_wand':  [ {n:'Магический жезл',a:13}, {n:'Жезл Чар',a:32}, {n:'Жезл Молний',a:64}, {n:'Жезл Льда',a:112}, {n:'Жезл Огня',a:185}, {n:'Жезл Грома',a:295}, {n:'Ледяной Жезл',a:455}, {n:'Жезл Дракона',a:635}, {n:'Жезл Вселенной',a:880}, {n:'Жезл Богов',a:1220}, {n:'Жезл Творца',a:1720}, {n:'Жезл Мироздания',a:2420} ],
+    'electron_hammer': [ {n:'Электро-молот',a:18}, {n:'Молот Разряда',a:40}, {n:'Молот Молний',a:78}, {n:'Электро-Гроза',a:138}, {n:'Молот Бури',a:225}, {n:'Молот Шторма',a:345}, {n:'Электро-Ураган',a:515}, {n:'Электро-Дракон',a:710}, {n:'Молот Титанов',a:970}, {n:'Молот Небес',a:1320}, {n:'Молот Творца',a:1820}, {n:'Молот Богов',a:2520} ]
   };
-  const floorsPerTier = 5;
+  const floorsPerTier = 10;
   Object.keys(weaponProgressions).forEach(wt => {
     const list = weaponProgressions[wt];
     list.forEach((w, idx) => {
       const floorStart = idx * floorsPerTier + 1;
       const id = `w_${wt}_${idx}`;
       if (!WEAPONS_BY_FLOOR[floorStart]) WEAPONS_BY_FLOOR[floorStart] = [];
-      const item = { id, name: w.n, atk: w.a, price: 80 + idx * idx * 80 + idx * 100, desc: `${WEAPON_TYPES[wt].name}, тир ${idx+1}` };
+      const item = { id, name: w.n, atk: w.a, price: 80 + idx * idx * 200 + idx * 200, desc: `${WEAPON_TYPES[wt].name}, тир ${idx+1}` };
       if (w.def) item.def = w.def;
       WEAPONS_BY_FLOOR[floorStart].push(item);
       ITEMS_DB[id] = { ...item, type: 'weapon', weaponType: wt };
@@ -857,33 +1000,34 @@ function buildWeapons() {
 }
 const WEAPONS_BY_FLOOR = buildWeapons();
 
-/* ═══════════════════════════════════════════════════════════════
-   ARMORS
-   ═══════════════════════════════════════════════════════════════ */
 const ARMORS_BY_FLOOR = {
   1: [{ id: 'a_leather', name: 'Кожаная броня', def: 3, price: 50, desc: 'Лёгкая куртка.' }],
-  6: [{ id: 'a_studded', name: 'Клёпаная кожа', def: 8, price: 120, desc: 'Усиленная кожа.' }],
-  11: [{ id: 'a_iron', name: 'Железная броня', def: 18, price: 300, desc: 'Стальные пластины.' }],
-  16: [{ id: 'a_chainmail', name: 'Кольчуга', def: 35, price: 600, desc: 'Плотная кольчуга.' }],
-  21: [{ id: 'a_elven', name: 'Эльфийская броня', def: 60, price: 1100, desc: 'Лёгкая и крепкая.' }],
-  26: [{ id: 'a_dark_plate', name: 'Тёмная броня', def: 95, price: 1800, desc: 'Доспех тьмы.' }],
-  31: [{ id: 'a_orichalcum_plate', name: 'Орихалковая броня', def: 145, price: 3000, desc: 'Роскошная защита.' }],
-  36: [{ id: 'a_frost_plate', name: 'Морозный доспех', def: 210, price: 4500, legendary: true, desc: 'Защита льда.' }],
-  41: [{ id: 'a_dragon_mail', name: 'Драконья броня', def: 300, price: 7000, legendary: true, desc: 'Чешуя дракона.' }],
-  46: [{ id: 'a_cardinal_robe', name: 'Мантия Кардинала', def: 420, price: 11000, legendary: true, desc: 'Абсолютная защита.' }]
+  11: [{ id: 'a_studded', name: 'Клёпаная кожа', def: 12, price: 200, desc: 'Усиленная кожа.' }],
+  21: [{ id: 'a_iron', name: 'Железная броня', def: 30, price: 500, desc: 'Стальные пластины.' }],
+  31: [{ id: 'a_chainmail', name: 'Кольчуга', def: 60, price: 1000, desc: 'Плотная кольчуга.' }],
+  41: [{ id: 'a_elven', name: 'Эльфийская броня', def: 100, price: 1800, desc: 'Лёгкая и крепкая.' }],
+  51: [{ id: 'a_dark_plate', name: 'Тёмная броня', def: 160, price: 3000, desc: 'Доспех тьмы.' }],
+  61: [{ id: 'a_orichalcum_plate', name: 'Орихалковая броня', def: 240, price: 4800, desc: 'Роскошная защита.' }],
+  71: [{ id: 'a_frost_plate', name: 'Морозный доспех', def: 350, price: 7000, legendary: true, desc: 'Защита льда.' }],
+  81: [{ id: 'a_dragon_mail', name: 'Драконья броня', def: 500, price: 11000, legendary: true, desc: 'Чешуя дракона.' }],
+  91: [{ id: 'a_cardinal_robe', name: 'Мантия Кардинала', def: 700, price: 16000, legendary: true, desc: 'Абсолютная защита.' }]
 };
 Object.values(ARMORS_BY_FLOOR).forEach(arr => arr.forEach(a => { ITEMS_DB[a.id] = { ...a, type: 'armor' }; }));
 
 /* ═══════════════════════════════════════════════════════════════
-   50 FLOORS / 5 BIOMES
+   100 FLOORS / 10 BIOMES
    ═══════════════════════════════════════════════════════════════ */
 const FLOORS_DATA = [];
 const BIOMES = [
   { start: 1, end: 10, name: 'ЛЕСА АЙНКРАДА', cities: ['Городок Начал', 'Урбас', 'Цима', 'Гондора', 'Страна Роз', 'Стигий', 'Вольтера', 'Ледяная Гавань', 'Гранит', 'Цитадель'] },
-  { start: 11, end: 20, name: 'ПУСТОШИ И РУИНЫ', cities: ['Кхара', 'Скала Дракона', 'Проклятая Впадина', 'Город Теней', 'Кости Титанов', 'Кровавый Оазис', 'Пылающий Утёс', 'Зал Ветров', 'Город Изгоев', 'Трон Хаоса'] },
-  { start: 21, end: 30, name: 'ЛЕДЯНЫЕ ЗЕМЛИ', cities: ['Морозный Порт', 'Синий Утёс', 'Замок Имира', 'Ледяная Гавань II', 'Стужа', 'Холодный Зал', 'Вьюжный Пик', 'Трон Зимы', 'Плато Льда', 'Город Мороза'] },
+  { start: 11, end: 20, name: 'ПУСТОШИ И РУИНЫ', cities: ['Кхара', 'Скала Дракона', 'Проклятая Впадина', 'Город Теней', 'Кости Титанов', 'Кровавый Оазис', 'Пылающий Утёс', 'Зал Ветров', 'Город Изгоев', 'Трон Хаоса'] },{ start: 21, end: 30, name: 'ЛЕДЯНЫЕ ЗЕМЛИ', cities: ['Морозный Порт', 'Синий Утёс', 'Замок Имира', 'Ледяная Гавань II', 'Стужа', 'Холодный Зал', 'Вьюжный Пик', 'Трон Зимы', 'Плато Льда', 'Город Мороза'] },
   { start: 31, end: 40, name: 'ВУЛКАНИЧЕСКИЕ ОСТРОВА', cities: ['Пламенный Порт', 'Кратер', 'Огненное Кольцо', 'Лавовые Пещеры', 'Кузница Богов', 'Гнев Титанов', 'Магмовое Озеро', 'Трон Пламени', 'Кратер Апокалипсиса', 'Город Лавы'] },
-  { start: 41, end: 50, name: 'КОСМИЧЕСКИЕ ЗЕМЛИ', cities: ['Звёздный Порт', 'Орбита', 'Небесный Замок', 'Космическая Станция', 'Чёрная Дыра', 'Туманность', 'Галактический Трон', 'Врата Богов', 'За Гранью', 'Цитадель Кардинала II'] }
+  { start: 41, end: 50, name: 'КОСМИЧЕСКИЕ ЗЕМЛИ', cities: ['Звёздный Порт', 'Орбита', 'Небесный Замок', 'Космическая Станция', 'Чёрная Дыра', 'Туманность', 'Галактический Трон', 'Врата Богов', 'За Гранью', 'Цитадель Кардинала II'] },
+  { start: 51, end: 60, name: 'БЕЗДНА И ТЬМА', cities: ['Тёмный Порт', 'Провал', 'Зал Забвения', 'Город Шёпота', 'Кости Мира', 'Преисподняя', 'Тёмный Трон', 'Бездна', 'Забвение', 'Цитадель Тьмы'] },
+  { start: 61, end: 70, name: 'НЕБЕСНЫЕ ОСТРОВА', cities: ['Небесный Порт', 'Облачный Замок', 'Райский Сад', 'Город Света', 'Зал Серафимов', 'Трон Богов', 'Врата Рая', 'Эдем', 'Светозарный', 'Цитадель Света'] },
+  { start: 71, end: 80, name: 'ВРЕМЕННЫЕ РАЗЛОМЫ', cities: ['Порт Времени', 'Разлом', 'Зал Прошлого', 'Город Парадоксов', 'Колесо Времени', 'Хроники', 'Трон Хроноса', 'Вечность', 'Петля', 'Цитадель Времени'] },
+  { start: 81, end: 90, name: 'ЦИФРОВОЙ МИР', cities: ['Цифровой Порт', 'Матрица', 'Зал Кода', 'Город Данных', 'Ядро Системы', 'Сеть', 'Трон Программы', 'Киберпространство', 'За Гранью Кода', 'Цитадель Данных'] },
+  { start: 91, end: 100, name: 'ЛОГОВО КАРДИНАЛА', cities: ['Порт Кардинала', 'Врата Системы', 'Зал Кардинала', 'Святая Святых', 'Трон Кардинала', 'Финальный Зал', 'Обитель Богов', 'Врата Творца', 'Абсолют', 'Цитадель Вечности'] }
 ];
 BIOMES.forEach(biome => {
   for (let n = biome.start; n <= biome.end; n++) {
@@ -895,7 +1039,8 @@ BIOMES.forEach(biome => {
       wildName: `${biome.name.split(' ')[0]} — Дикая зона ${n}`,
       dungeonName: `Подземелье ${n}`,
       wildDesc: `${biome.name}, дикие земли этажа ${n}.`,
-      dungeonDesc: `Мрачные глубины этажа ${n}.`
+      dungeonDesc: `Мрачные глубины этажа ${n}.`,
+      hasBoss: n % BOSS_INTERVAL === 0
     });
   }
 });
@@ -909,20 +1054,29 @@ const ICON_SET = [
   `<path d="M4 14c0-4 4-8 8-8s8 4 8 8v4H4z" fill="rgba(245,158,11,0.3)" stroke="#f59e0b" stroke-width="2"/>`,
   `<path d="M12 2L4 8v8l8 6 8-6V8z" fill="rgba(220,38,38,0.4)" stroke="#ef4444" stroke-width="2.5"/>`,
   `<rect x="4" y="4" width="16" height="16" fill="rgba(120,113,108,0.5)" stroke="#78716c" stroke-width="2"/>`,
-  `<path d="M12 2l4 4 6 2-2 6 2 6-8 4-8-4 2-6-2-6 6-2z" fill="rgba(255,215,0,0.4)" stroke="#ffd700" stroke-width="2.5"/>`
+  `<path d="M12 2l4 4 6 2-2 6 2 6-8 4-8-4 2-6-2-6 6-2z" fill="rgba(255,215,0,0.4)" stroke="#ffd700" stroke-width="2.5"/>`,
+  `<path d="M12 2c3 4 6 6 6 10a6 6 0 0 1-12 0c0-4 3-6 6-10z" fill="rgba(75,0,130,0.5)" stroke="#8b5cf6" stroke-width="2.5"/>`,
+  `<circle cx="12" cy="12" r="9" fill="rgba(255,255,255,0.2)" stroke="#ffffff" stroke-width="2"/>`,
+  `<path d="M12 2l6 6-6 6-6-6z" fill="rgba(255,105,180,0.4)" stroke="#ff69b4" stroke-width="2"/>`,
+  `<rect x="3" y="3" width="18" height="18" rx="2" fill="rgba(34,197,94,0.3)" stroke="#22c55e" stroke-width="2"/>`,
+  `<path d="M12 2l3 7h7l-6 5 2 7-6-5-6 5 2-7-6-5h7z" fill="rgba(220,38,38,0.5)" stroke="#dc2626" stroke-width="2.5"/>`
 ];
 const MOB_NAMES = [
   ['Слайм', 'Кабан', 'Лесной волк', 'Гоблин', 'Орк', 'Скелет', 'Призрак', 'Оборотень', 'Минотавр', 'Лесной страж'],
-  ['Скорпион', 'Песчаный червь', 'Руинный голем', 'Мумия', 'Древний жрец', 'Тёмный рыцарь', 'Пожиратель', 'Кхара-воин', 'Химера', 'Стражник Трона'],
-  ['Ледяной волк', 'Снежный голем', 'Имир', 'Морозный призрак', 'Белый медведь', 'Ледяной титан', 'Ледяной дракон', 'Снежная королева', 'Зимний страж', 'Владыка Стужи'],
+  ['Скорпион', 'Песчаный червь', 'Руинный голем', 'Мумия', 'Древний жрец', 'Тёмный рыцарь', 'Пожиратель', 'Кхара-воин', 'Химера', 'Стражник Трона'],['Ледяной волк', 'Снежный голем', 'Имир', 'Морозный призрак', 'Белый медведь', 'Ледяной титан', 'Ледяной дракон', 'Снежная королева', 'Зимний страж', 'Владыка Стужи'],
   ['Огненный элементаль', 'Магмовый червь', 'Пирокультист', 'Лавовый дракон', 'Огненный голем', 'Пламенный дух', 'Вулканический титан', 'Инфернал', 'Лорд Пламени', 'Пожиратель Огня'],
-  ['Космический странник', 'Нейро-робот', 'Аватар системы', 'Квантовый фантом', 'Звёздный дракон', 'Галактический элементаль', 'Тёмный Аватар', 'Стражник Врат', 'Голос Бездны', 'Финальный Хранитель']
+  ['Космический странник', 'Нейро-робот', 'Аватар системы', 'Квантовый фантом', 'Звёздный дракон', 'Галактический элементаль', 'Тёмный Аватар', 'Стражник Врат', 'Голос Бездны', 'Финальный Хранитель'],
+  ['Тёмный жнец', 'Тень', 'Порождение тьмы', 'Проклятый рыцарь', 'Владыка Бездны', 'Кошмар', 'Ужас глубин', 'Тёмный дракон', 'Аватар Тьмы', 'Властелин Бездны'],
+  ['Серафим', 'Небесный страж', 'Ангел-воин', 'Облачный дракон', 'Хранитель Рая', 'Светлый титан', 'Архангел', 'Небесный Лорд', 'Хранитель Эдема', 'Владыка Небес'],
+  ['Хранитель Времени', 'Парадокс', 'Двойник', 'Хроно-дракон', 'Призрак прошлого', 'Эхо будущего', 'Титан Времени', 'Владыка Хроноса', 'Разрушитель Времени', 'Аватар Вечности'],
+  ['Вирус', 'Нейро-агент', 'Программа-убийца', 'Кибер-дракон', 'Троян', 'Цифровой титан', 'ИИ-охотник', 'Владыка Кода', 'Ядро Хаоса', 'Творец Данных'],
+  ['Страж Кардинала', 'Аватар Кардинала', 'Хранитель Творца', 'Абсолют', 'Финальный Страж', 'Хранитель Врат', 'Владыка Вечности', 'Творец', 'Кардинал', 'Создатель']
 ];
 FLOORS_DATA.forEach(f => {
   const floor = f.n;
-  const biomeIdx = Math.floor((floor - 1) / 10);
-  const baseHp = 30 + floor * 30 + Math.pow(floor, 1.6);
-  const baseAtk = 5 + floor * 3.5 + Math.pow(floor, 1.3);
+  const biomeIdx = Math.floor((floor - 1) / FLOORS_PER_BIOME);
+  const baseHp = 30 + floor * 25 + Math.pow(floor, 1.4);
+  const baseAtk = 5 + floor * 3 + Math.pow(floor, 1.2);
   const baseDef = 1 + floor * 1.2;
   const expBase = 12 + floor * 20;
   const colBase = 8 + floor * 15;
@@ -942,19 +1096,20 @@ FLOORS_DATA.forEach(f => {
   ENEMY_TEMPLATES[floor] = mobs;
 });
 
-/* 50 bosses */
+/* Bosses every 5 floors (5,10,15...100) = 20 bosses */
 const BOSSES_DB = {};
-const BOSS_NAMES = ['Illfang the Kobold Lord', 'Asterius the Taurus King', 'Nerius the Evil Treant', 'Wythege the Hippocampus', 'The Sandcrawler', 'Emerald Reaper', 'Cursed Mirror', 'Frost Giant', 'Infernal Dragon', 'Heathcliff the Paladin'];
+const BOSS_NAMES = ['Illfang the Kobold Lord', 'Asterius the Taurus King', 'Nerius the Evil Treant', 'Wythege the Hippocampus', 'The Sandcrawler', 'Emerald Reaper', 'Cursed Mirror', 'Frost Giant', 'Infernal Dragon', 'Heathcliff the Paladin', 'The Gleam Eyes', 'Skull Reaper', 'The Reaper', 'Titan of Aincrad', 'Shadow Dragon', 'Fallen Angel', 'Chronos Lord', 'Digital Titan', 'Cardinal Guardian', 'Akihiko Kayaba'];
 FLOORS_DATA.forEach(f => {
   const floor = f.n;
-  const biomeIdx = Math.floor((floor - 1) / 10);
-  const tierIdx = (floor - 1) % 10;
-  const bossName = tierIdx < 9 ? `${BOSS_NAMES[tierIdx]} ${biomeIdx > 0 ? '(' + BIOMES[biomeIdx].name.split(' ')[0] + ')' : ''}` : BOSS_NAMES[9];
+  if (floor % BOSS_INTERVAL !== 0) return;
+  const bossIdx = Math.floor(floor / BOSS_INTERVAL) - 1;
+  const biomeIdx = Math.floor((floor - 1) / FLOORS_PER_BIOME);
+  const bossName = BOSS_NAMES[bossIdx] || `Босс ${floor}`;
   BOSSES_DB[floor] = {
     id: `boss_f${floor}`,
     name: bossName,
-    hp: Math.round(500 + floor * 200 + Math.pow(floor, 2.2)),
-    atk: Math.round(25 + floor * 15 + Math.pow(floor, 1.6)),
+    hp: Math.round(500 + floor * 180 + Math.pow(floor, 2.0)),
+    atk: Math.round(25 + floor * 12 + Math.pow(floor, 1.5)),
     def: Math.round(8 + floor * 4),
     exp: Math.round(400 + floor * 500),
     col: Math.round(300 + floor * 400),
@@ -962,26 +1117,85 @@ FLOORS_DATA.forEach(f => {
   };
 });
 
-const NAME_PREFIXES = ['Кровавый', 'Тёмный', 'Древний', 'Свирепый', 'Ледяной', 'Огненный', 'Проклятый', 'Священный', 'Безумный', 'Мёртвый', 'Теневой', 'Стальной', 'Космический', 'Адский', 'Небесный'];
-const NAME_SUFFIXES = ['-ветеран', '-мутант', '-вождь', '-патриарх', '-страж', '-изгой', '-мастер', '-гигант', '-ужас', '-тень', '-хранитель', '-титан', '-лорд', '-легенда', '-божество'];
+const NAME_PREFIXES = ['Кровавый', 'Тёмный', 'Древний', 'Свирепый', 'Ледяной', 'Огненный', 'Проклятый', 'Священный', 'Безумный', 'Мёртвый', 'Теневой', 'Стальной', 'Космический', 'Адский', 'Небесный', 'Цифровой', 'Вечный', 'Хаотичный'];
+const NAME_SUFFIXES = ['-ветеран', '-мутант', '-вождь', '-патриарх', '-страж', '-изгой', '-мастер', '-гигант', '-ужас', '-тень', '-хранитель', '-титан', '-лорд', '-легенда', '-божество', '-аватар', '-кардинал'];
 
 /* ═══════════════════════════════════════════════════════════════
-   SKILLS_DB — ОБЪЯВЛЯЕМ РАНЬШЕ, чем Object.assign
+   AI ORACLE — Dynamic advice and events═══════════════════════════════════════════════════════════════ */
+const AI_ORACLE = {
+  tips: [
+    'Твой класс даёт бонус к атаке. Используй его в бою!',
+    'Не забывай про мастерство скиллов — оно увеличивает урон.',
+    'Продавай ненужные предметы в магазине — они занимают место.',
+    'Элитные враги дают больше опыта и Col.',
+    'Боссы на каждом 5-м этаже. Готовься тщательно!',
+    'Проверь достижения — они дают постоянные бонусы.',
+    'Разные расы дают разные бонусы. Выбирай под стиль игры.',
+    'Используй кристаллы телепорта, чтобы быстро вернуться в город.',
+    'Кровотечение наносит урон каждый ход. Это полезно!',
+    'Защита восстанавливает MP и снижает входящий урон.'
+  ],
+  predictions: [
+    'Я чувствую сильного врага впереди...',
+    'Кардинал наблюдает за тобой.',
+    'Твоя судьба — стать легендой Айнкрада.',
+    'Тёмные времена грядут на высоких этажах.',
+    'На 100-м этаже тебя ждёт сам Кардинал.',
+    'Каждый босс — шаг к свободе.',
+    'Впереди — великие битвы.'
+  ],
+  reactions: {
+    lowHp: 'Твоё HP критически низко! Используй зелье!',
+    lowMp: 'Мало MP! Отдохни или используй защиту.',
+    levelUp: 'Ты стал сильнее! Продолжай в том же духе.',
+    bossKill: 'Босс повержен! Это великая победа!',
+    newFloor: 'Новый этаж открыт! Исследуй его.',
+    death: 'Смерть — это не конец, но здесь она окончательна...'
+  }
+};
+let lastOracleMessage = '';
+function updateOracle(msg) {
+  lastOracleMessage = msg;
+  const el = document.getElementById('oracle-text');
+  if (el) el.textContent = msg;
+  playSound('ai');
+}
+function oracleRandom() {
+  const all = [...AI_ORACLE.tips, ...AI_ORACLE.predictions];
+  return all[Math.floor(Math.random() * all.length)];
+}
+function oracleReact(event) {
+  if (AI_ORACLE.reactions[event]) updateOracle(AI_ORACLE.reactions[event]);
+}
+function oracleOnFloorChange(floor) {
+  if (floor % BOSS_INTERVAL === 0) updateOracle(`👑 Этаж ${floor} — логово босса! Готовься к битве.`);
+  else if (floor % FLOORS_PER_BIOME === 1 && floor > 1) updateOracle(`🌍 Новый биом: ${BIOMES[Math.floor((floor-1)/FLOORS_PER_BIOME)].name}!`);
+  else updateOracle(oracleRandom());
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXP FORMULA (fixed!)
+   ═══════════════════════════════════════════════════════════════ */
+function getMaxExp(level) {
+  return Math.round(100 + level * level * 15 + level * 50);
+}
+function getExpRewardScale(floor, level) {
+  return Math.max(0.3, 1 + (floor - level) * 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKILLS_DB
    ═══════════════════════════════════════════════════════════════ */
 const SKILLS_DB = {
-  // Общие
   'slash': { id: 'slash', name: '⚡ Разрез', desc: '150% ATK', mpCost: 12, reqLevel: 1, reqCol: 0, dmgMult: 1.5, bonusCrit: 5, icon: '⚡' },
   'sonic': { id: 'sonic', name: '💫 Звуковой Прыжок', desc: '220% ATK', mpCost: 22, reqLevel: 3, reqCol: 300, dmgMult: 2.2, bonusCrit: 20, icon: '💫' },
   'starburst': { id: 'starburst', name: '🌟 Starburst', desc: '350% ATK', mpCost: 40, reqLevel: 8, reqCol: 1500, dmgMult: 3.5, bonusCrit: 35, icon: '🌟' },
-  // Мечник
   'sw_1': { id: 'sw_1', name: '🌀 Вихрь клинков', desc: '190%', mpCost: 20, reqLevel: 4, reqCol: 500, dmgMult: 1.9, bonusCrit: 15, icon: '🌀' },
   'sw_2': { id: 'sw_2', name: '🩸 Кровавый крест', desc: '230% + кровь', mpCost: 30, reqLevel: 6, reqCol: 900, dmgMult: 2.3, bleed: 3, icon: '🩸' },
   'sw_3': { id: 'sw_3', name: '⚔️ Рассечение', desc: '260% + −DEF', mpCost: 32, reqLevel: 9, reqCol: 1600, dmgMult: 2.6, defDebuff: 4, icon: '⚔️' },
   'sw_4': { id: 'sw_4', name: '🔥 Пламенный клинок', desc: '300%', mpCost: 38, reqLevel: 12, reqCol: 2400, dmgMult: 3.0, bonusCrit: 25, icon: '🔥' },
   'sw_5': { id: 'sw_5', name: '💥 Мастер клинка', desc: '380%', mpCost: 45, reqLevel: 15, reqCol: 3200, dmgMult: 3.8, bonusCrit: 40, icon: '💥' },
-  'sw_6': { id: 'sw_6', name: '☠️ Смертельный удар', desc: '450%', mpCost: 55, reqLevel: 18, reqCol: 4500, dmgMult: 4.5, bonusCrit: 50, icon: '☠️' },
-  'sw_7': { id: 'sw_7', name: '🌟 Финальный разрез', desc: '550%', mpCost: 70, reqLevel: 22, reqCol: 7000, dmgMult: 5.5, bonusCrit: 60, ignoreDefHalf: true, icon: '🌟' },
-  // Рыцарь
+  'sw_6': { id: 'sw_6', name: '☠️ Смертельный удар', desc: '450%', mpCost: 55, reqLevel: 18, reqCol: 4500, dmgMult: 4.5, bonusCrit: 50, icon: '☠️' },'sw_7': { id: 'sw_7', name: '🌟 Финальный разрез', desc: '550%', mpCost: 70, reqLevel: 22, reqCol: 7000, dmgMult: 5.5, bonusCrit: 60, ignoreDefHalf: true, icon: '🌟' },
   'holy_strike': { id: 'holy_strike', name: '⚜️ Святой удар', desc: '200% + heal', mpCost: 18, reqLevel: 3, reqCol: 400, dmgMult: 2.0, bonusCrit: 10, healPct: 0.1, icon: '⚜️' },
   'kn_1': { id: 'kn_1', name: '🛡️ Щит веры', desc: 'heal 25%', mpCost: 20, reqLevel: 4, reqCol: 450, isHeal: true, healPct: 0.25, icon: '🛡️' },
   'kn_2': { id: 'kn_2', name: '⚜️ Клятва', desc: '180% + heal 15%', mpCost: 25, reqLevel: 6, reqCol: 900, dmgMult: 1.8, healPct: 0.15, icon: '⚜️' },
@@ -991,7 +1205,6 @@ const SKILLS_DB = {
   'kn_6': { id: 'kn_6', name: '🌟 Защита Света', desc: 'heal 25% + ×DEF', mpCost: 42, reqLevel: 18, reqCol: 4500, isHeal: true, healPct: 0.25, icon: '🌟' },
   'kn_7': { id: 'kn_7', name: '⚡ Гнев Небес', desc: '400% + heal 25%', mpCost: 55, reqLevel: 22, reqCol: 6500, dmgMult: 4.0, healPct: 0.25, bonusCrit: 30, icon: '⚡' },
   'kn_8': { id: 'kn_8', name: '☀️ Завет Хранителя', desc: '500% + heal 40%', mpCost: 75, reqLevel: 28, reqCol: 9000, dmgMult: 5.0, healPct: 0.4, bonusCrit: 40, icon: '☀️' },
-  // Пиромант
   'fireball': { id: 'fireball', name: '🔥 Огненный шар', desc: '220%', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, bonusCrit: 10, ignoreDefHalf: true, icon: '🔥' },
   'chaos_flame': { id: 'chaos_flame', name: '💥 Пламя хаоса', desc: '280% + −DEF', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, bonusCrit: 15, defDebuff: 5, icon: '💥' },
   'great_chaos': { id: 'great_chaos', name: '🌀 Великий Хаос', desc: '500%', mpCost: 60, reqLevel: 15, reqCol: 3500, dmgMult: 5.0, bonusCrit: 30, icon: '🌀' },
@@ -1002,18 +1215,15 @@ const SKILLS_DB = {
   'py_5': { id: 'py_5', name: '💥 Великий огонь', desc: '420%', mpCost: 55, reqLevel: 16, reqCol: 3800, dmgMult: 4.2, bonusCrit: 35, icon: '💥' },
   'py_6': { id: 'py_6', name: '🐦 Феникс', desc: '380% + heal 30%', mpCost: 58, reqLevel: 20, reqCol: 5200, dmgMult: 3.8, healPct: 0.3, icon: '🐦' },
   'py_7': { id: 'py_7', name: '☄️ Апокалипсис', desc: '650%', mpCost: 80, reqLevel: 25, reqCol: 8500, dmgMult: 6.5, ignoreDefHalf: true, bonusCrit: 55, icon: '☄️' },
-  // Клирик
   'lightning': { id: 'lightning', name: '⚡ Молния', desc: '200%', mpCost: 20, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 15, icon: '⚡' },
   'heal': { id: 'heal', name: '💚 Исцеление', desc: '40% HP', mpCost: 22, reqLevel: 3, reqCol: 400, isHeal: true, healPct: 0.4, icon: '💚' },
   'cl_1': { id: 'cl_1', name: '🛡️ Щит Света', desc: 'heal 30%', mpCost: 25, reqLevel: 4, reqCol: 450, isHeal: true, healPct: 0.3, icon: '🛡️' },
   'cl_2': { id: 'cl_2', name: '✨ Благословение', desc: 'heal 35%', mpCost: 28, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.35, icon: '✨' },
-  'cl_3': { id: 'cl_3', name: '🔥 Святая кара', desc: '240%', mpCost: 30, reqLevel: 9, reqCol: 1500, dmgMult: 2.4, bonusCrit: 15, icon: '🔥' },
-  'cl_4': { id: 'cl_4', name: '💚 Масс- heal', desc: 'heal 45%', mpCost: 40, reqLevel: 12, reqCol: 2400, isHeal: true, healPct: 0.45, icon: '💚' },
+  'cl_3': { id: 'cl_3', name: '🔥 Святая кара', desc: '240%', mpCost: 30, reqLevel: 9, reqCol: 1500, dmgMult: 2.4, bonusCrit: 15, icon: '🔥' },'cl_4': { id: 'cl_4', name: '💚 Масс- heal', desc: 'heal 45%', mpCost: 40, reqLevel: 12, reqCol: 2400, isHeal: true, healPct: 0.45, icon: '💚' },
   'cl_5': { id: 'cl_5', name: '🌟 Воскрешение', desc: 'heal 60%', mpCost: 50, reqLevel: 15, reqCol: 3500, isHeal: true, healPct: 0.6, icon: '🌟' },
   'cl_6': { id: 'cl_6', name: '⚡ Гнев Богов', desc: '350% + heal 30%', mpCost: 55, reqLevel: 18, reqCol: 4500, dmgMult: 3.5, healPct: 0.3, bonusCrit: 25, icon: '⚡' },
   'cl_7': { id: 'cl_7', name: '☀️ Судный день', desc: '450%', mpCost: 65, reqLevel: 22, reqCol: 6500, dmgMult: 4.5, bonusCrit: 40, ignoreDefHalf: true, icon: '☀️' },
   'cl_8': { id: 'cl_8', name: '🙏 Десница Господа', desc: '550% + full heal', mpCost: 85, reqLevel: 28, reqCol: 9000, dmgMult: 5.5, healPct: 1.0, icon: '🙏' },
-  // Охотник
   'power_shot': { id: 'power_shot', name: '🏹 Мощный выстрел', desc: '180%', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.8, bonusCrit: 25, icon: '🏹' },
   'triple_shot': { id: 'triple_shot', name: '🎯 Тройной', desc: '3×80%', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 0.8, multiHits: 3, bonusCrit: 15, icon: '🎯' },
   'rain_arrows': { id: 'rain_arrows', name: '🌧️ Дождь стрел', desc: '450%', mpCost: 45, reqLevel: 12, reqCol: 2500, dmgMult: 4.5, bonusCrit: 30, icon: '🌧️' },
@@ -1024,7 +1234,6 @@ const SKILLS_DB = {
   'hu_5': { id: 'hu_5', name: '🌟 Снайпер', desc: '400% (гарант. крит)', mpCost: 45, reqLevel: 15, reqCol: 3500, dmgMult: 4.0, bonusCrit: 100, icon: '🌟' },
   'hu_6': { id: 'hu_6', name: '💨 Ураган', desc: '4×100%', mpCost: 50, reqLevel: 18, reqCol: 4500, dmgMult: 1.0, multiHits: 4, bonusCrit: 25, icon: '💨' },
   'hu_7': { id: 'hu_7', name: '💀 Убийственный', desc: '550%', mpCost: 65, reqLevel: 24, reqCol: 7500, dmgMult: 5.5, bonusCrit: 60, icon: '💀' },
-  // Вор
   'backstab': { id: 'backstab', name: '🗡️ Удар в спину', desc: '200% + 30% крит', mpCost: 18, reqLevel: 3, reqCol: 350, dmgMult: 2.0, bonusCrit: 30, icon: '🗡️' },
   'pickpocket': { id: 'pickpocket', name: '💰 Карманник', desc: '100% + Col', mpCost: 10, reqLevel: 3, reqCol: 250, dmgMult: 1.0, stealCol: true, icon: '💰' },
   'shadow_kill': { id: 'shadow_kill', name: '🌑 Убийство тени', desc: '380%', mpCost: 40, reqLevel: 10, reqCol: 2000, dmgMult: 3.8, bonusCrit: 40, icon: '🌑' },
@@ -1035,9 +1244,7 @@ const SKILLS_DB = {
   'th_5': { id: 'th_5', name: '💨 Дымовая завеса', desc: 'Побег', mpCost: 12, reqLevel: 15, reqCol: 3200, dmgMult: 0.5, icon: '💨' },
   'th_6': { id: 'th_6', name: '⚡ Паралич', desc: '250% + оглуш. 2х', mpCost: 35, reqLevel: 18, reqCol: 4200, dmgMult: 2.5, stun: 2, icon: '⚡' },
   'th_7': { id: 'th_7', name: '☠️ Смертельная кража', desc: '450% + Col', mpCost: 55, reqLevel: 24, reqCol: 7000, dmgMult: 4.5, stealCol: true, icon: '☠️' },
-  // Танк
-  'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% + оглуш.', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },
-  'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: '25% HP', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
+  'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% + оглуш.', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: '25% HP', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
   'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% + оглуш. 2х', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
   'tk_1': { id: 'tk_1', name: '⚙️ Провокация', desc: '150%', mpCost: 18, reqLevel: 4, reqCol: 450, dmgMult: 1.5, icon: '⚙️' },
   'tk_2': { id: 'tk_2', name: '🛡️ Железная стена', desc: 'heal 30%', mpCost: 25, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.3, icon: '🛡️' },
@@ -1046,7 +1253,6 @@ const SKILLS_DB = {
   'tk_5': { id: 'tk_5', name: '⛰️ Незыблемость', desc: 'heal 40%', mpCost: 35, reqLevel: 15, reqCol: 3200, isHeal: true, healPct: 0.4, icon: '⛰️' },
   'tk_6': { id: 'tk_6', name: '🐏 Таран', desc: '350% + оглуш.', mpCost: 45, reqLevel: 18, reqCol: 4500, dmgMult: 3.5, stun: 2, icon: '🐏' },
   'tk_7': { id: 'tk_7', name: '🗿 Стена Титанов', desc: 'heal 60%', mpCost: 55, reqLevel: 24, reqCol: 7000, isHeal: true, healPct: 0.6, icon: '🗿' },
-  // Ассасин
   'shadow_step': { id: 'shadow_step', name: '💨 Теневой шаг', desc: '250% + 25% крит', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.5, bonusCrit: 25, icon: '💨' },
   'assassinate': { id: 'assassinate', name: '☠️ Казнь', desc: '500%', mpCost: 50, reqLevel: 15, reqCol: 3000, dmgMult: 5.0, bonusCrit: 50, icon: '☠️' },
   'as_1': { id: 'as_1', name: '☠️ Ядовитый', desc: '200% + кровь', mpCost: 22, reqLevel: 4, reqCol: 500, dmgMult: 2.0, bleed: 5, icon: '☠️' },
@@ -1056,7 +1262,6 @@ const SKILLS_DB = {
   'as_5': { id: 'as_5', name: '👻 Призрачный удар', desc: '360% игнор DEF', mpCost: 42, reqLevel: 15, reqCol: 3200, dmgMult: 3.6, ignoreDef: true, bonusCrit: 45, icon: '👻' },
   'as_6': { id: 'as_6', name: '⚔️ Тысяча порезов', desc: '5×100%', mpCost: 50, reqLevel: 18, reqCol: 4500, dmgMult: 1.0, multiHits: 5, bonusCrit: 30, icon: '⚔️' },
   'as_7': { id: 'as_7', name: '☠️ Ночная казнь', desc: '700%', mpCost: 70, reqLevel: 24, reqCol: 7500, dmgMult: 7.0, bonusCrit: 70, icon: '☠️' },
-  // Маг
   'ice_lance': { id: 'ice_lance', name: '❄️ Ледяное копьё', desc: '220% + заморозка', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.2, freeze: 1, icon: '❄️' },
   'chain_lightning': { id: 'chain_lightning', name: '⚡ Цепная молния', desc: '280% + оглуш.', mpCost: 35, reqLevel: 8, reqCol: 1200, dmgMult: 2.8, stun: 1, icon: '⚡' },
   'meteor': { id: 'meteor', name: '☄️ Метеор', desc: '600% игнор DEF', mpCost: 70, reqLevel: 18, reqCol: 5000, dmgMult: 6.0, ignoreDef: true, icon: '☄️' },
@@ -1064,10 +1269,8 @@ const SKILLS_DB = {
   'mg_2': { id: 'mg_2', name: '❄️ Ледяная буря', desc: '270% + заморозка 2х', mpCost: 35, reqLevel: 6, reqCol: 900, dmgMult: 2.7, freeze: 2, icon: '❄️' },
   'mg_3': { id: 'mg_3', name: '💥 Огненный взрыв', desc: '300% + −DEF', mpCost: 38, reqLevel: 9, reqCol: 1500, dmgMult: 3.0, defDebuff: 5, icon: '💥' },
   'mg_4': { id: 'mg_4', name: '🌀 Гравитация', desc: '340% + оглуш.', mpCost: 42, reqLevel: 12, reqCol: 2400, dmgMult: 3.4, stun: 1, icon: '🌀' },
-  'mg_5': { id: 'mg_5', name: '⚡ Молния Титанов', desc: '420%', mpCost: 50, reqLevel: 15, reqCol: 3200, dmgMult: 4.2, bonusCrit: 35, icon: '⚡' },
-  'mg_6': { id: 'mg_6', name: '🕳️ Чёрная дыра', desc: '550% игнор DEF', mpCost: 60, reqLevel: 18, reqCol: 4500, dmgMult: 5.5, ignoreDef: true, bonusCrit: 40, icon: '🕳️' },
+  'mg_5': { id: 'mg_5', name: '⚡ Молния Титанов', desc: '420%', mpCost: 50, reqLevel: 15, reqCol: 3200, dmgMult: 4.2, bonusCrit: 35, icon: '⚡' },'mg_6': { id: 'mg_6', name: '🕳️ Чёрная дыра', desc: '550% игнор DEF', mpCost: 60, reqLevel: 18, reqCol: 4500, dmgMult: 5.5, ignoreDef: true, bonusCrit: 40, icon: '🕳️' },
   'mg_7': { id: 'mg_7', name: '💀 Армагеддон', desc: '800%', mpCost: 85, reqLevel: 25, reqCol: 9000, dmgMult: 8.0, ignoreDef: true, bonusCrit: 60, icon: '💀' },
-  // Нежить
   'dark_hand': { id: 'dark_hand', name: '🤚 Тёмная рука', desc: '200% + heal 20%', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, lifesteal: 0.2, icon: '🤚' },
   'lifedrain': { id: 'lifedrain', name: '💚 Жизнеотвод', desc: '250% + heal 40%', mpCost: 28, reqLevel: 8, reqCol: 1200, dmgMult: 2.5, lifesteal: 0.4, icon: '💚' },
   'death_curse': { id: 'death_curse', name: '💀 Проклятие смерти', desc: '380% + кровь', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.8, bleed: 3, icon: '💀' },
@@ -1078,7 +1281,6 @@ const SKILLS_DB = {
   'un_5': { id: 'un_5', name: '⚰️ Жатва душ', desc: '300% + heal 40%', mpCost: 42, reqLevel: 15, reqCol: 3200, dmgMult: 3.0, lifesteal: 0.4, icon: '⚰️' },
   'un_6': { id: 'un_6', name: '☠️ Воскрешение', desc: 'heal 60%', mpCost: 50, reqLevel: 18, reqCol: 4500, isHeal: true, healPct: 0.6, icon: '☠️' },
   'un_7': { id: 'un_7', name: '👑 Обряд смерти', desc: '600% + heal 50%', mpCost: 70, reqLevel: 24, reqCol: 7500, dmgMult: 6.0, lifesteal: 0.5, bonusCrit: 50, icon: '👑' },
-  // Энвелл
   'en_hack_1': { id: 'en_hack_1', name: '💻 Взлом', desc: '200% + −DEF', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.0, defDebuff: 5, icon: '💻' },
   'en_hack_2': { id: 'en_hack_2', name: '🔒 Блокировка', desc: '180% + оглуш.', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 1.8, stun: 2, icon: '🔒' },
   'en_hack_3': { id: 'en_hack_3', name: '🌐 Перезагрузка', desc: 'heal 35%', mpCost: 28, reqLevel: 7, reqCol: 1100, isHeal: true, healPct: 0.35, icon: '🌐' },
@@ -1087,16 +1289,15 @@ const SKILLS_DB = {
   'en_hack_6': { id: 'en_hack_6', name: '🛰️ Орбитальный', desc: '450%', mpCost: 50, reqLevel: 17, reqCol: 4000, dmgMult: 4.5, bonusCrit: 35, icon: '🛰️' },
   'en_hack_7': { id: 'en_hack_7', name: '🚀 Спам', desc: '4×130%', mpCost: 55, reqLevel: 21, reqCol: 5800, dmgMult: 1.3, multiHits: 4, bonusCrit: 30, icon: '🚀' },
   'en_hack_8': { id: 'en_hack_8', name: '💀 Фатальная ошибка', desc: '650% игнор DEF', mpCost: 70, reqLevel: 26, reqCol: 8500, dmgMult: 6.5, ignoreDef: true, bonusCrit: 50, icon: '💀' },
-  'en_hack_9': { id: 'en_hack_9', name: '⚡ Цифровой Армагеддон', desc: '900%', mpCost: 90, reqLevel: 32, reqCol: 12000, dmgMult: 9.0, ignoreDef: true, bonusCrit: 60, icon: '⚡' },
+  'en_hack_9': { id: 'en_hack_9', name: '⚡ Цифровой Армагеддон', desc: '900%', mpCost: 90, reqLevel: 32, reqCol: 9000, dmgMult: 9.0, ignoreDef: true, bonusCrit: 60, icon: '⚡' },
   'en_def_1': { id: 'en_def_1', name: '🛡️ Стальной барьер', desc: 'heal 30%', mpCost: 22, reqLevel: 3, reqCol: 400, isHeal: true, healPct: 0.3, icon: '🛡️' },
   'en_def_2': { id: 'en_def_2', name: '⚙️ Контрудар', desc: '220%', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.2, bonusCrit: 15, icon: '⚙️' },
-  'en_def_3': { id: 'en_def_3', name: '🔨 Разбивающий', desc: '200% + −DEF', mpCost: 28, reqLevel: 7, reqCol: 1100, dmgMult: 2.0, defDebuff: 8, icon: '🔨' },
-  'en_def_4': { id: 'en_def_4', name: '⛰️ Фортификация', desc: 'heal 45%', mpCost: 32, reqLevel: 10, reqCol: 1800, isHeal: true, healPct: 0.45, icon: '⛰️' },
+  'en_def_3': { id: 'en_def_3', name: '🔨 Разбивающий', desc: '200% + −DEF', mpCost: 28, reqLevel: 7, reqCol: 1100, dmgMult: 2.0, defDebuff: 8, icon: '🔨' },'en_def_4': { id: 'en_def_4', name: '⛰️ Фортификация', desc: 'heal 45%', mpCost: 32, reqLevel: 10, reqCol: 1800, isHeal: true, healPct: 0.45, icon: '⛰️' },
   'en_def_5': { id: 'en_def_5', name: '💥 Отражение урона', desc: '320%', mpCost: 40, reqLevel: 13, reqCol: 2600, dmgMult: 3.2, bonusCrit: 20, icon: '💥' },
   'en_def_6': { id: 'en_def_6', name: '🗿 Незыблемость', desc: 'heal 60%', mpCost: 45, reqLevel: 17, reqCol: 4000, isHeal: true, healPct: 0.6, icon: '🗿' },
   'en_def_7': { id: 'en_def_7', name: '🐏 Таран', desc: '400% + оглуш. 2х', mpCost: 50, reqLevel: 21, reqCol: 5800, dmgMult: 4.0, stun: 2, icon: '🐏' },
   'en_def_8': { id: 'en_def_8', name: '🌟 Щит Света', desc: 'heal 80%', mpCost: 60, reqLevel: 26, reqCol: 8500, isHeal: true, healPct: 0.8, icon: '🌟' },
-  'en_def_9': { id: 'en_def_9', name: '👑 Крепость Богов', desc: '500% + heal 50%', mpCost: 80, reqLevel: 32, reqCol: 12000, dmgMult: 5.0, healPct: 0.5, icon: '👑' },
+  'en_def_9': { id: 'en_def_9', name: '👑 Крепость Богов', desc: '500% + heal 50%', mpCost: 80, reqLevel: 32, reqCol: 9000, dmgMult: 5.0, healPct: 0.5, icon: '👑' },
   'en_kill_1': { id: 'en_kill_1', name: '🗡️ Быстрый удар', desc: '220% + 30% крит', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.2, bonusCrit: 30, icon: '🗡️' },
   'en_kill_2': { id: 'en_kill_2', name: '☠️ Укус тени', desc: '250% + кровь', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.5, bleed: 4, icon: '☠️' },
   'en_kill_3': { id: 'en_kill_3', name: '💨 Прыжок тени', desc: '280% + 40% крит', mpCost: 28, reqLevel: 7, reqCol: 1100, dmgMult: 2.8, bonusCrit: 40, icon: '💨' },
@@ -1105,7 +1306,7 @@ const SKILLS_DB = {
   'en_kill_6': { id: 'en_kill_6', name: '👻 Призрачный шаг', desc: '400% игнор DEF', mpCost: 45, reqLevel: 17, reqCol: 4000, dmgMult: 4.0, ignoreDef: true, bonusCrit: 50, icon: '👻' },
   'en_kill_7': { id: 'en_kill_7', name: '🌑 Танец теней', desc: '4×120%', mpCost: 50, reqLevel: 21, reqCol: 5800, dmgMult: 1.2, multiHits: 4, bonusCrit: 45, icon: '🌑' },
   'en_kill_8': { id: 'en_kill_8', name: '💀 Казнь Энвелла', desc: '700%', mpCost: 65, reqLevel: 26, reqCol: 8500, dmgMult: 7.0, bonusCrit: 70, icon: '💀' },
-  'en_kill_9': { id: 'en_kill_9', name: '⚡ Абсолютная тень', desc: '1000%', mpCost: 85, reqLevel: 32, reqCol: 12000, dmgMult: 10.0, ignoreDef: true, bonusCrit: 80, icon: '⚡' },
+  'en_kill_9': { id: 'en_kill_9', name: '⚡ Абсолютная тень', desc: '1000%', mpCost: 85, reqLevel: 32, reqCol: 9000, dmgMult: 10.0, ignoreDef: true, bonusCrit: 80, icon: '⚡' },
   'en_mage_1': { id: 'en_mage_1', name: '❄️ Ледяной шар', desc: '240%', mpCost: 25, reqLevel: 3, reqCol: 400, dmgMult: 2.4, bonusCrit: 12, icon: '❄️' },
   'en_mage_2': { id: 'en_mage_2', name: '🔥 Огненный взрыв', desc: '260% + −DEF', mpCost: 28, reqLevel: 5, reqCol: 700, dmgMult: 2.6, defDebuff: 5, icon: '🔥' },
   'en_mage_3': { id: 'en_mage_3', name: '💚 Исцеление', desc: 'heal 45%', mpCost: 25, reqLevel: 7, reqCol: 1100, isHeal: true, healPct: 0.45, icon: '💚' },
@@ -1114,8 +1315,7 @@ const SKILLS_DB = {
   'en_mage_6': { id: 'en_mage_6', name: '🌟 Метеор', desc: '450% игнор DEF', mpCost: 50, reqLevel: 17, reqCol: 4000, dmgMult: 4.5, ignoreDef: true, icon: '🌟' },
   'en_mage_7': { id: 'en_mage_7', name: '💥 Великий потоп', desc: 'heal 50% + 400%', mpCost: 55, reqLevel: 21, reqCol: 5800, dmgMult: 4.0, healPct: 0.5, icon: '💥' },
   'en_mage_8': { id: 'en_mage_8', name: '☄️ Армагеддон', desc: '750%', mpCost: 70, reqLevel: 26, reqCol: 8500, dmgMult: 7.5, ignoreDef: true, bonusCrit: 50, icon: '☄️' },
-  'en_mage_9': { id: 'en_mage_9', name: '🌈 Сотворение', desc: '1000% + full heal', mpCost: 90, reqLevel: 32, reqCol: 12000, dmgMult: 10.0, healPct: 1.0, icon: '🌈' },
-  'en_el_1': { id: 'en_el_1', name: '⚡ Разряд', desc: '200% + оглуш.', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, stun: 1, icon: '⚡' },
+  'en_mage_9': { id: 'en_mage_9', name: '🌈 Сотворение', desc: '1000% + full heal', mpCost: 90, reqLevel: 32, reqCol: 9000, dmgMult: 10.0, healPct: 1.0, icon: '🌈' },'en_el_1': { id: 'en_el_1', name: '⚡ Разряд', desc: '200% + оглуш.', mpCost: 20, reqLevel: 3, reqCol: 400, dmgMult: 2.0, stun: 1, icon: '⚡' },
   'en_el_2': { id: 'en_el_2', name: '🌩️ Гром', desc: '240% + оглуш. 2х', mpCost: 25, reqLevel: 5, reqCol: 700, dmgMult: 2.4, stun: 2, icon: '🌩️' },
   'en_el_3': { id: 'en_el_3', name: '🔋 Перегрузка', desc: '260% + −DEF', mpCost: 28, reqLevel: 7, reqCol: 1100, dmgMult: 2.6, defDebuff: 6, icon: '🔋' },
   'en_el_4': { id: 'en_el_4', name: '💥 Электро-взрыв', desc: '320%', mpCost: 35, reqLevel: 10, reqCol: 1800, dmgMult: 3.2, bonusCrit: 25, icon: '💥' },
@@ -1123,24 +1323,19 @@ const SKILLS_DB = {
   'en_el_6': { id: 'en_el_6', name: '⚡ Молния Титанов', desc: '420%', mpCost: 50, reqLevel: 17, reqCol: 4000, dmgMult: 4.2, bonusCrit: 35, icon: '⚡' },
   'en_el_7': { id: 'en_el_7', name: '🔥 Плазма', desc: '500% игнор DEF', mpCost: 55, reqLevel: 21, reqCol: 5800, dmgMult: 5.0, ignoreDef: true, icon: '🔥' },
   'en_el_8': { id: 'en_el_8', name: '⚡ Электро-Гроза', desc: '700%', mpCost: 70, reqLevel: 26, reqCol: 8500, dmgMult: 7.0, ignoreDef: true, bonusCrit: 45, icon: '⚡' },
-  'en_el_9': { id: 'en_el_9', name: '⚡⚡ Гроза Энвелла', desc: '1000%', mpCost: 90, reqLevel: 32, reqCol: 12000, dmgMult: 10.0, ignoreDef: true, bonusCrit: 55, icon: '⚡' }
+  'en_el_9': { id: 'en_el_9', name: '⚡⚡ Гроза Энвелла', desc: '1000%', mpCost: 90, reqLevel: 32, reqCol: 9000, dmgMult: 10.0, ignoreDef: true, bonusCrit: 55, icon: '⚡' }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   CLASSES (15)
-   ═══════════════════════════════════════════════════════════════ */
 const CLASSES_DB = {
   'swordsman': { id: 'swordsman', name: 'МЕЧНИК', icon: '⚔️', desc: 'Сбалансированный мастер.', hp: 140, mp: 60, atk: 13, def: 4, crit: 12, weaponType: 'sword', passiveName: 'Мастерство клинка', passiveDesc: '+15% урона атак.', activeName: 'Двойной разрез', activeDesc: '2×85% ATK.', activeCost: 15, skillIds: ['slash', 'sonic', 'starburst', 'sw_1', 'sw_2', 'sw_3', 'sw_4', 'sw_5', 'sw_6', 'sw_7'] },
   'knight': { id: 'knight', name: 'РЫЦАРЬ', icon: '⚜️', desc: 'Тяжёлый доспех.', hp: 180, mp: 50, atk: 12, def: 12, crit: 8, weaponType: 'greatsword', passiveName: 'Стойкость', passiveDesc: '+25% DEF, реген 3% HP.', activeName: 'Святой удар', activeDesc: '200% + heal 10%.', activeCost: 18, skillIds: ['holy_strike', 'slash', 'kn_1', 'kn_2', 'kn_3', 'kn_4', 'kn_5', 'kn_6', 'kn_7', 'kn_8'] },
   'pyromancer': { id: 'pyromancer', name: 'ПИРОМАНТ', icon: '🔥', desc: 'Мастер огня.', hp: 120, mp: 130, atk: 16, def: 4, crit: 15, weaponType: 'staff', passiveName: 'Пламя изнутри', passiveDesc: '+35% огня, +40 MP.', activeName: 'Огненный шторм', activeDesc: '270% ATK.', activeCost: 28, skillIds: ['fireball', 'chaos_flame', 'py_1', 'py_2', 'py_3', 'py_4', 'py_5', 'py_6', 'great_chaos', 'py_7'] },
   'cleric': { id: 'cleric', name: 'КЛИРИК', icon: '⛪', desc: 'Святая магия.', hp: 135, mp: 110, atk: 11, def: 7, crit: 10, weaponType: 'holy_staff', passiveName: 'Благословение', passiveDesc: '+20% лечения.', activeName: 'Исцеление', activeDesc: '40% max HP.', activeCost: 22, skillIds: ['lightning', 'heal', 'cl_1', 'cl_2', 'cl_3', 'cl_4', 'cl_5', 'cl_6', 'cl_7', 'cl_8'] },
   'hunter': { id: 'hunter', name: 'ОХОТНИК', icon: '🏹', desc: 'Меткий стрелок.', hp: 115, mp: 75, atk: 15, def: 3, crit: 22, weaponType: 'bow', passiveName: 'Меткий глаз', passiveDesc: '+20% крит-шанс.', activeName: 'Снайперский выстрел', activeDesc: '300% (крит).', activeCost: 20, skillIds: ['power_shot', 'triple_shot', 'hu_1', 'hu_2', 'hu_3', 'hu_4', 'hu_5', 'hu_6', 'rain_arrows', 'hu_7'] },
-  'thief': { id: 'thief', name: 'ВОР', icon: '🗡️', desc: 'Быстрый, много Col.', hp: 105, mp: 65, atk: 14, def: 2, crit: 20, weaponType: 'dagger', passiveName: 'Хитрость', passiveDesc: '+30% Col, +15% EXP.', activeName: 'Кража', activeDesc: '180% + heal 50%.', activeCost: 15, skillIds: ['backstab', 'pickpocket', 'th_1', 'th_2', 'th_3', 'th_4', 'th_5', 'th_6', 'shadow_kill', 'th_7'] },
-  'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый.', hp: 220, mp: 40, atk: 9, def: 14, crit: 6, weaponType: 'hammer', passiveName: 'Каменная кожа', passiveDesc: '+30% HP, +20% DEF.', activeName: 'Щитовая стойка', activeDesc: '×3 DEF, +15% HP.', activeCost: 12, skillIds: ['bash', 'bulwark', 'tk_1', 'tk_2', 'tk_3', 'tk_4', 'tk_5', 'tk_6', 'earthquake', 'tk_7'] },
+  'thief': { id: 'thief', name: 'ВОР', icon: '🗡️', desc: 'Быстрый, много Col.', hp: 105, mp: 65, atk: 14, def: 2, crit: 20, weaponType: 'dagger', passiveName: 'Хитрость', passiveDesc: '+30% Col, +15% EXP.', activeName: 'Кража', activeDesc: '180% + heal 50%.', activeCost: 15, skillIds: ['backstab', 'pickpocket', 'th_1', 'th_2', 'th_3', 'th_4', 'th_5', 'th_6', 'shadow_kill', 'th_7'] },'tank': { id: 'tank', name: 'ТАНК', icon: '🛡️', desc: 'Несокрушимый.', hp: 220, mp: 40, atk: 9, def: 14, crit: 6, weaponType: 'hammer', passiveName: 'Каменная кожа', passiveDesc: '+30% HP, +20% DEF.', activeName: 'Щитовая стойка', activeDesc: '×3 DEF, +15% HP.', activeCost: 12, skillIds: ['bash', 'bulwark', 'tk_1', 'tk_2', 'tk_3', 'tk_4', 'tk_5', 'tk_6', 'earthquake', 'tk_7'] },
   'assassin': { id: 'assassin', name: 'АССАСИН', icon: '🩸', desc: 'Убийца.', hp: 95, mp: 80, atk: 17, def: 2, crit: 28, weaponType: 'twin_dagger', passiveName: 'Смертельный фокус', passiveDesc: '×2.85 крит.', activeName: 'Теневой удар', activeDesc: 'Гарант. крит.', activeCost: 20, skillIds: ['slash', 'shadow_step', 'as_1', 'as_2', 'as_3', 'as_4', 'as_5', 'as_6', 'assassinate', 'as_7'] },
   'mage': { id: 'mage', name: 'МАГ', icon: '✨', desc: 'Мастер стихий.', hp: 110, mp: 140, atk: 14, def: 3, crit: 14, weaponType: 'staff', passiveName: 'Резонанс', passiveDesc: '+30% урона навыков.', activeName: 'Огненный шар', activeDesc: '220%, игнор 50% DEF.', activeCost: 25, skillIds: ['ice_lance', 'chain_lightning', 'mg_1', 'mg_2', 'mg_3', 'mg_4', 'mg_5', 'mg_6', 'meteor', 'mg_7'] },
   'undead': { id: 'undead', name: 'НЕЖИТЬ', icon: '💀', desc: 'Возрождается.', hp: 150, mp: 70, atk: 15, def: 6, crit: 12, weaponType: 'scythe', passiveName: 'Проклятие', passiveDesc: '1 возрождение за бой.', activeName: 'Жизнеотвод', activeDesc: '250% + heal.', activeCost: 20, skillIds: ['dark_hand', 'lifedrain', 'un_1', 'un_2', 'un_3', 'un_4', 'un_5', 'un_6', 'death_curse', 'un_7'] },
-  // Heroes of Envell
   'hacker': { id: 'hacker', name: 'ХАКЕР', icon: '🎮', desc: '', hp: 130, mp: 100, atk: 17, def: 5, crit: 18, weaponType: 'cyber_sword', passiveName: 'Взлом системы', passiveDesc: '+25% урона, +20% EXP.', activeName: 'Цифровой шторм', activeDesc: '250%, игнор 30% DEF.', activeCost: 22, skillIds: ['slash', 'en_hack_1', 'en_hack_2', 'en_hack_3', 'en_hack_4', 'en_hack_5', 'en_hack_6', 'en_hack_7', 'en_hack_8', 'en_hack_9'] },
   'defender': { id: 'defender', name: 'ЗАЩИТНИК', icon: '🛡️', desc: '', hp: 250, mp: 55, atk: 10, def: 18, crit: 7, weaponType: 'legendary_shield', passiveName: 'Каменная крепость', passiveDesc: '+40% HP, +30% DEF.', activeName: 'Святой барьер', activeDesc: 'heal 30%, ×2 DEF.', activeCost: 18, skillIds: ['bash', 'en_def_1', 'en_def_2', 'en_def_3', 'en_def_4', 'en_def_5', 'en_def_6', 'en_def_7', 'en_def_8', 'en_def_9'] },
   'envell_killer': { id: 'envell_killer', name: 'УБИЙЦА', icon: '🗡️', desc: '', hp: 100, mp: 90, atk: 20, def: 3, crit: 32, weaponType: 'twin_dagger', passiveName: 'Тень Энвелла', passiveDesc: '×3.2 крит-урон, +25% крит.', activeName: 'Танец клинков', activeDesc: '3×150% крит.', activeCost: 25, skillIds: ['slash', 'en_kill_1', 'en_kill_2', 'en_kill_3', 'en_kill_4', 'en_kill_5', 'en_kill_6', 'en_kill_7', 'en_kill_8', 'en_kill_9'] },
@@ -1148,12 +1343,8 @@ const CLASSES_DB = {
   'electron': { id: 'electron', name: 'ЭЛЕКТРО-МАГ', icon: '⚡', desc: '', hp: 125, mp: 120, atk: 16, def: 5, crit: 18, weaponType: 'electron_hammer', passiveName: 'Разряд', passiveDesc: '20% шанс оглушения атакой.', activeName: 'Электро-шторм', activeDesc: '300% + оглуш. 2х.', activeCost: 28, skillIds: ['lightning', 'en_el_1', 'en_el_2', 'en_el_3', 'en_el_4', 'en_el_5', 'en_el_6', 'en_el_7', 'en_el_8', 'en_el_9'] }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   ACHIEVEMENTS
-   ═══════════════════════════════════════════════════════════════ */
 const ACHIEVEMENTS = [
-  { id: 'kill_10', category: 'Убийства', icon: '⚔️', name: 'Новичок', desc: 'Убить 10 монстров', target: 10, type: 'killsTotal', reward: { atk: 5 }, rewardText: '+5 ATK' },
-  { id: 'kill_50', category: 'Убийства', icon: '⚔️', name: 'Боец', desc: 'Убить 50 монстров', target: 50, type: 'killsTotal', reward: { atk: 12 }, rewardText: '+12 ATK' },
+  { id: 'kill_10', category: 'Убийства', icon: '⚔️', name: 'Новичок', desc: 'Убить 10 монстров', target: 10, type: 'killsTotal', reward: { atk: 5 }, rewardText: '+5 ATK' },{ id: 'kill_50', category: 'Убийства', icon: '⚔️', name: 'Боец', desc: 'Убить 50 монстров', target: 50, type: 'killsTotal', reward: { atk: 12 }, rewardText: '+12 ATK' },
   { id: 'kill_200', category: 'Убийства', icon: '⚔️', name: 'Воин', desc: 'Убить 200 монстров', target: 200, type: 'killsTotal', reward: { atk: 30 }, rewardText: '+30 ATK' },
   { id: 'kill_500', category: 'Убийства', icon: '⚔️', name: 'Ветеран', desc: 'Убить 500 монстров', target: 500, type: 'killsTotal', reward: { atk: 70, crit: 3 }, rewardText: '+70 ATK' },
   { id: 'kill_1000', category: 'Убийства', icon: '⚔️', name: 'Легенда', desc: 'Убить 1000 монстров', target: 1000, type: 'killsTotal', reward: { atk: 150, def: 30, crit: 5 }, rewardText: '+150 ATK' },
@@ -1164,36 +1355,24 @@ const ACHIEVEMENTS = [
   { id: 'miniboss_1', category: 'Мини-боссы', icon: '🔥', name: 'Первая кровь', desc: 'Убить мини-босса', target: 1, type: 'minibossKills', reward: { atk: 20, hp: 150 }, rewardText: '+20 ATK' },
   { id: 'miniboss_10', category: 'Мини-боссы', icon: '🔥', name: 'Гроза мини', desc: 'Убить 10 мини-боссов', target: 10, type: 'minibossKills', reward: { atk: 60, def: 30, crit: 3 }, rewardText: '+60 ATK' },
   { id: 'miniboss_50', category: 'Мини-боссы', icon: '🔥', name: 'Погибель титанов', desc: 'Убить 50 мини-боссов', target: 50, type: 'minibossKills', reward: { atk: 150, def: 75, hp: 800 }, rewardText: 'Мощно' },
-  { id: 'miniboss_200', category: 'Мини-боссы', icon: '🔥', name: 'Кошмар титанов', desc: 'Убить 200 мини-боссов', target: 200, type: 'minibossKills', reward: { atk: 500, def: 250, hp: 3000 }, rewardText: 'Богоподобно' },
   { id: 'boss_first', category: 'Боссы', icon: '👑', name: 'Первая победа', desc: 'Победить босса', target: 1, type: 'bossKills', reward: { atk: 30, hp: 200 }, rewardText: '+30 ATK' },
   { id: 'boss_5', category: 'Боссы', icon: '👑', name: 'Пятикратный', desc: 'Победить 5 боссов', target: 5, type: 'bossKills', reward: { atk: 80, def: 40, hp: 400 }, rewardText: '+80 ATK' },
   { id: 'boss_10', category: 'Боссы', icon: '👑', name: 'Десять', desc: 'Победить 10 боссов', target: 10, type: 'bossKills', reward: { atk: 200, def: 100, crit: 10 }, rewardText: 'Огромно' },
-  { id: 'boss_25', category: 'Боссы', icon: '👑', name: 'Четверть', desc: 'Победить 25 боссов', target: 25, type: 'bossKills', reward: { atk: 500, def: 250, hp: 3000 }, rewardText: 'Мощнейше' },
-  { id: 'boss_50', category: 'Боссы', icon: '👑', name: 'Покоритель Айнкрада', desc: 'Победить 50 боссов', target: 50, type: 'bossKills', reward: { atk: 1500, def: 800, crit: 30, hp: 10000 }, rewardText: 'МАКС' },
-  { id: 'floor_5', category: 'Этажи', icon: '🗼', name: 'Начинающий', desc: '5 этаж', target: 5, type: 'highestFloor', reward: { atk: 15, hp: 100 }, rewardText: '+15 ATK' },
+  { id: 'boss_20', category: 'Боссы', icon: '👑', name: 'Покоритель Айнкрада', desc: 'Победить всех 20 боссов', target: 20, type: 'bossKills', reward: { atk: 1500, def: 800, crit: 30, hp: 10000 }, rewardText: 'МАКС' },
   { id: 'floor_10', category: 'Этажи', icon: '🗼', name: 'Альпинист', desc: '10 этаж', target: 10, type: 'highestFloor', reward: { atk: 40, def: 20, hp: 200 }, rewardText: '+40 ATK' },
-  { id: 'floor_20', category: 'Этажи', icon: '🗼', name: 'Опытный', desc: '20 этаж', target: 20, type: 'highestFloor', reward: { atk: 100, def: 50, hp: 500 }, rewardText: '+100 ATK' },
-  { id: 'floor_30', category: 'Этажи', icon: '🗼', name: 'Мастер', desc: '30 этаж', target: 30, type: 'highestFloor', reward: { atk: 250, def: 130, crit: 8, hp: 1200 }, rewardText: '+250 ATK' },
-  { id: 'floor_40', category: 'Этажи', icon: '🗼', name: 'Грандмастер', desc: '40 этаж', target: 40, type: 'highestFloor', reward: { atk: 600, def: 300, crit: 15, hp: 3000 }, rewardText: 'Мощно' },
-  { id: 'floor_50', category: 'Этажи', icon: '🗼', name: 'Вершина', desc: '50 этаж', target: 50, type: 'highestFloor', reward: { atk: 1500, def: 800, crit: 30, hp: 8000 }, rewardText: 'АБСОЛЮТ' },
-  { id: 'lvl_5', category: 'Развитие', icon: '⭐', name: 'Опытный', desc: '5 ур', target: 5, type: 'level', reward: { hp: 100, mp: 20 }, rewardText: '+100 HP' },
-  { id: 'lvl_10', category: 'Развитие', icon: '⭐', name: 'Мастер', desc: '10 ур', target: 10, type: 'level', reward: { atk: 30, def: 15, hp: 200, mp: 50 }, rewardText: '+30 ATK' },
+  { id: 'floor_25', category: 'Этажи', icon: '🗼', name: 'Опытный', desc: '25 этаж', target: 25, type: 'highestFloor', reward: { atk: 120, def: 60, hp: 500 }, rewardText: '+120 ATK' },
+  { id: 'floor_50', category: 'Этажи', icon: '🗼', name: 'Мастер', desc: '50 этаж', target: 50, type: 'highestFloor', reward: { atk: 400, def: 200, crit: 10, hp: 2000 }, rewardText: 'Мощно' },
+  { id: 'floor_75', category: 'Этажи', icon: '🗼', name: 'Грандмастер', desc: '75 этаж', target: 75, type: 'highestFloor', reward: { atk: 1000, def: 500, crit: 20, hp: 5000 }, rewardText: 'Огромно' },
+  { id: 'floor_100', category: 'Этажи', icon: '🗼', name: 'Вершина', desc: '100 этаж', target: 100, type: 'highestFloor', reward: { atk: 3000, def: 1500, crit: 40, hp: 15000 }, rewardText: 'АБСОЛЮТ' },{ id: 'lvl_10', category: 'Развитие', icon: '⭐', name: 'Мастер', desc: '10 ур', target: 10, type: 'level', reward: { atk: 30, def: 15, hp: 200, mp: 50 }, rewardText: '+30 ATK' },
   { id: 'lvl_25', category: 'Развитие', icon: '⭐', name: 'Эксперт', desc: '25 ур', target: 25, type: 'level', reward: { atk: 100, def: 60, crit: 5, hp: 500, mp: 100 }, rewardText: '+100 ATK' },
   { id: 'lvl_50', category: 'Развитие', icon: '⭐', name: 'Гранд', desc: '50 ур', target: 50, type: 'level', reward: { atk: 300, def: 150, crit: 10, hp: 2000, mp: 300 }, rewardText: 'Мощно' },
   { id: 'lvl_100', category: 'Развитие', icon: '⭐', name: 'Божество', desc: '100 ур', target: 100, type: 'level', reward: { atk: 2000, def: 1000, crit: 40, hp: 15000 }, rewardText: 'БОЖ' },
-  { id: 'col_1000', category: 'Богатство', icon: '💰', name: 'Богач', desc: '1000 Col', target: 1000, type: 'totalCol', reward: { colBonus: 200 }, rewardText: '+200 Col' },
-  { id: 'col_10000', category: 'Богатство', icon: '💰', name: 'Магнат', desc: '10k Col', target: 10000, type: 'totalCol', reward: { colBonus: 2000 }, rewardText: '+2k Col' },
-  { id: 'col_100000', category: 'Богатство', icon: '💰', name: 'Крез', desc: '100k Col', target: 100000, type: 'totalCol', reward: { colBonus: 20000 }, rewardText: '+20k Col' },
-  { id: 'col_1000000', category: 'Богатство', icon: '💰', name: 'Император', desc: '1M Col', target: 1000000, type: 'totalCol', reward: { colBonus: 2000000 }, rewardText: '+2M Col' },
-  { id: 'mastery_1', category: 'Мастерство', icon: '⭐', name: 'Ученик', desc: 'Мастерство 1', target: 1, type: 'maxMastery', reward: { atk: 10 }, rewardText: '+10 ATK' },
-  { id: 'mastery_2', category: 'Мастерство', icon: '⭐', name: 'Знаток', desc: 'Мастерство 2', target: 2, type: 'maxMastery', reward: { atk: 25, crit: 2 }, rewardText: '+25 ATK' },
-  { id: 'mastery_3', category: 'Мастерство', icon: '⭐', name: 'Эксперт', desc: 'Мастерство 3', target: 3, type: 'maxMastery', reward: { atk: 50, crit: 3 }, rewardText: '+50 ATK' },
-  { id: 'mastery_4', category: 'Мастерство', icon: '⭐', name: 'Мастер', desc: 'Мастерство 4', target: 4, type: 'maxMastery', reward: { atk: 100, def: 30, crit: 5 }, rewardText: '+100 ATK' },
   { id: 'mastery_5', category: 'Мастерство', icon: '⭐', name: 'Великий мастер', desc: 'Мастерство 5', target: 5, type: 'maxMastery', reward: { atk: 200, def: 80, crit: 10 }, rewardText: 'Мощно' },
   { id: 'sidequest_lily', category: 'Квесты', icon: '🌸', name: 'Спаситель Лилиан', desc: 'Помочь Лилиан', target: 1, type: 'lilyQuest', reward: { atk: 30, def: 30, hp: 300 }, rewardText: '+30 ATK/DEF' },
   { id: 'donate_100', category: 'Донат', icon: '💎', name: 'Первый ДК', desc: '100 ДК', target: 100, type: 'totalDonate', reward: { atk: 50 }, rewardText: '+50 ATK' },
   { id: 'donate_1000', category: 'Донат', icon: '💎', name: 'Богач ДК', desc: '1000 ДК', target: 1000, type: 'totalDonate', reward: { atk: 200, def: 100 }, rewardText: '+200 ATK' },
-  { id: 'donate_10000', category: 'Донат', icon: '💎', name: 'Император ДК', desc: '10k ДК', target: 10000, type: 'totalDonate', reward: { atk: 800, def: 400, hp: 3000 }, rewardText: 'Мощно' }
+  { id: 'ai_10', category: 'ИИ Оракул', icon: '🔮', name: 'Ученик Оракула', desc: '10 предсказаний', target: 10, type: 'oracleMessages', reward: { atk: 20, mp: 30 }, rewardText: '+20 ATK' },
+  { id: 'ai_50', category: 'ИИ Оракул', icon: '🔮', name: 'Друг Оракула', desc: '50 предсказаний', target: 50, type: 'oracleMessages', reward: { atk: 100, def: 50, mp: 100 }, rewardText: '+100 ATK' }
 ];
 const DYNAMIC_ACH_TEMPLATES = [
   { icon: '⚡', name: 'Скорость света', desc: 'Крит. удар', reward: { atk: 8 }, rewardText: '+8 ATK' },
@@ -1205,9 +1384,6 @@ const DYNAMIC_ACH_TEMPLATES = [
 const DYNAMIC_NAMES_1 = ['Легенда', 'Тень', 'Проклятие', 'Дар', 'Клинок', 'Мудрость', 'Гнев', 'Судьба'];
 const DYNAMIC_NAMES_2 = ['Айнкрада', 'Кардинала', 'Бездны', 'Звёзд', 'Войны', 'Титанов', 'Небес'];
 
-/* ═══════════════════════════════════════════════════════════════
-   ZONES
-   ═══════════════════════════════════════════════════════════════ */
 const ZONES_DB = {};
 FLOORS_DATA.forEach(f => {
   ZONES_DB[`town_f${f.n}`] = { id: `town_f${f.n}`, floor: f.n, floorTag: `ЭТАЖ ${f.n} • ${f.biome}`, name: f.cityName, isSafe: true, desc: `${f.cityName} — город этажа ${f.n}.`, shopId: f.n };
@@ -1222,12 +1398,88 @@ let characterProfile = { name: 'KIRITO', classId: 'swordsman', raceId: 'human', 
 let player = null;
 let combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
 let currentShopTab = 'buy';
+let currentDonateTab = 'weapons';
+let currentAdminTab = 'economy';
 let adminAuthenticated = false;
+let oracleMessageCount = 0;
+/* ═══════════════════════════════════════════════════════════════
+   WORLD CLOCK: время суток и погода
+   ═══════════════════════════════════════════════════════════════ */
+const TIME_OF_DAY = {
+  day:   { icon: '🌞', name: 'День',  desc: 'Обычные условия' },
+  night: { icon: '🌙', name: 'Ночь',  desc: '+30% дроп, +25% ATK врагов' }
+};
+const WEATHERS = {
+  clear: { icon: '☀️', name: 'Ясно',  desc: '' },
+  rain:  { icon: '🌧️', name: 'Дождь', desc: '−20% крит игрока' },
+  snow:  { icon: '❄️', name: 'Снег',  desc: '+2% реген HP/ход' },
+  storm: { icon: '⛈️', name: 'Гроза', desc: 'Молнии бьют врагов (15%)' }
+};
+let worldState = {
+  timeOfDay: 'day',
+  weather: 'clear',
+  nextChangeAt: 0,
+  changeIntervalMs: 3 * 60 * 1000 // 3 минуты
+};
+let worldClockStarted = false;
+
+function rollWorldState() {
+  worldState.timeOfDay = Math.random() < 0.5 ? 'day' : 'night';
+  const wr = Math.random();
+  if (wr < 0.55) worldState.weather = 'clear';
+  else if (wr < 0.75) worldState.weather = 'rain';
+  else if (wr < 0.9) worldState.weather = 'snow';
+  else worldState.weather = 'storm';
+  worldState.nextChangeAt = Date.now() + worldState.changeIntervalMs;
+  applyWorldVisuals();
+  updateWorldHUD();
+  const t = TIME_OF_DAY[worldState.timeOfDay];
+  const w = WEATHERS[worldState.weather];
+  addLog(`🌍 [МИР] ${t.icon} ${t.name} • ${w.icon} ${w.name}${w.desc ? ' (' + w.desc + ')' : ''}`, 'system');
+  if (player) updateOracle(`${t.icon} ${t.name}, ${w.icon.toLowerCase()} ${w.name.toLowerCase()}. ${t.desc}.`);
+}
+
+function tickWorldClock() {
+  if (!worldClockStarted) return;
+  if (Date.now() >= worldState.nextChangeAt) rollWorldState();
+  else updateWorldHUD();
+}
+
+function startWorldClock() {
+  if (worldClockStarted) return;
+  worldClockStarted = true;
+  rollWorldState();
+  setInterval(tickWorldClock, 1000);
+}
+
+function updateWorldHUD() {
+  const el = document.getElementById('hud-world');
+  if (!el) return;
+  const t = TIME_OF_DAY[worldState.timeOfDay];
+  const w = WEATHERS[worldState.weather];
+  const leftMs = Math.max(0, worldState.nextChangeAt - Date.now());
+  const mins = Math.floor(leftMs / 60000);
+  const secs = Math.floor((leftMs % 60000) / 1000);
+  el.textContent = `${t.icon}${w.icon} ${mins}:${secs.toString().padStart(2, '0')}`;
+  el.title = `${t.name} • ${w.name}\n${t.desc}${w.desc ? '\n' + w.desc : ''}`;
+  el.classList.toggle('night', worldState.timeOfDay === 'night');
+}
+
+function applyWorldVisuals() {
+  document.body.classList.remove('world-night', 'world-rain', 'world-snow', 'world-storm');
+  if (worldState.timeOfDay === 'night') document.body.classList.add('world-night');
+  if (worldState.weather !== 'clear') document.body.classList.add('world-' + worldState.weather);
+}
+
+/* ── Боевые модификаторы от мира ── */
+function getWorldEnemyAtkMult() { return worldState.timeOfDay === 'night' ? 1.25 : 1.0; }
+function getWorldDropMult()     { return worldState.timeOfDay === 'night' ? 1.3 : 1.0; }
+function getWorldRegenPct()     { return worldState.weather === 'snow' ? 0.02 : 0; }
+function getEffectiveCrit()     { return getTotalCrit() * (worldState.weather === 'rain' ? 0.8 : 1.0); }
 
 function makeFreshPlayer() {
   const cls = CLASSES_DB[characterProfile.classId];
-  const unlockedSkills = { slash: true };
-  (cls.skillIds || []).forEach(sid => {
+  const unlockedSkills = { slash: true };(cls.skillIds || []).forEach(sid => {
     if (SKILLS_DB[sid] && SKILLS_DB[sid].reqCol === 0) unlockedSkills[sid] = true;
   });
   const skillMastery = {};
@@ -1238,8 +1490,10 @@ function makeFreshPlayer() {
     gender: characterProfile.gender || 'male', color: characterProfile.color,
     level: 1, hp: cls.hp, maxHp: cls.hp, mp: cls.mp, maxMp: cls.mp,
     baseAtk: cls.atk, baseDef: cls.def, baseCrit: cls.crit,
-    exp: 0, maxExp: 100, col: 500, donateCurrency: 0, totalDonate: 0,
+    exp: 0, maxExp: getMaxExp(1), col: 500, donateCurrency: 0, totalDonate: 0,
     killsCount: 0, eliteKills: 0, minibossKills: 0, bossKills: 0, totalColEarned: 0,
+    oracleMessages: 0,
+    floorKillProgress: 0,
     currentZone: 'town_f1', highestFloor: 1,
     equippedWeapon: 'w_rusty', equippedArmor: 'a_cloth',
     inventory: [{ id: 'p_hp_small', count: 5 }, { id: 'p_mp_small', count: 5 }],
@@ -1314,8 +1568,7 @@ function getTotalMaxHp() {
 }
 function getTotalMaxMp() {
   const rb = getRaceBonusData();
-  let mp = player.maxMp + getAchBonus().mp;
-  if (player.classId === 'mage') mp += 50;
+  let mp = player.maxMp + getAchBonus().mp;if (player.classId === 'mage') mp += 50;
   if (player.classId === 'pyromancer') mp += 40;
   if (player.classId === 'cleric') mp += 25;
   if (player.classId === 'envell_mage') mp += 60;
@@ -1382,14 +1635,13 @@ function generateEnemy(floor, playerLevel) {
   const modCount = Math.random() < 0.4 ? 2 : (Math.random() < 0.7 ? 1 : 0);
   const shuffled = [...MODIFIERS].sort(() => Math.random() - 0.5);
   for (let i = 0; i < modCount; i++) { shuffled[i].apply(enemy); enemy.modifiers.push({ name: shuffled[i].name, icon: shuffled[i].icon }); }
-  const tier = Math.min(4, Math.floor((floor - 1) / 10));
-  const eliteChance = [0.15, 0.22, 0.30, 0.38, 0.50][tier];
-  const minibossChance = [0.08, 0.12, 0.18, 0.25, 0.35][tier];
+  const tier = Math.min(9, Math.floor((floor - 1) / FLOORS_PER_BIOME));
+  const eliteChance = 0.15 + tier * 0.05;
+  const minibossChance = 0.08 + tier * 0.04;
   const roll = Math.random();
   if (roll < minibossChance) {
     enemy.tier = 'miniboss'; enemy.name = `${base.name} ${NAME_SUFFIXES[Math.floor(Math.random() * NAME_SUFFIXES.length)]}`;
-    enemy.hp = Math.round(enemy.hp * 2.5); enemy.atk = Math.round(enemy.atk * 1.7); enemy.def = Math.round(enemy.def * 1.5);
-    enemy.exp = Math.round(enemy.exp * 3); enemy.col = Math.round(enemy.col * 4);
+    enemy.hp = Math.round(enemy.hp * 2.5); enemy.atk = Math.round(enemy.atk * 1.7); enemy.def = Math.round(enemy.def * 1.5);enemy.exp = Math.round(enemy.exp * 3); enemy.col = Math.round(enemy.col * 4);
   } else if (roll < minibossChance + eliteChance) {
     enemy.tier = 'elite'; enemy.name = `${NAME_PREFIXES[Math.floor(Math.random() * NAME_PREFIXES.length)]} ${base.name}`;
     enemy.hp = Math.round(enemy.hp * 1.6); enemy.atk = Math.round(enemy.atk * 1.35); enemy.def = Math.round(enemy.def * 1.2);
@@ -1397,9 +1649,9 @@ function generateEnemy(floor, playerLevel) {
   }
   enemy.dropTable = [{ id: 'p_hp_small', chance: 0.35 }];
   if (floor >= 5) enemy.dropTable.push({ id: 'mat_ore', chance: 0.3 });
-  if (floor >= 15) enemy.dropTable.push({ id: 'mat_crystal', chance: 0.25 });
-  if (floor >= 25) enemy.dropTable.push({ id: 'p_hp_giant', chance: 0.2 });
-  if (floor >= 35) enemy.dropTable.push({ id: 'mat_dragon_scale', chance: 0.15 });
+  if (floor >= 25) enemy.dropTable.push({ id: 'mat_crystal', chance: 0.25 });
+  if (floor >= 50) enemy.dropTable.push({ id: 'p_hp_giant', chance: 0.2 });
+  if (floor >= 75) enemy.dropTable.push({ id: 'mat_dragon_scale', chance: 0.15 });
   return enemy;
 }
 function generateBoss(floor) {
@@ -1425,6 +1677,7 @@ function getAchProgressValue(ach) {
     case 'maxMastery': return getMaxMastery();
     case 'lilyQuest': return player.lilyQuest && player.lilyQuest.completed ? 1 : 0;
     case 'totalDonate': return player.totalDonate || 0;
+    case 'oracleMessages': return player.oracleMessages || 0;
     default: return 0;
   }
 }
@@ -1465,8 +1718,7 @@ function tryGenerateDynamicAchievement() {
   if (!player.dynamicAchievements) player.dynamicAchievements = [];
   player.dynamicAchievements.push(dyn);
   if (tpl.reward) {
-    for (const [key, amount] of Object.entries(tpl.reward)) {
-      if (key === 'hp') { player.achievementBonuses.hp += amount; player.hp = Math.min(player.hp + amount, getTotalMaxHp()); }
+    for (const [key, amount] of Object.entries(tpl.reward)) {if (key === 'hp') { player.achievementBonuses.hp += amount; player.hp = Math.min(player.hp + amount, getTotalMaxHp()); }
       else if (key === 'mp') { player.achievementBonuses.mp += amount; player.mp = Math.min(player.mp + amount, getTotalMaxMp()); }
       else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amount;
     }
@@ -1527,8 +1779,7 @@ function renderLilyStage() {
     <div style="text-align:center; font-size:3rem; margin-bottom:8px;">🌸</div>
     <div style="background: linear-gradient(135deg, rgba(244,114,182,0.15), rgba(190,24,93,0.08)); border: 1px solid #f472b6; border-radius: 5px; padding: 14px; font-size: 0.95rem; line-height: 1.55; color: #fce7f3;">
       <div style="font-style:italic; color:#ffb6d9;">💬 ${stage.text}</div>
-    </div>
-    <div style="text-align:center; font-size:0.75rem; color:#f9a8d4; margin-top:8px;">Этап ${player.lilyQuest.stage} / 7</div>
+    </div><div style="text-align:center; font-size:0.75rem; color:#f9a8d4; margin-top:8px;">Этап ${player.lilyQuest.stage} / 7</div>
   `;
   const choices = document.getElementById('lily-choices');
   choices.innerHTML = '';
@@ -1578,11 +1829,12 @@ function updateHUD() {
   if (player.gender === 'female') { genderEl.textContent = '♀'; genderEl.className = 'gender-tag female'; }
   else { genderEl.textContent = '♂'; genderEl.className = 'gender-tag male'; }
   document.getElementById('hud-level').textContent = `Lv. ${player.level}`;
-  document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}/50`;
+  document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}/100`;
   document.getElementById('player-cursor-el').style.background = player.color;
   document.getElementById('player-cursor-el').style.boxShadow = `0 0 10px ${player.color}`;
   const hpPct = Math.max(0, Math.min(100, (player.hp / maxHp) * 100));
   const hpBar = document.getElementById('hud-hp-bar');
+  document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}/100 (${player.floorKillProgress || 0}/10)`;
   hpBar.style.width = `${hpPct}%`;
   hpBar.className = 'bar-fill hp-fill';
   if (hpPct <= 25) hpBar.className = 'bar-fill hp-red';
@@ -1601,8 +1853,7 @@ function updateHUD() {
   const w = ITEMS_DB[player.equippedWeapon];
   const a = ITEMS_DB[player.equippedArmor];
   document.getElementById('weapon-type-label').textContent = WEAPON_TYPES[getClass().weaponType]?.name || '?';
-  document.getElementById('stat-weapon-name').textContent = w ? `${w.name} (+${w.atk})` : 'Нет';
-  document.getElementById('stat-armor-name').textContent = a ? `${a.name} (+${a.def})` : 'Нет';
+  document.getElementById('stat-weapon-name').textContent = w ? `${w.name} (+${w.atk})` : 'Нет';document.getElementById('stat-armor-name').textContent = a ? `${a.name} (+${a.def})` : 'Нет';
   document.getElementById('inv-count-badge').textContent = player.inventory.reduce((s, i) => s + i.count, 0);
   const cls = getClass();
   document.getElementById('class-ability-title').textContent = `${cls.icon} ${cls.passiveName}`;
@@ -1648,6 +1899,7 @@ function addLog(t, type = '') {
   e.className = `log-entry ${type}`;
   e.innerHTML = t;
   l.appendChild(e);
+  while (l.children.length > 100) { l.removeChild(l.firstChild); }
   l.scrollTop = l.scrollHeight;
 }
 function showToast(m) {
@@ -1660,6 +1912,12 @@ function showAchievementToast(name, reward) {
   const t = document.getElementById('toast-box');
   t.className = 'toast-box achievement show';
   t.innerHTML = `<div style="font-size:0.8rem;">Достижение разблокировано!</div><div style="font-size:1rem; margin:2px 0;">${name}</div><div style="font-size:0.8rem; color:#4ade80;">${reward}</div>`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+function showAIToast(msg) {
+  const t = document.getElementById('toast-box');
+  t.className = 'toast-box ai show';
+  t.innerHTML = `<div style="font-size:0.75rem;">🔮 Оракул Кардинала</div><div style="font-size:0.85rem; margin-top:3px;">${msg}</div>`;
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 function spawnFloatingNumber(t, type = 'floating-dmg') {
@@ -1677,9 +1935,7 @@ function triggerScreenShake() {
   const s = document.getElementById('battle-stage');
   s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake');
   setTimeout(() => s.classList.remove('shake'), 350);
-}
-
-/* ═══════════════════════════════════════════════════════════════
+}/* ═══════════════════════════════════════════════════════════════
    EXPLORATION
    ═══════════════════════════════════════════════════════════════ */
 function createActionButton(text, cls, onClick) {
@@ -1697,7 +1953,7 @@ function renderExplorationButtons() {
   c.innerHTML = '';
   const z = ZONES_DB[player.currentZone];
   t.textContent = `ДЕЙСТВИЯ: ${z.name.toUpperCase()}`;
-  h.textContent = `Этаж ${z.floor}/50`;
+  h.textContent = `Этаж ${z.floor}/100`;
 
   if (z.isSafe) {
     c.appendChild(createActionButton('🔥 Отдохнуть', 'btn-item', restAtCampfire));
@@ -1710,29 +1966,29 @@ function renderExplorationButtons() {
       c.appendChild(createActionButton('🌸 Продолжить квест Лили', 'btn-sidequest', openLilyQuest));
     }
     c.appendChild(createActionButton(`🌲 В поле ➔`, 'btn-defend', () => changeZone(`wild_f${z.floor}`)));
-    const uf = Object.keys(player.unlockedFloors).map(Number).filter(n => n !== z.floor && player.unlockedFloors[n]).sort((a, b) => a - b);
-    uf.slice(0, 5).forEach(f => c.appendChild(createActionButton(`🌀 Этаж ${f}`, 'btn-skill', () => changeZone(`town_f${f}`))));
   } else if (z.bossId) {
     c.appendChild(createActionButton('⚔️ НАЙТИ ВРАГА', 'btn-hunt', huntForEnemy));
     if (!player.bossesDefeated[z.bossId]) {
-      if (z.floor % 10 === 0) {
-        c.appendChild(createActionButton(`💬 Диалог с боссом`, 'btn-boss', () => startBossDialog()));
-      }
       c.appendChild(createActionButton(`⚡ БОСС: ${BOSSES_DB[z.floor].name}`, 'btn-boss', () => startBossFight(z.floor)));
     } else {
       const nf = z.floor + 1;
-      if (nf <= 50 && !player.unlockedFloors[nf]) {
+      if (nf <= MAX_FLOOR && !player.unlockedFloors[nf]) {
         c.appendChild(createActionButton(`✨ ОТКРЫТЬ ЭТАЖ ${nf} ➔`, 'btn-skill', () => { player.unlockedFloors[nf] = true; if (nf > player.highestFloor) player.highestFloor = nf; addLog(`[ПРОГРЕСС] Открыт Этаж ${nf}!`, 'legendary'); changeZone(`town_f${nf}`); }));
-      } else if (nf <= 50) {
+      } else if (nf <= MAX_FLOOR) {
         c.appendChild(createActionButton(`✨ Этаж ${nf} ➔`, 'btn-skill', () => changeZone(`town_f${nf}`)));
       } else {
-        c.appendChild(createActionButton('🏆 ВСЕ ЭТАЖИ!', 'btn-achievement', () => showToast('Вы прошли все 50 этажей!')));
+        c.appendChild(createActionButton('🏆 ВСЕ ЭТАЖИ!', 'btn-achievement', () => showToast('Вы прошли все 100 этажей!')));
       }
     }
     c.appendChild(createActionButton(`🌲 Обратно в поле ➔`, '', () => changeZone(`wild_f${z.floor}`)));
   } else {
     c.appendChild(createActionButton('⚔️ НАЙТИ ВРАГА', 'btn-hunt', huntForEnemy));
-    c.appendChild(createActionButton(`💀 В подземелье ➔`, 'btn-defend', () => changeZone(`dungeon_f${z.floor}`)));
+    // ⬇️ ИСПРАВЛЕНО: в подземелье — кнопка «В поле», в поле — кнопка «В подземелье»
+    if (z.zoneType === 'dungeon') {
+      c.appendChild(createActionButton(`🌲 В поле ➔`, 'btn-defend', () => changeZone(`wild_f${z.floor}`)));
+    } else {
+      c.appendChild(createActionButton(`💀 В подземелье ➔`, 'btn-defend', () => changeZone(`dungeon_f${z.floor}`)));
+    }
     c.appendChild(createActionButton(`🏛️ В город ➔`, '', () => changeZone(`town_f${z.floor}`)));
   }
 }
@@ -1745,8 +2001,8 @@ function huntForEnemy() {
   addLog(`[ПОИСК] Вы исследуете окрестности...`, 'system');
   disableCombatButtons(true);
   setTimeout(() => {
-    const canTriggerLily = (!player.lilyQuest || (!player.lilyQuest.active && !player.lilyQuest.completed)) && z.floor <= 10;
-    if (canTriggerLily && Math.random() < 0.15) {
+    const canTriggerLily = (!player.lilyQuest || (!player.lilyQuest.active && !player.lilyQuest.completed));
+    if (canTriggerLily && Math.random() < 0.10) {
       addLog(`🌸 [СОБЫТИЕ] Вы слышите детский плач из глубины леса...`, 'sidequest');
       startLilyQuest();
       disableCombatButtons(false);
@@ -1768,8 +2024,7 @@ function huntForEnemy() {
   }, 300);
 }
 
-function renderCombatButtons() {
-  const c = document.getElementById('actions-container');
+function renderCombatButtons() {const c = document.getElementById('actions-container');
   const t = document.getElementById('actions-title');
   c.innerHTML = '';
   t.textContent = `БОЙ: ${combatState.enemy.name.toUpperCase()}`;
@@ -1798,8 +2053,12 @@ function renderCombatButtons() {
 }
 
 function changeZone(zid) {
+  const oldFloor = getCurrentFloor();
   player.currentZone = zid;
+  const newFloor = ZONES_DB[zid].floor;
   addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}.`, 'system');
+  if (newFloor !== oldFloor) oracleOnFloorChange(newFloor);
+  player.oracleMessages = (player.oracleMessages || 0) + 1;
   saveGameAuto(); renderZone(); updateHUD();
 }
 function restAtCampfire() {
@@ -1809,6 +2068,7 @@ function restAtCampfire() {
   addLog(`[КОСТЁР] Полное восстановление!`, 'heal');
   updateHUD();
   showToast('HP и MP восстановлены!');
+  updateOracle('Отдых восстановил твои силы. Продолжай путь.');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1837,8 +2097,7 @@ function startCombatWithEnemy(enemy) {
   document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
   avatar.innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
   updateEnemyHpBar(); updateDebuffDisplay(); updateEnemyCardState();
-  document.getElementById('battle-stage').style.display = 'flex';
-  if (e.tier === 'miniboss') { playSound('miniboss'); addLog(`🔥 [МИНИ-БОСС] ${e.name}!`, 'miniboss'); }
+  document.getElementById('battle-stage').style.display = 'flex';if (e.tier === 'miniboss') { playSound('miniboss'); addLog(`🔥 [МИНИ-БОСС] ${e.name}!`, 'miniboss'); }
   else if (e.tier === 'elite') { playSound('elite'); addLog(`💜 [ЭЛИТА] ${e.name}!`, 'elite'); }
   else addLog(`[БОЙ] ${e.name} (HP ${e.maxHp}).`, 'danger');
   renderCombatButtons(); updateHUD();
@@ -1857,8 +2116,8 @@ function startBossFight(floor) {
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
   document.getElementById('enemy-avatar').className = 'enemy-avatar miniboss';
   document.getElementById('enemy-name').className = 'enemy-name miniboss';
-  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill miniboss';
-  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag miniboss">👑 БОСС ЭТАЖА ${floor}</span>`;
+  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill boss';
+  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag boss">👑 БОСС ЭТАЖА ${floor}</span>`;
   document.getElementById('enemy-mods-row').innerHTML = '';
   document.getElementById('enemy-name').textContent = e.name;
   document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
@@ -1867,6 +2126,7 @@ function startBossFight(floor) {
   document.getElementById('battle-stage').style.display = 'flex';
   playSound('miniboss');
   addLog(`👑 [БОСС] ${e.name}! HP ${e.maxHp}`, 'miniboss');
+  updateOracle(`👑 Босс этажа ${floor} пробудился! Соберись с силами!`);
   renderCombatButtons(); updateHUD();
 }
 
@@ -1897,7 +2157,7 @@ function updateDebuffDisplay() {
 function playerActionAttack() {
   if (!combatState.active) return;
   combatState.isDefending = false;
-  const isCrit = Math.random() * 100 < getTotalCrit();
+  const isCrit = Math.random() * 100 < getEffectiveCrit();
   let atk = getTotalAtk();
   if (player.classId === 'swordsman') atk *= 1.15;
   if (combatState.hasteActive) { atk *= 1.5; combatState.hasteActive = false; }
@@ -1916,8 +2176,7 @@ function playerActionClassAbility() {
   if (player.mp < cls.activeCost) { showToast('Мало MP!'); return; }
   player.mp -= cls.activeCost;
   combatState.isDefending = false;
-  playSound('classSkill');
-  let logMsg = '';
+  playSound('classSkill');let logMsg = '';
   const enemy = combatState.enemy;
 
   if (['swordsman', 'assassin', 'envell_killer'].includes(player.classId)) {
@@ -1998,8 +2257,7 @@ function playerActionClassAbility() {
   }
 
   addLog(`[КЛАСС] ${logMsg}`, 'class-skill');
-  updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();
-  if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
+  updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
 }
 
 function playerActionSkillUse(skillId) {
@@ -2025,7 +2283,7 @@ function playerActionSkillUse(skillId) {
   if (sk.multiHits) {
     let total = 0;
     for (let i = 0; i < sk.multiHits; i++) {
-      const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
+      const isCrit = Math.random() * 100 < (getEffectiveCrit() + (sk.bonusCrit || 0));
       const dmg = calculateDamage(computeSkillDmg(sk.dmgMult, skillId), enemy.def, isCrit);
       total += dmg;
       setTimeout(() => { spawnFloatingNumber(`-${dmg}`, isCrit ? 'floating-crit' : 'floating-dmg'); triggerScreenShake(); }, i * 150);
@@ -2033,7 +2291,7 @@ function playerActionSkillUse(skillId) {
     enemy.hp -= total;
     addLog(`[${sk.name}] ${sk.multiHits}×, ${total}!`, 'class-skill');
   } else {
-    const isCrit = Math.random() * 100 < (getTotalCrit() + (sk.bonusCrit || 0));
+    const isCrit = Math.random() * 100 < (getEffectiveCrit() + (sk.bonusCrit || 0));
     let effDef = enemy.def;
     if (sk.ignoreDef) effDef = 0;
     else if (sk.ignoreDefHalf) effDef = Math.max(0, effDef * 0.5);
@@ -2087,8 +2345,7 @@ function openQuickItemMenu() {
 }
 function playerActionEscape() {
   if (!combatState.active) return;
-  if (combatState.enemy.isBoss) { showToast('От босса нельзя сбежать!'); return; }
-  if (Math.random() < 0.6) { playSound('click'); addLog(`[ПОБЕГ] Успех!`, 'system'); endCombat(); }
+  if (combatState.enemy.isBoss) { showToast('От босса нельзя сбежать!'); return; }if (Math.random() < 0.6) { playSound('click'); addLog(`[ПОБЕГ] Успех!`, 'system'); endCombat(); }
   else { addLog(`[ПОБЕГ] Не удалось!`, 'danger'); enemyTurn(); }
 }
 function enemyTurn() {
@@ -2105,7 +2362,16 @@ function enemyTurn() {
       if (e.hp <= 0) { handleVictory(); return; }
       updateDebuffDisplay();
     }
-    let enemyAtk = e.atk;
+        // ⚡ Гроза: молния может ударить врага
+    if (worldState.weather === 'storm' && Math.random() < 0.15) {
+      const bolt = Math.round(e.maxHp * 0.05) + 10;
+      e.hp -= bolt;
+      spawnFloatingNumber(`⚡ -${bolt}`, 'floating-crit');
+      addLog(`⚡ [ГРОЗА] Молния бьёт ${e.name} на ${bolt}!`, 'system');
+      updateEnemyHpBar();
+      if (e.hp <= 0) { handleVictory(); return; }
+    }
+    let enemyAtk = e.atk * getWorldEnemyAtkMult();
     let def = getTotalDef();
     if (combatState.isDefending) { if (['tank', 'defender'].includes(player.classId) && combatState.defendTurns > 0) def *= 3; else def *= 2; }
     let dmg = calculateDamage(enemyAtk, def, false);
@@ -2120,6 +2386,8 @@ function enemyTurn() {
     const rb = getRaceBonusData();
     if (rb.regenPct > 0) { const heal = Math.round(getTotalMaxHp() * rb.regenPct); player.hp = Math.min(getTotalMaxHp(), player.hp + heal); }
     updateHUD();
+    const wRegen = getWorldRegenPct();
+    if (wRegen > 0) { const heal = Math.round(getTotalMaxHp() * wRegen); player.hp = Math.min(getTotalMaxHp(), player.hp + heal); }
     if (player.hp <= 0) {
       if (player.classId === 'undead' && !combatState.undeadUsed) {
         combatState.undeadUsed = true;
@@ -2131,7 +2399,13 @@ function enemyTurn() {
       }
       player.hp = 0; updateHUD(); handlePlayerDeath();
     }
-    else endEnemyTurn();
+    else {
+      // AI Oracle reactions
+      const hpPct = player.hp / getTotalMaxHp();
+      if (hpPct < 0.3 && Math.random() < 0.3) oracleReact('lowHp');
+      else if (player.mp < 10 && Math.random() < 0.3) oracleReact('lowMp');
+      endEnemyTurn();
+    }
   }, 350);
 }
 function endEnemyTurn() { disableCombatButtons(false); renderCombatButtons(); }
@@ -2148,6 +2422,7 @@ function handleVictory() {
   let colMult = player.classId === 'thief' ? 1.3 : 1;
   expMult *= rb.expMult;
   colMult *= rb.colMult;
+  expMult *= getExpRewardScale(e.floor, player.level);
   const expGain = Math.round(e.exp * expMult), colGain = Math.round(e.col * colMult);
   player.exp += expGain; player.col += colGain; player.totalColEarned += colGain; player.killsCount++;
   let dkGain = 0;
@@ -2159,21 +2434,22 @@ function handleVictory() {
     player.totalDonate = (player.totalDonate || 0) + dkGain;
     addLog(`💎 [ДОНАТ] +${dkGain} ДК!`, 'donate');
   }
-  if (e.tier === 'elite') { player.eliteKills++; addLog(`💜 [ЭЛИТА] +${expGain} EXP, +${colGain} Col`, 'elite'); }
-  else if (e.tier === 'miniboss') { player.minibossKills++; addLog(`🔥 [МИНИ-БОСС] +${expGain} EXP, +${colGain} Col`, 'miniboss'); }
+  if (e.tier === 'elite') { player.eliteKills++; addLog(`💜 [ЭЛИТА] +${expGain} EXP, +${colGain} Col`, 'elite'); }else if (e.tier === 'miniboss') { player.minibossKills++; addLog(`🔥 [МИНИ-БОСС] +${expGain} EXP, +${colGain} Col`, 'miniboss'); }
   else if (e.isBoss) { player.bossKills++; }
   else addLog(`+${expGain} EXP, +${colGain} Col.`, 'quest');
-  if (e.dropTable) e.dropTable.forEach(d => { if (Math.random() <= d.chance) { addItemToInventory(d.id, 1); addLog(`[ДРОП] ${ITEMS_DB[d.id].name}!`, 'quest'); showToast(`+${ITEMS_DB[d.id].name}`); } });
+  if (e.dropTable) e.dropTable.forEach(d => { if (Math.random() <= d.chance * getWorldDropMult()) { addItemToInventory(d.id, 1); addLog(`[ДРОП] ${ITEMS_DB[d.id].name}!`, 'quest'); showToast(`+${ITEMS_DB[d.id].name}`); } });
   if (e.isBoss) {
     player.bossesDefeated[e.id] = true;
     const nf = e.floor + 1;
-    if (nf <= 50) { player.unlockedFloors[nf] = true; if (nf > player.highestFloor) player.highestFloor = nf; addLog(`[★ БОСС] Открыт Этаж ${nf}!`, 'legendary'); }
+    if (nf <= MAX_FLOOR) { player.unlockedFloors[nf] = true; if (nf > player.highestFloor) player.highestFloor = nf; addLog(`[★ БОСС] Открыт Этаж ${nf}!`, 'legendary'); }
+    oracleReact('bossKill');
     tryGenerateDynamicAchievement();
   } else if (e.tier === 'miniboss' || e.tier === 'elite') tryGenerateDynamicAchievement();
   else if (Math.random() < 0.1) tryGenerateDynamicAchievement();
   checkQuestProgress(e.id || e.name);
   checkLevelUp();
   checkAchievements();
+  progressFloorProgress();
   endCombat();
   updateHUD();
   saveGameAuto();
@@ -2192,12 +2468,39 @@ function checkLevelUp() {
     player.maxHp += 30; player.hp = getTotalMaxHp();
     player.maxMp += 10; player.mp = getTotalMaxMp();
     player.baseAtk += 10; player.baseDef += 7; player.baseCrit += 1.5;
-    player.maxExp = Math.round(player.maxExp * 1.5 + 40);
+    player.maxExp = getMaxExp(player.level);
     playSound('levelup');
     addLog(`[LEVEL UP] Lv. ${player.level}!`, 'system');
     showToast(`LEVEL UP! Lv. ${player.level}`);
+    oracleReact('levelUp');
   }
   checkAchievements();
+}
+function progressFloorProgress() {
+  const curFloor = getCurrentFloor();
+  // На боссовых этажах свой механизм — не дублируем
+  if (curFloor % BOSS_INTERVAL === 0) return;
+  // Считаем только на самом высоком открытом этаже
+  if (curFloor < player.highestFloor) return;
+
+  player.floorKillProgress = (player.floorKillProgress || 0) + 1;
+  const NEED = 5 + Math.floor(curFloor / 10);
+
+  if (player.floorKillProgress >= NEED) {
+    const nf = curFloor + 1;
+    if (nf <= MAX_FLOOR && !player.unlockedFloors[nf]) {
+      player.unlockedFloors[nf] = true;
+      player.highestFloor = nf;
+      player.floorKillProgress = 0;
+      playSound('levelup');
+      addLog(`🗼 [ПРОГРЕСС] Открыт Этаж ${nf}!`, 'legendary');
+      showToast(`🗼 Открыт Этаж ${nf}!`);
+      updateOracle(`Этаж ${nf} открыт. Новые испытания ждут тебя.`);
+      checkAchievements();
+    }
+  } else {
+    addLog(`🗼 [ПРОГРЕСС] ${player.floorKillProgress}/${NEED} до Этажа ${curFloor + 1}`, 'system');
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2206,7 +2509,7 @@ function checkLevelUp() {
 const QUESTS_DB = [
   { id: 0, title: 'Зачистка окраин', desc: 'Убейте 5 слаймов.', targetType: 'Слайм', targetCount: 5, expReward: 90, colReward: 60, itemRewards: [{ id: 'p_hp_small', count: 2 }], rewardDesc: '+90 EXP, +60 Col' },
   { id: 1, title: 'Охота', desc: 'Убейте 4 кабанов.', targetType: 'Кабан', targetCount: 4, expReward: 180, colReward: 120, itemRewards: [{ id: 'mat_ore', count: 1 }], rewardDesc: '+180 EXP' },
-  { id: 2, title: 'Первый босс', desc: 'Победите босса 1-го этажа!', targetType: 'boss_f1', targetCount: 1, expReward: 500, colReward: 400, itemRewards: [{ id: 'p_hp_large', count: 2 }], rewardDesc: '+500 EXP' }
+  { id: 2, title: 'Первый босс', desc: 'Победите босса 5-го этажа!', targetType: 'boss_f5', targetCount: 1, expReward: 500, colReward: 400, itemRewards: [{ id: 'p_hp_large', count: 2 }], rewardDesc: '+500 EXP' }
 ];
 function checkQuestProgress(kid) {
   if (player.currentQuestIdx >= QUESTS_DB.length) return;
@@ -2237,8 +2540,7 @@ function updateQuestDisplay() {
     return;
   }
   document.getElementById('quest-title').textContent = q.title;
-  document.getElementById('quest-desc').textContent = q.desc;
-  document.getElementById('quest-fill').style.width = `${Math.min(100, (player.questProgress / q.targetCount) * 100)}%`;
+  document.getElementById('quest-desc').textContent = q.desc;document.getElementById('quest-fill').style.width = `${Math.min(100, (player.questProgress / q.targetCount) * 100)}%`;
   document.getElementById('quest-count-text').textContent = `${player.questProgress} / ${q.targetCount}`;
   document.getElementById('quest-reward-text').textContent = q.rewardDesc;
 }
@@ -2307,14 +2609,110 @@ function learnSkill(sid) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   TELEPORT
+   ═══════════════════════════════════════════════════════════════ */
+function openTeleportModal() {const container = document.getElementById('teleport-container');
+  container.innerHTML = '';
+  const currentFloor = getCurrentFloor();
+  
+  BIOMES.forEach((biome, biomeIdx) => {
+    const header = document.createElement('div');
+    header.className = 'biome-header';
+    header.textContent = `${biome.name} (${biome.start}-${biome.end})`;
+    container.appendChild(header);
+    
+    const grid = document.createElement('div');
+    grid.className = 'teleport-grid';
+    
+    for (let n = biome.start; n <= biome.end; n++) {
+      const unlocked = player.unlockedFloors[n];
+      const isCurrent = n === currentFloor;
+      const hasBoss = n % BOSS_INTERVAL === 0;
+      const bossDefeated = hasBoss && BOSSES_DB[n] && player.bossesDefeated[BOSSES_DB[n].id];
+      
+      const cell = document.createElement('div');
+      cell.className = 'teleport-floor';
+      if (isCurrent) cell.classList.add('current');
+      else if (unlocked) cell.classList.add('unlocked');
+      else cell.classList.add('locked');
+      if (bossDefeated) cell.classList.add('completed');
+      
+      let icon = '';
+      if (hasBoss) icon = bossDefeated ? '✓' : '👑';
+      
+      cell.innerHTML = `<div class="teleport-floor-num">${n}</div>${icon ? `<div class="teleport-floor-icon">${icon}</div>` : ''}`;
+      
+      if (unlocked && !isCurrent) {
+        cell.onclick = () => {
+          playSound('teleport');
+          addLog(`🌀 [ТЕЛЕПОРТ] Этаж ${n}`, 'system');
+          changeZone(`town_f${n}`);
+          closeModal('modal-teleport');
+          showAIToast(`Телепортация на этаж ${n} успешна.`);
+        };
+      } else if (isCurrent) {
+        cell.onclick = () => showToast('Вы уже здесь');
+      } else {
+        cell.onclick = () => showToast(`Этаж ${n} не открыт`);
+      }
+      
+      grid.appendChild(cell);
+    }
+    container.appendChild(grid);
+  });
+  
+  openModal('modal-teleport');
+}
+
+/* ═══════════════════════════════════════════════════════════════
    DONATE
    ═══════════════════════════════════════════════════════════════ */
 function openDonateModal() {
+  document.getElementById('donate-player-balance').textContent = player.donateCurrency || 0;
+  switchDonateTab(currentDonateTab);
+  playSound('donate');
+  openModal('modal-donate');
+}
+function switchDonateTab(tab) {
+  currentDonateTab = tab;
+  document.querySelectorAll('#donate-tabs .modal-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.donateTab === tab);
+  });
   const c = document.getElementById('donate-items-container');
   c.innerHTML = '';
-  document.getElementById('donate-player-balance').textContent = player.donateCurrency || 0;
-  const donateItems = Object.values(ITEMS_DB).filter(i => i.donate);
-  donateItems.forEach(item => {
+  
+  let items = [];
+  if (tab === 'weapons') items = Object.values(ITEMS_DB).filter(i => i.donate && i.type === 'weapon');
+  else if (tab === 'armors') items = Object.values(ITEMS_DB).filter(i => i.donate && i.type === 'armor');
+  else if (tab === 'consumables') items = Object.values(ITEMS_DB).filter(i => i.donate && i.type === 'consumable');
+  else if (tab === 'vip') {
+    // VIP items (special)
+    const vipItems = [
+      { id: 'vip_1', name: '👑 VIP-статус', desc: '+50% EXP, +50% Col, +30% крит-урон (навсегда)', donatePrice: 500, vip: true },
+      { id: 'vip_2', name: '👑 Premium-статус', desc: '+25% EXP, +25% Col, +15% крит-урон (навсегда)', donatePrice: 200, vip: true },
+      { id: 'vip_3', name: '👑 Базовый VIP', desc: '+10% EXP, +10% Col (навсегда)', donatePrice: 50, vip: true }
+    ];
+    vipItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'item-card donate-item';
+      card.innerHTML = `
+        <div class="item-main">
+          <div class="item-name-row"><span class="item-name donate">${item.name}</span><span class="item-tag donate">VIP</span></div>
+          <div class="item-desc">${item.desc}</div>
+          <div class="item-stat-badge donate">💎 ${item.donatePrice} ДК</div>
+        </div>
+        <div class="item-actions"><button class="sao-btn mini-btn btn-donate" onclick="buyVipItem('${item.id}', '${item.name}', ${item.donatePrice})">💎 Купить</button></div>
+      `;c.appendChild(card);
+    });
+    return;
+  }
+  
+  if (items.length === 0) {
+    c.innerHTML = '<div style="color:var(--text-dim); padding:10px;">Нет предметов в этой категории.</div>';
+    return;
+  }
+  
+  items.forEach(item => {
     const card = document.createElement('div');
     card.className = 'item-card donate-item';
     const stats = item.atk ? `+${item.atk} ATK` : (item.def ? `+${item.def} DEF` : (item.healHp ? `+${item.healHp} HP` : '100% HP/MP'));
@@ -2329,8 +2727,6 @@ function openDonateModal() {
     `;
     c.appendChild(card);
   });
-  playSound('donate');
-  openModal('modal-donate');
 }
 function buyDonateItem(id) {
   const item = ITEMS_DB[id];
@@ -2341,6 +2737,19 @@ function buyDonateItem(id) {
   playSound('donate');
   addLog(`💎 [ДОНАТ] Куплено: ${item.name} (-${item.donatePrice} ДК)!`, 'donate');
   showToast(`💎 Куплено: ${item.name}`);
+  openDonateModal();
+  updateHUD();
+}
+function buyVipItem(id, name, price) {
+  if ((player.donateCurrency || 0) < price) { showToast(`Нужно ${price} ДК!`); return; }
+  player.donateCurrency -= price;
+  // Apply VIP bonus
+  if (id === 'vip_3') { player.vipBonus = 1.10; player.vipCol = 1.10; }
+  else if (id === 'vip_2') { player.vipBonus = 1.25; player.vipCol = 1.25; player.vipCrit = 0.15; }
+  else if (id === 'vip_1') { player.vipBonus = 1.50; player.vipCol = 1.50; player.vipCrit = 0.30; }
+  playSound('donate');
+  addLog(`💎 [VIP] Активирован: ${name}!`, 'donate');
+  showToast(`👑 VIP активирован: ${name}`);
   openDonateModal();
   updateHUD();
 }
@@ -2364,9 +2773,17 @@ document.getElementById('admin-password').addEventListener('keypress', (e) => { 
 
 function openAdminPanel() {
   if (!adminAuthenticated) { openAdminLogin(); return; }
+  switchAdminTab(currentAdminTab);
+  openModal('modal-admin');
+}
+function switchAdminTab(tab) {
+  currentAdminTab = tab;
+  document.querySelectorAll('#admin-tabs .modal-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.adminTab === tab);
+  });
   const c = document.getElementById('admin-panel-content');
   c.innerHTML = '';
-  const addSection = (title) => { const t = document.createElement('div'); t.className = 'admin-section-title'; t.textContent = title; c.appendChild(t); };
+  
   const addGrid = (buttons) => {
     const grid = document.createElement('div');
     grid.className = 'admin-grid';
@@ -2375,48 +2792,56 @@ function openAdminPanel() {
       btn.className = 'sao-btn btn-admin';
       btn.style.padding = '8px';
       btn.innerHTML = b.label;
-      btn.onclick = () => { playSound('admin'); b.fn(); };
-      grid.appendChild(btn);
+      btn.onclick = () => { playSound('admin'); b.fn(); };grid.appendChild(btn);
     });
     c.appendChild(grid);
   };
-  addSection('💰 ЭКОНОМИКА');
-  addGrid([
-    { label: '💰 +100k Col', fn: () => { player.col += 100000; player.totalColEarned += 100000; addLog('🔧 [АДМИН] +100k Col', 'admin'); updateHUD(); } },
-    { label: '💰 +10M Col', fn: () => { player.col += 10000000; player.totalColEarned += 10000000; addLog('🔧 [АДМИН] +10M Col', 'admin'); updateHUD(); } },
-    { label: '💎 +1000 ДК', fn: () => { player.donateCurrency += 1000; player.totalDonate = (player.totalDonate||0)+1000; addLog('🔧 [АДМИН] +1000 ДК', 'admin'); updateHUD(); } },
-    { label: '💎 +100000 ДК', fn: () => { player.donateCurrency += 100000; player.totalDonate = (player.totalDonate||0)+100000; addLog('🔧 [АДМИН] +100k ДК', 'admin'); updateHUD(); } }
-  ]);
-  addSection('⭐ ПРОКАЧКА');
-  addGrid([
-    { label: '⭐ +100M EXP', fn: () => { player.exp += 100000000; addLog('🔧 [АДМИН] +100M EXP', 'admin'); checkLevelUp(); updateHUD(); } },
-    { label: '🎯 +50 уровней', fn: () => { for (let i = 0; i < 50; i++) player.exp += player.maxExp; checkLevelUp(); addLog('🔧 [АДМИН] +50 уровней', 'admin'); updateHUD(); } },
-    { label: '⚔️ +10000 ATK', fn: () => { player.baseAtk += 10000; addLog('🔧 [АДМИН] +10000 ATK', 'admin'); updateHUD(); } },
-    { label: '🛡️ +10000 DEF', fn: () => { player.baseDef += 10000; addLog('🔧 [АДМИН] +10000 DEF', 'admin'); updateHUD(); } }
-  ]);
-  addSection('🎒 ПРЕДМЕТЫ');
-  addGrid([
-    { label: '💎 Всё донат-оружие', fn: () => { Object.values(ITEMS_DB).filter(i => i.donate).forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Всё донат-оружие', 'admin'); } },
-    { label: '🔫 Всё оружие', fn: () => { Object.values(ITEMS_DB).filter(i => i.type === 'weapon' && !i.donate).forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Всё оружие', 'admin'); } },
-    { label: '🛡️ Вся броня', fn: () => { Object.values(ITEMS_DB).filter(i => i.type === 'armor').forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Вся броня', 'admin'); } },
-    { label: '🌸 Талисман Лили', fn: () => { addItemToInventory('mat_lily_charm', 5); addLog('🔧 [АДМИН] Талисман Лили', 'admin'); } }
-  ]);
-  addSection('🗼 ПРОГРЕСС');
-  addGrid([
-    { label: '🗼 Все 50 этажей', fn: () => { for (let i = 1; i <= 50; i++) player.unlockedFloors[i] = true; player.highestFloor = 50; addLog('🔧 [АДМИН] Все 50 этажей', 'admin'); updateHUD(); checkAchievements(); } },
-    { label: '📚 Все скиллы', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { player.unlockedSkills[sid] = true; if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; }); addLog('🔧 [АДМИН] Все скиллы', 'admin'); } },
-    { label: '⭐ Мастерство 5 MAX', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { player.unlockedSkills[sid] = true; if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; player.skillMastery[sid].level = 5; }); addLog('🔧 [АДМИН] Всё мастерство MAX', 'admin'); } },
-    { label: '🏆 Все ачивки', fn: () => { ACHIEVEMENTS.forEach(ach => { if (!player.achievements[ach.id]?.unlocked) { player.achievements[ach.id] = { unlocked: true, progress: ach.target }; if (ach.reward) { for (const [key, amt] of Object.entries(ach.reward)) { if (key === 'colBonus') { player.col += amt; player.totalColEarned += amt; } else if (key === 'hp') player.achievementBonuses.hp += amt; else if (key === 'mp') player.achievementBonuses.mp += amt; else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amt; } } } }); addLog('🔧 [АДМИН] Все ачивки', 'admin'); updateHUDAchBadge(); updateHUD(); } },
-    { label: '🌸 Завершить Лили', fn: () => { player.lilyQuest.completed = true; player.lilyQuest.stage = 7; player.lilyQuest.active = true; addLog('🔧 [АДМИН] Лили завершён', 'admin'); updateHUD(); checkAchievements(); } }
-  ]);
-  addSection('⚙️ СИСТЕМА');
-  addGrid([
-    { label: '💾 Сохранить', fn: () => saveGame(false) },
-    { label: '📂 Загрузить', fn: () => { closeModal('modal-admin'); loadGame(); } },
-    { label: '🚪 Выйти', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } },
-    { label: '☠️ Убить себя', fn: () => { player.hp = 0; updateHUD(); handlePlayerDeath(); } }
-  ]);
-  openModal('modal-admin');
+  
+  if (tab === 'economy') {
+    addGrid([
+      { label: '💰 +100k Col', fn: () => { player.col += 100000; player.totalColEarned += 100000; addLog('🔧 [АДМИН] +100k Col', 'admin'); updateHUD(); } },
+      { label: '💰 +10M Col', fn: () => { player.col += 10000000; player.totalColEarned += 10000000; addLog('🔧 [АДМИН] +10M Col', 'admin'); updateHUD(); } },
+      { label: '💰 +1B Col', fn: () => { player.col += 1000000000; player.totalColEarned += 1000000000; addLog('🔧 [АДМИН] +1B Col', 'admin'); updateHUD(); } },
+      { label: '💎 +1000 ДК', fn: () => { player.donateCurrency += 1000; player.totalDonate = (player.totalDonate||0)+1000; addLog('🔧 [АДМИН] +1000 ДК', 'admin'); updateHUD(); } },
+      { label: '💎 +100000 ДК', fn: () => { player.donateCurrency += 100000; player.totalDonate = (player.totalDonate||0)+100000; addLog('🔧 [АДМИН] +100k ДК', 'admin'); updateHUD(); } },
+      { label: '💎 +1M ДК', fn: () => { player.donateCurrency += 1000000; player.totalDonate = (player.totalDonate||0)+1000000; addLog('🔧 [АДМИН] +1M ДК', 'admin'); updateHUD(); } }
+    ]);
+  } else if (tab === 'progression') {
+    addGrid([
+      { label: '⭐ +100M EXP', fn: () => { player.exp += 100000000; addLog('🔧 [АДМИН] +100M EXP', 'admin'); checkLevelUp(); updateHUD(); } },
+      { label: '🎯 +50 уровней', fn: () => { for (let i = 0; i < 50; i++) player.exp += player.maxExp; checkLevelUp(); addLog('🔧 [АДМИН] +50 уровней', 'admin'); updateHUD(); } },
+      { label: '🎯 +100 уровней', fn: () => { for (let i = 0; i < 100; i++) player.exp += player.maxExp; checkLevelUp(); addLog('🔧 [АДМИН] +100 уровней', 'admin'); updateHUD(); } },
+      { label: '⚔️ +10000 ATK', fn: () => { player.baseAtk += 10000; addLog('🔧 [АДМИН] +10000 ATK', 'admin'); updateHUD(); } },
+      { label: '🛡️ +10000 DEF', fn: () => { player.baseDef += 10000; addLog('🔧 [АДМИН] +10000 DEF', 'admin'); updateHUD(); } },
+      { label: '🎯 +50% крит', fn: () => { player.baseCrit += 50; addLog('🔧 [АДМИН] +50% крит', 'admin'); updateHUD(); } }
+    ]);
+  } else if (tab === 'items') {
+    addGrid([
+      { label: '💎 Всё донат-оружие', fn: () => { Object.values(ITEMS_DB).filter(i => i.donate).forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Всё донат-оружие', 'admin'); } },
+      { label: '🔫 Всё оружие', fn: () => { Object.values(ITEMS_DB).filter(i => i.type === 'weapon' && !i.donate).forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Всё оружие', 'admin'); } },
+      { label: '🛡️ Вся броня', fn: () => { Object.values(ITEMS_DB).filter(i => i.type === 'armor').forEach(i => addItemToInventory(i.id, 1)); addLog('🔧 [АДМИН] Вся броня', 'admin'); } },
+      { label: '🌸 Талисман Лили', fn: () => { addItemToInventory('mat_lily_charm', 5); addLog('🔧 [АДМИН] Талисман Лили', 'admin'); } },
+      { label: '🧪 99 зелий HP', fn: () => { addItemToInventory('p_hp_giant', 99); addLog('🔧 [АДМИН] 99 зелий HP', 'admin'); } },
+      { label: '🧪 99 зелий MP', fn: () => { addItemToInventory('p_mp_giant', 99); addLog('🔧 [АДМИН] 99 зелий MP', 'admin'); } }
+    ]);
+  } else if (tab === 'floors') {
+    addGrid([
+      { label: '🗼 Все 100 этажей', fn: () => { for (let i = 1; i <= MAX_FLOOR; i++) player.unlockedFloors[i] = true; player.highestFloor = MAX_FLOOR; addLog('🔧 [АДМИН] Все 100 этажей', 'admin'); updateHUD(); checkAchievements(); } },
+      { label: '🗼 Этаж +5', fn: () => { const nf = Math.min(MAX_FLOOR, getCurrentFloor() + 5); player.unlockedFloors[nf] = true; if (nf > player.highestFloor) player.highestFloor = nf; changeZone(`town_f${nf}`); addLog(`🔧 [АДМИН] Этаж ${nf}`, 'admin'); } },
+      { label: '🗼 Этаж +10', fn: () => { const nf = Math.min(MAX_FLOOR, getCurrentFloor() + 10); player.unlockedFloors[nf] = true; if (nf > player.highestFloor) player.highestFloor = nf; changeZone(`town_f${nf}`); addLog(`🔧 [АДМИН] Этаж ${nf}`, 'admin'); } },{ label: '📚 Все скиллы', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { player.unlockedSkills[sid] = true; if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; }); addLog('🔧 [АДМИН] Все скиллы', 'admin'); } },
+      { label: '⭐ Мастерство 5 MAX', fn: () => { Object.keys(SKILLS_DB).forEach(sid => { player.unlockedSkills[sid] = true; if (!player.skillMastery[sid]) player.skillMastery[sid] = { level: 0, exp: 0 }; player.skillMastery[sid].level = 5; }); addLog('🔧 [АДМИН] Всё мастерство MAX', 'admin'); } },
+      { label: '🏆 Все ачивки', fn: () => { ACHIEVEMENTS.forEach(ach => { if (!player.achievements[ach.id]?.unlocked) { player.achievements[ach.id] = { unlocked: true, progress: ach.target }; if (ach.reward) { for (const [key, amt] of Object.entries(ach.reward)) { if (key === 'colBonus') { player.col += amt; player.totalColEarned += amt; } else if (key === 'hp') player.achievementBonuses.hp += amt; else if (key === 'mp') player.achievementBonuses.mp += amt; else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amt; } } } }); addLog('🔧 [АДМИН] Все ачивки', 'admin'); updateHUDAchBadge(); updateHUD(); } },
+      { label: '🌸 Завершить Лили', fn: () => { player.lilyQuest.completed = true; player.lilyQuest.stage = 7; player.lilyQuest.active = true; addLog('🔧 [АДМИН] Лили завершён', 'admin'); updateHUD(); checkAchievements(); } }
+    ]);
+  } else if (tab === 'system') {
+    addGrid([
+      { label: '💾 Сохранить', fn: () => saveGame(false) },
+      { label: '📂 Загрузить', fn: () => { closeModal('modal-admin'); loadGame(); } },
+      { label: '🔮 Сообщение Оракула', fn: () => { const msg = oracleRandom(); updateOracle(msg); addLog(`🔮 [Оракул]: ${msg}`, 'ai'); } },
+      { label: '🚪 Выйти', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } },
+      { label: '☠️ Убить себя', fn: () => { player.hp = 0; updateHUD(); handlePlayerDeath(); } }
+    ]);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2463,8 +2888,7 @@ const BOSS_DIALOG = [
   { name: 'Босс', text: `«Лишь один сможет вернуться домой.»`, choices: [
     { text: '«Доставай меч»', next: 5 }
   ]},
-  { name: 'Босс', text: `«Ты не сдаёшься. Достойно уважения.»`, choices: [
-    { text: '⚔️ НАЧАТЬ БОЙ!', next: -1, start: true },
+  { name: 'Босс', text: `«Ты не сдаёшься. Достойно уважения.»`, choices: [{ text: '⚔️ НАЧАТЬ БОЙ!', next: -1, start: true },
     { text: '💬 Ещё поговорим', next: 0 }
   ]}
 ];
@@ -2505,8 +2929,8 @@ function startBossFightCustom(boss) {
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
   document.getElementById('enemy-avatar').className = 'enemy-avatar miniboss';
   document.getElementById('enemy-name').className = 'enemy-name miniboss';
-  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill miniboss';
-  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag miniboss">👑 ИСТИННАЯ ФОРМА</span>`;
+  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill boss';
+  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag boss">👑 ИСТИННАЯ ФОРМА</span>`;
   document.getElementById('enemy-mods-row').innerHTML = '';
   document.getElementById('enemy-name').textContent = e.name;
   document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
@@ -2540,8 +2964,7 @@ function renderAchievementsModal() {
   for (const [catName, list] of Object.entries(categories)) {
     const catDiv = document.createElement('div');
     catDiv.className = 'ach-category';
-    catDiv.innerHTML = `<div class="ach-category-title">${list[0].icon} ${catName}</div>`;
-    const listDiv = document.createElement('div');
+    catDiv.innerHTML = `<div class="ach-category-title">${list[0].icon} ${catName}</div>`;const listDiv = document.createElement('div');
     listDiv.className = 'ach-list';
     list.forEach(ach => {
       const st = player.achievements[ach.id] || { unlocked: false, progress: 0 };
@@ -2613,8 +3036,7 @@ function createItemCard(item, count, isEq, slotType) {
   if (item.type === 'weapon') tag = WEAPON_TYPES[item.weaponType]?.name || 'Оружие';
   if (item.type === 'armor') tag = 'Броня';
   if (item.type === 'consumable') tag = 'Зелье';
-  if (item.type === 'valuable') tag = 'Материал';
-  d.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name ${item.legendary ? 'legendary' : ''} ${item.donate ? 'donate' : ''}">${item.name}</span><span class="item-tag ${item.donate ? 'donate' : ''}">${tag}</span>${count > 1 ? `<span style="font-size:0.72rem; color:#94a3b8;">x${count}</span>` : ''}</div><div class="item-desc">${item.desc}${!canEquip ? ' ⚠ Не ваш тип оружия!' : ''}</div>${stats ? `<div class="item-stat-badge ${item.donate ? 'donate' : ''}">${stats}</div>` : ''}</div><div class="item-actions"></div>`;
+  if (item.type === 'valuable') tag = 'Материал';d.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name ${item.legendary ? 'legendary' : ''} ${item.donate ? 'donate' : ''}">${item.name}</span><span class="item-tag ${item.donate ? 'donate' : ''}">${tag}</span>${count > 1 ? `<span style="font-size:0.72rem; color:#94a3b8;">x${count}</span>` : ''}</div><div class="item-desc">${item.desc}${!canEquip ? ' ⚠ Не ваш тип оружия!' : ''}</div>${stats ? `<div class="item-stat-badge ${item.donate ? 'donate' : ''}">${stats}</div>` : ''}</div><div class="item-actions"></div>`;
   const actions = d.querySelector('.item-actions');
   if (isEq) { const b = document.createElement('button'); b.className = 'sao-btn mini-btn'; b.textContent = 'Снять'; b.onclick = () => unequipSlot(slotType); actions.appendChild(b); }
   else if (item.type === 'weapon' || item.type === 'armor') { const b = document.createElement('button'); b.className = 'sao-btn mini-btn btn-skill'; b.textContent = canEquip ? 'Надеть' : 'Нельзя'; b.disabled = !canEquip; b.onclick = () => equipItem(item.id); actions.appendChild(b); }
@@ -2649,8 +3071,7 @@ function useItem(id) {
    SHOP
    ═══════════════════════════════════════════════════════════════ */
 function openShop() { document.getElementById('shop-title').textContent = `МАГАЗИН ЭТАЖА ${getCurrentFloor()}`; switchShopTab('buy'); openModal('modal-shop'); }
-function switchShopTab(t) {
-  currentShopTab = t;
+function switchShopTab(t) {currentShopTab = t;
   document.getElementById('tab-buy').className = `shop-tab ${t === 'buy' ? 'active' : ''}`;
   document.getElementById('tab-sell').className = `shop-tab ${t === 'sell' ? 'active' : ''}`;
   document.getElementById('sell-actions').style.display = t === 'sell' ? 'flex' : 'none';
@@ -2658,11 +3079,11 @@ function switchShopTab(t) {
 }
 function getShopStock(floor) {
   const stock = [];
-  if (floor <= 10) stock.push('p_hp_small', 'p_mp_small');
+  if (floor <= 20) stock.push('p_hp_small', 'p_mp_small');
   if (floor >= 5) stock.push('p_hp_large', 'p_mp_large');
-  if (floor >= 15) stock.push('p_hp_giant', 'p_mp_giant');
+  if (floor >= 25) stock.push('p_hp_giant', 'p_mp_giant');
   if (floor >= 10) stock.push('p_crystal_tp');
-  if (floor >= 20) stock.push('p_crystal_heal');
+  if (floor >= 30) stock.push('p_crystal_heal');
   const myType = getClass().weaponType;
   const addedIds = new Set();
   for (let i = 1; i <= floor; i++) {
@@ -2714,7 +3135,7 @@ function renderShopItems() {
       const price = Math.max(1, Math.floor(item.price * 0.5));
       const card = document.createElement('div');
       card.className = 'item-card';
-      card.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.75rem; color:#94a3b8;">x${inv.count}</span></div><div class="item-desc">${price} Col × ${inv.count} = ${price * inv.count} Col</div></div><div class="item-actions"><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 1)">×1</button><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 5)">×5</button><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, ${inv.count})">Всё</button></div>`;
+      card.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name">${item.name}</span><span style="font-size:0.75rem; color:#94a3b8;">x${inv.count}</span></div><div class="item-desc">${price} Col × ${inv.count} = ${price * inv.count} Col</div></div><div class="item-actions"><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 1)">×1</button><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}', ${price}, 5)">×5</button><button class="sao-btn mini-btn" onclick="sellShopItem('${item.id}',${price}, ${inv.count})">Всё</button></div>`;
       c.appendChild(card);
     });
   }
@@ -2754,8 +3175,8 @@ function talkNpc(id) {
   const s = document.getElementById('npc-speech-text');
   document.getElementById('npc-choices').innerHTML = '';
   document.getElementById('npc-close-btn').style.display = 'inline-block';
-  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«15 классов, 50 этажей, 8 рас! У каждого класса своё оружие. Ищи Лили в лесу!»`; }
-  else { t.textContent = 'Кляйн'; s.innerHTML = `«У Энвелла 5 новых классов! Хакер, Защитник, Убийца, Волшебница, Электро-маг.»`; }
+  if (id === 'argo') { t.textContent = 'Арго «Крыса»'; s.innerHTML = `«15 классов, 100 этажей, 8 рас! Боссы теперь на каждом 5-м этаже. Ищи Лили в лесу!»`; }
+  else { t.textContent = 'Кляйн'; s.innerHTML = `«Слышал про Оракула? Он даёт советы. А VIP-статус даёт бонусы навсегда!»`; }
   playSound('click'); openModal('modal-dialogue');
 }
 
@@ -2772,20 +3193,19 @@ function renderStatusModal() {
   const genderIcon = player.gender === 'female' ? '♀' : '♂';
   const genderColor = player.gender === 'female' ? 'var(--female-pink)' : 'var(--male-blue)';
   let fp = '';
-  for (let n = 1; n <= 50; n++) {
-    if (n % 5 === 1 && n > 1) fp += '<br>';
+  for (let n = 1; n <= MAX_FLOOR; n++) {
+    if (n % 10 === 1 && n > 1) fp += '<br>';
     const bd = player.bossesDefeated[BOSSES_DB[n]?.id];
     const un = player.unlockedFloors[n];
     const st = bd ? '✓' : (un ? '◉' : '🔒');
     const col = bd ? '#22c55e' : (un ? '#fbbf24' : '#94a3b8');
-    fp += `<span style="color:${col}; margin-right:3px; font-weight:bold; font-size:0.85rem;">${st}${n}</span>`;
+    fp += `<span style="color:${col}; margin-right:2px; font-weight:bold; font-size:0.75rem;">${st}${n}</span>`;
   }
   c.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(110,231,255,0.2); padding-bottom:8px;">
-      <div><div style="font-size:1.2rem; font-weight:bold; color:#fff;"><span style="color:${genderColor};">${genderIcon}</span> ${player.name}</div><div style="font-size:0.82rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • ${race.icon} ${race.name} • Этаж ${getCurrentFloor()}/50</div></div>
+      <div><div style="font-size:1.2rem; font-weight:bold; color:#fff;"><span style="color:${genderColor};">${genderIcon}</span> ${player.name}</div><div style="font-size:0.82rem; color:var(--cyan-neon);">${cls.icon} ${cls.name} • ${race.icon} ${race.name} • Этаж ${getCurrentFloor()}/100</div></div>
       <div style="display:flex; gap:6px;"><div class="player-level-badge">Lv. ${player.level}</div><div class="ach-badge">🏆 ${getTotalAchievementsUnlocked()}</div></div>
-    </div>
-    <div class="stats-grid">
+    </div><div class="stats-grid">
       <div class="stat-box"><span class="stat-label">HP</span><span class="stat-val" style="color:#4ade80;">${player.hp} / ${getTotalMaxHp()}</span></div>
       <div class="stat-box"><span class="stat-label">MP</span><span class="stat-val" style="color:#60a5fa;">${player.mp} / ${getTotalMaxMp()}</span></div>
       <div class="stat-box"><span class="stat-label">ATK</span><span class="stat-val atk">${getTotalAtk()}</span></div>
@@ -2794,10 +3214,11 @@ function renderStatusModal() {
       <div class="stat-box"><span class="stat-label">Col</span><span class="stat-val" style="color:#f59e0b;">${player.col}</span></div>
       <div class="stat-box" style="grid-column: span 2;"><span class="stat-label">💎 ДК</span><span class="stat-val" style="color:var(--donate-pink);">${player.donateCurrency || 0} ДК</span></div>
     </div>
-    <div style="font-size:0.85rem; color:var(--cyan-neon); margin-top:6px;">ЭТАЖИ (1-50)</div>
-    <div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:3px; line-height:1.5;">${fp}</div>
+    <div style="font-size:0.85rem; color:var(--cyan-neon); margin-top:6px;">ЭТАЖИ (1-100)</div>
+    <div style="background:rgba(15,23,42,0.6); padding:8px; border-radius:3px; line-height:1.4;">${fp}</div>
     <button class="sao-btn btn-skill" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openSkillsModal();">📚 ИЗУЧИТЬ СКИЛЛЫ</button>
     <button class="sao-btn btn-race" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openRaceChangeModal();">🧑 СМЕНИТЬ РАСУ (10 ДК)</button>
+    <button class="sao-btn btn-teleport" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openTeleportModal();">🌀 ТЕЛЕПОРТАЦИЯ</button>
   `;
 }
 
@@ -2808,6 +3229,7 @@ function handlePlayerDeath() {
   combatState.active = false;
   playSound('defeat');
   addLog(`[СМЕРТЬ] ${player.name} погиб навсегда.`, 'danger');
+  updateOracle(AI_ORACLE.reactions.death);
   localStorage.removeItem(SAVE_KEY);
   setTimeout(() => document.getElementById('death-overlay').classList.add('active'), 600);
 }
@@ -2821,7 +3243,7 @@ function confirmPermadeath() {
 /* ═══════════════════════════════════════════════════════════════
    SAVE/LOAD
    ═══════════════════════════════════════════════════════════════ */
-const SAVE_KEY = 'sao_aincrad_rpg_save_v11';
+const SAVE_KEY = 'sao_aincrad_rpg_save_v12';
 function saveGame(isAuto = false) {
   if (!player) return;
   try { localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile })); if (!isAuto) { playSound('click'); showToast('Сохранено!'); addLog(`[СИСТЕМА] Сохранено.`, 'system'); } } catch (e) { showToast('Ошибка!'); }
@@ -2844,11 +3266,13 @@ function loadGame() {
     if (!player.raceId) player.raceId = 'human';
     if (!player.gender) player.gender = 'male';
     if (player.donateCurrency === undefined) player.donateCurrency = 0;
-    if (player.totalDonate === undefined) player.totalDonate = 0;
-    if (!player.lilyQuest) player.lilyQuest = { active: false, stage: 0, completed: false };
+    if (player.totalDonate === undefined) player.totalDonate = 0;if (!player.lilyQuest) player.lilyQuest = { active: false, stage: 0, completed: false };
+    if (player.oracleMessages === undefined) player.oracleMessages = 0;
     if (combatState.active) endCombat();
     playSound('heal'); addLog(`[СИСТЕМА] Загружено. ${player.name}!`, 'system');
+    updateOracle('С возвращением, ' + player.name + '. Продолжим твой путь.');
     renderZone(); updateHUD();
+    worldClockStarted = false; startWorldClock();
     return true;
   } catch (e) { showToast('Ошибка!'); return false; }
 }
@@ -2858,6 +3282,7 @@ function loadGame() {
    ═══════════════════════════════════════════════════════════════ */
 function openModal(id) { playSound('click'); document.getElementById(id).classList.add('active'); }
 function closeModal(id) { playSound('click'); document.getElementById(id).classList.remove('active'); }
+document.getElementById('btn-open-teleport').addEventListener('click', openTeleportModal);
 document.getElementById('btn-open-inventory').addEventListener('click', () => { renderInventoryModal(); openModal('modal-inventory'); });
 document.getElementById('btn-open-status').addEventListener('click', () => { renderStatusModal(); openModal('modal-status'); });
 document.getElementById('btn-open-achievements').addEventListener('click', openAchievements);
@@ -2900,8 +3325,7 @@ function renderClassOptions() {
     g.appendChild(card);
   });
 }
-function renderRaceOptions() {
-  const g = document.getElementById('race-grid');
+function renderRaceOptions() {const g = document.getElementById('race-grid');
   g.innerHTML = '';
   Object.values(RACES_DB).forEach(race => {
     const card = document.createElement('div');
@@ -2946,9 +3370,11 @@ document.getElementById('creation-start-btn').addEventListener('click', () => {
   addLog(`[СИСТЕМА] Добро пожаловать, ${player.name}! ${genderTxt}`, 'system');
   addLog(`[КЛАСС] ${cls.name} — ${WEAPON_TYPES[cls.weaponType]?.name || 'меч'}, 10 скиллов`, 'system');
   addLog(`[РАСА] ${race.icon} ${race.name} — ${race.bonusText}`, 'race');
-  addLog(`[МИР] 50 этажей, 5 биомов. Ищи Лили в лесу!`, 'quest');
+  addLog(`[МИР] 100 этажей, 10 биомов, 20 боссов. Ищи Лили в лесу!`, 'quest');
+  updateOracle(`Приветствую, ${player.name}. Я — Оракул Кардинала. Я буду помогать тебе на пути к вершине Айнкрада.`);
   playSound('levelup'); showToast(`${player.name} создан!`);
   renderZone(); updateHUD(); saveGameAuto();
+  worldClockStarted = false; startWorldClock();
 });
 
 /* ═══════════════════════════════════════════════════════════════
