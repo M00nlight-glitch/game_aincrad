@@ -433,6 +433,24 @@
   /* ═══ WORLD CLOCK ═══ */
   .world-badge { display: flex; align-items: center; gap: 4px; background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(30, 58, 138, 0.25)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 4px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; cursor: help; letter-spacing: 0.5px; }
   .world-badge:hover { box-shadow: 0 0 10px var(--cyan-glow); }
+    /* ═══ FORGE ═══ */
+  .forge-item { display: flex; gap: 12px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 4px; padding: 10px 12px; margin-bottom: 6px; }
+  .forge-item:hover { border-color: #fbbf24; box-shadow: 0 0 12px rgba(251, 191, 36, 0.25); }
+  .forge-item-left { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .forge-item-right { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; justify-content: center; min-width: 220px; }
+  .forge-item-name { font-size: 0.95rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .forge-item-base { font-size: 0.78rem; color: var(--text-dim); }
+  .forge-item-level { font-size: 0.82rem; color: #fde047; }
+  .forge-item-level b { color: #ffd700; font-size: 1rem; }
+  .forge-item-bonus { font-size: 0.78rem; color: #4ade80; font-weight: bold; }
+  .forge-cost { font-size: 0.78rem; color: #fbbf24; text-align: right; line-height: 1.5; }
+  .forge-cost .mat-ok { color: #4ade80; }
+  .forge-cost .mat-bad { color: #ef4444; }
+  .forge-chance { font-size: 0.75rem; color: #94a3b8; text-align: right; }
+  .forge-max { color: #ffd700; font-weight: 900; font-size: 0.9rem; text-align: right; text-shadow: 0 0 8px #ffd700; }
+  .eq-tag { font-size: 0.65rem; background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 1px 6px; border-radius: 2px; font-weight: bold; }
+  .count-tag { font-size: 0.7rem; color: #94a3b8; }
+  .forge-mats-hint { font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 6px; background: rgba(251, 191, 36, 0.05); border: 1px dashed rgba(251, 191, 36, 0.3); border-radius: 3px; }
 
   body { transition: background-color 0.8s ease, background-image 0.8s ease; }
   body.world-night {
@@ -663,6 +681,7 @@
       <button class="sao-btn footer-btn" id="btn-open-status">👤 Статус</button>
       <button class="sao-btn footer-btn btn-achievement" id="btn-open-achievements">🏆 Ачивки</button>
       <button class="sao-btn footer-btn btn-skill" id="btn-open-skills">📚 Скиллы</button>
+      <button class="sao-btn footer-btn btn-class" id="btn-open-forge">🔨 Кузница</button>
       <button class="sao-btn footer-btn btn-donate" id="btn-open-donate">💎 Донат</button>
       <button class="sao-btn footer-btn btn-admin" id="btn-open-admin">🔧 Админ</button>
       <button class="sao-btn footer-btn" id="btn-save-game">💾</button>
@@ -841,7 +860,23 @@
     <button class="sao-btn btn-boss" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="confirmPermadeath()">СОЗДАТЬ НОВОГО ПЕРСОНАЖА</button>
   </div>
 </div>
-
+<!-- FORGE -->
+<div class="modal-overlay" id="modal-forge">
+  <div class="modal-window" style="max-width: 900px; border-color: #fbbf24; box-shadow: 0 0 25px rgba(251, 191, 36, 0.35);">
+    <div class="modal-header" style="border-bottom-color: #fbbf24;">
+      <div class="modal-title" style="color: #fbbf24;">🔨 КУЗНИЦА</div>
+      <button class="modal-close-btn" onclick="closeModal('modal-forge')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(120,53,15,0.08)); border: 1px solid #fbbf24; border-radius: 4px; padding: 10px;">
+        <div style="font-size: 0.9rem; font-weight: bold; color: #fde047;">⚒️ Улучшение снаряжения</div>
+        <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 3px;">Каждое улучшение даёт +6% к базовым статам предмета. Уровни 1–7 — гарантированы, 8–10 — с шансом.</div>
+      </div>
+      <div class="forge-mats-hint">🪨 Руда — с 15 этажа • 💎 Кристалл — с 25 этажа • 🐉 Чешуя — с 75 этажа • Материалы продаются в магазине</div>
+      <div id="forge-items-container" style="display: flex; flex-direction: column; gap: 6px;"></div>
+    </div>
+  </div>
+</div>
 <div class="toast-box" id="toast-box">Уведомление</div>
 
 <script>
@@ -1075,11 +1110,22 @@ const MOB_NAMES = [
 FLOORS_DATA.forEach(f => {
   const floor = f.n;
   const biomeIdx = Math.floor((floor - 1) / FLOORS_PER_BIOME);
-  const baseHp = 30 + floor * 25 + Math.pow(floor, 1.4);
-  const baseAtk = 5 + floor * 3 + Math.pow(floor, 1.2);
-  const baseDef = 1 + floor * 1.2;
-  const expBase = 12 + floor * 20;
-  const colBase = 8 + floor * 15;
+
+  // ⚙️ Множитель усиления: после 5-го этажа мобы резко крепчают.
+  // Floor 5 → ×1.0 | Floor 10 → ×1.25 | Floor 50 → ×3.25 | Floor 100 → ×6.0
+  const tierMult = floor <= 5 ? 1.0 : 1.0 + Math.min(5.0, (floor - 5) * 0.05);
+
+  // HP / ATK / DEF — все статы растут одинаково, чтобы не было перекоса
+  const baseHp  = Math.round((30 + floor * 25 + Math.pow(floor, 1.4)) * tierMult * 2.2);
+  const atkTier = floor <= 5 ? 1.0 : 1.8;
+  const baseAtk = Math.round((5 + floor * 3 + Math.pow(floor, 1.2)) * tierMult * atkTier);
+  const baseDef = Math.round((1  + floor * 1.2 + Math.pow(floor, 1.15) * 0.5) * tierMult * 1.5);
+
+  // EXP и Col — растут мягче, иначе игрок будет прыгать по уровням
+  const expTier = 1.0 + Math.min(3.5, floor > 5 ? (floor - 5) * 0.04 : 0);
+  const colTier = 1.0 + Math.min(3.0, floor > 5 ? (floor - 5) * 0.035 : 0);
+  const expBase = Math.round((12 + floor * 20) * expTier);
+  const colBase = Math.round((8  + floor * 15) * colTier);
   const mobs = [];
   for (let i = 0; i < 10; i++) {
     const mobName = MOB_NAMES[biomeIdx][i] || `Моб ${i+1}`;
@@ -1121,7 +1167,8 @@ const NAME_PREFIXES = ['Кровавый', 'Тёмный', 'Древний', 'С
 const NAME_SUFFIXES = ['-ветеран', '-мутант', '-вождь', '-патриарх', '-страж', '-изгой', '-мастер', '-гигант', '-ужас', '-тень', '-хранитель', '-титан', '-лорд', '-легенда', '-божество', '-аватар', '-кардинал'];
 
 /* ═══════════════════════════════════════════════════════════════
-   AI ORACLE — Dynamic advice and events═══════════════════════════════════════════════════════════════ */
+   AI ORACLE — Dynamic advice and events
+   ═══════════════════════════════════════════════════════════════ */
 const AI_ORACLE = {
   tips: [
     'Твой класс даёт бонус к атаке. Используй его в бою!',
@@ -1177,7 +1224,7 @@ function oracleOnFloorChange(floor) {
    EXP FORMULA (fixed!)
    ═══════════════════════════════════════════════════════════════ */
 function getMaxExp(level) {
-  return Math.round(100 + level * level * 15 + level * 50);
+  return Math.round((100 + level * level * 15 + level * 50) * 1.6);
 }
 function getExpRewardScale(floor, level) {
   return Math.max(0.3, 1 + (floor - level) * 0.05);
@@ -1496,17 +1543,17 @@ function makeFreshPlayer() {
     floorKillProgress: 0,
     currentZone: 'town_f1', highestFloor: 1,
     equippedWeapon: 'w_rusty', equippedArmor: 'a_cloth',
-    inventory: [{ id: 'p_hp_small', count: 5 }, { id: 'p_mp_small', count: 5 }],
+    inventory: [{ id: 'p_hp_small', count: 5 }],
     currentQuestIdx: 0, questProgress: 0,
     unlockedFloors: { 1: true }, bossesDefeated: {},
     achievements: {}, dynamicAchievements: [],
     achievementBonuses: { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 },
     unlockedSkills: unlockedSkills,
     skillMastery: skillMastery,
+    itemUpgrades: {},
     lilyQuest: { active: false, stage: 0, completed: false }
   };
 }
-
 /* ═══════════════════════════════════════════════════════════════
    COMPUTED
    ═══════════════════════════════════════════════════════════════ */
@@ -1540,13 +1587,18 @@ function addMasteryExp(sid) {
 function getTotalAtk() {
   const w = ITEMS_DB[player.equippedWeapon] || { atk: 0 };
   const rb = getRaceBonusData();
-  return Math.round((player.baseAtk + (w.atk || 0) + getAchBonus().atk) * rb.atk);
+  const ub = getUpgradeBonus(w);
+  const wBonus = ub ? ub.atk : 0;
+  return Math.round((player.baseAtk + (w.atk || 0) + wBonus + getAchBonus().atk) * rb.atk);
 }
 function getTotalDef() {
   const a = ITEMS_DB[player.equippedArmor] || { def: 0 };
   const w = ITEMS_DB[player.equippedWeapon] || { def: 0 };
   const rb = getRaceBonusData();
-  let t = player.baseDef + (a.def || 0) + (w.def || 0) + getAchBonus().def;
+  const ubA = getUpgradeBonus(a);
+  const ubW = getUpgradeBonus(w);
+  const bonusDef = (ubA ? ubA.def : 0) + (ubW ? ubW.def : 0);
+  let t = player.baseDef + (a.def || 0) + (w.def || 0) + bonusDef + getAchBonus().def;
   if (player.classId === 'tank') t = Math.round(t * 1.2);
   if (player.classId === 'knight') t = Math.round(t * 1.25);
   if (player.classId === 'defender') t = Math.round(t * 1.3);
@@ -1556,11 +1608,17 @@ function getTotalCrit() {
   let c = player.baseCrit + getAchBonus().crit;
   if (player.classId === 'hunter') c += 20;
   if (player.classId === 'envell_killer') c += 25;
+  const w = ITEMS_DB[player.equippedWeapon];
+  const ubW = getUpgradeBonus(w);
+  if (ubW) c += ubW.crit;
   return c + getRaceBonusData().crit;
 }
 function getTotalMaxHp() {
   const rb = getRaceBonusData();
-  let hp = player.maxHp + getAchBonus().hp;
+  const a = ITEMS_DB[player.equippedArmor];
+  const ubA = getUpgradeBonus(a);
+  const bonusHp = ubA ? ubA.hp : 0;
+  let hp = player.maxHp + getAchBonus().hp + bonusHp;
   if (player.classId === 'tank') hp = Math.round(hp * 1.3);
   if (player.classId === 'knight') hp = Math.round(hp * 1.15);
   if (player.classId === 'defender') hp = Math.round(hp * 1.4);
@@ -1583,9 +1641,11 @@ function getCritMultiplier() {
   return m + getRaceBonusData().critDmg;
 }
 function calculateDamage(atk, def, isCrit = false) {
-  const v = 0.88 + Math.random() * (1.12 - 0.88);
-  let dmg = (v * atk) - (def * 0.5);
-  if (isCrit) dmg *= getCritMultiplier();
+  const v = 0.85 + Math.random() * (1.15 - 0.85);
+  // Было: def * 0.5 — защита врага почти не влияла.
+  // Стало: def * 0.9 — теперь DEF врага реально режет урон.
+  let dmg = (v * atk) - (def * 0.9);
+  if (isCrit) dmg *= getCritMultiplier() * 0.85; // крит ослаблен на 15%
   return Math.max(1, Math.round(dmg));
 }
 function getCurrentFloor() { return ZONES_DB[player.currentZone]?.floor || 1; }
@@ -1829,12 +1889,14 @@ function updateHUD() {
   if (player.gender === 'female') { genderEl.textContent = '♀'; genderEl.className = 'gender-tag female'; }
   else { genderEl.textContent = '♂'; genderEl.className = 'gender-tag male'; }
   document.getElementById('hud-level').textContent = `Lv. ${player.level}`;
-  document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}/100`;
   document.getElementById('player-cursor-el').style.background = player.color;
   document.getElementById('player-cursor-el').style.boxShadow = `0 0 10px ${player.color}`;
   const hpPct = Math.max(0, Math.min(100, (player.hp / maxHp) * 100));
   const hpBar = document.getElementById('hud-hp-bar');
-  document.getElementById('hud-floor').textContent = `Этаж ${getCurrentFloor()}/100 (${player.floorKillProgress || 0}/10)`;
+  const curF = getCurrentFloor();
+  const need = getFloorOpenNeed(curF);
+  const prog = player.floorKillProgress || 0;
+  document.getElementById('hud-floor').textContent =`Этаж ${curF}/100` + (curF < player.highestFloor ? '' : ` (${prog}/${need})`);
   hpBar.style.width = `${hpPct}%`;
   hpBar.className = 'bar-fill hp-fill';
   if (hpPct <= 25) hpBar.className = 'bar-fill hp-red';
@@ -1958,6 +2020,7 @@ function renderExplorationButtons() {
   if (z.isSafe) {
     c.appendChild(createActionButton('🔥 Отдохнуть', 'btn-item', restAtCampfire));
     c.appendChild(createActionButton('🛒 Магазин', 'btn-item', openShop));
+    c.appendChild(createActionButton('🔨 Кузница', 'btn-class', openForge));
     if (z.floor === 1) {
       c.appendChild(createActionButton('💬 Арго', '', () => talkNpc('argo')));
       c.appendChild(createActionButton('💬 Кляйн', '', () => talkNpc('klein')));
@@ -2062,8 +2125,8 @@ function changeZone(zid) {
   saveGameAuto(); renderZone(); updateHUD();
 }
 function restAtCampfire() {
-  player.hp = getTotalMaxHp();
-  player.mp = getTotalMaxMp();
+  player.hp = Math.min(getTotalMaxHp(), player.hp + Math.round(getTotalMaxHp() * 0.5));
+  player.mp = Math.min(getTotalMaxMp(), player.mp + Math.round(getTotalMaxMp() * 0.5));
   playSound('heal');
   addLog(`[КОСТЁР] Полное восстановление!`, 'heal');
   updateHUD();
@@ -2465,9 +2528,9 @@ function checkLevelUp() {
   while (player.exp >= player.maxExp) {
     player.exp -= player.maxExp;
     player.level++;
-    player.maxHp += 30; player.hp = getTotalMaxHp();
-    player.maxMp += 10; player.mp = getTotalMaxMp();
-    player.baseAtk += 10; player.baseDef += 7; player.baseCrit += 1.5;
+    player.maxHp += 20; player.hp = getTotalMaxHp();
+    player.maxMp += 7;  player.mp = getTotalMaxMp();
+    player.baseAtk += 6; player.baseDef += 4; player.baseCrit += 1.0;
     player.maxExp = getMaxExp(player.level);
     playSound('levelup');
     addLog(`[LEVEL UP] Lv. ${player.level}!`, 'system');
@@ -2476,15 +2539,23 @@ function checkLevelUp() {
   }
   checkAchievements();
 }
+
+// Сколько убийств нужно, чтобы открыть следующий этаж.
+// Floor 1 → 5 | Floor 10 → 7 | Floor 30 → 11 | Floor 50 → 15 | Floor 100 → 25
+function getFloorOpenNeed(floor) {
+  return 20 + Math.min(15, Math.floor(floor / 5));
+}
+
 function progressFloorProgress() {
   const curFloor = getCurrentFloor();
-  // На боссовых этажах свой механизм — не дублируем
+
+  // На боссовых этажах работает своя логика — не трогаем.
   if (curFloor % BOSS_INTERVAL === 0) return;
-  // Считаем только на самом высоком открытом этаже
+  // Считаем только на самом высоком открытом этаже.
   if (curFloor < player.highestFloor) return;
 
   player.floorKillProgress = (player.floorKillProgress || 0) + 1;
-  const NEED = 5 + Math.floor(curFloor / 10);
+  const NEED = getFloorOpenNeed(curFloor);
 
   if (player.floorKillProgress >= NEED) {
     const nf = curFloor + 1;
@@ -2492,6 +2563,7 @@ function progressFloorProgress() {
       player.unlockedFloors[nf] = true;
       player.highestFloor = nf;
       player.floorKillProgress = 0;
+
       playSound('levelup');
       addLog(`🗼 [ПРОГРЕСС] Открыт Этаж ${nf}!`, 'legendary');
       showToast(`🗼 Открыт Этаж ${nf}!`);
@@ -3068,6 +3140,174 @@ function useItem(id) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   FORGE — Кузница и улучшение снаряжения
+   ═══════════════════════════════════════════════════════════════ */
+function getItemCount(id) {
+  const inv = player.inventory.find(i => i.id === id);
+  return inv ? inv.count : 0;
+}
+function canPayMaterials(mats) {
+  for (const [id, q] of Object.entries(mats)) {
+    if (getItemCount(id) < q) return false;
+  }
+  return true;
+}
+function getUpgradeCost(item, currentLevel) {
+  const lvl = currentLevel + 1;
+  const baseCol = Math.max(50, Math.round((item.price || 100) * 0.4));
+  let mats = {};
+  if (lvl <= 3)      mats = { mat_ore: lvl * 3 };
+  else if (lvl <= 6) mats = { mat_ore: 6, mat_crystal: (lvl - 3) * 2 };
+  else if (lvl <= 9) mats = { mat_crystal: 6, mat_dragon_scale: (lvl - 6) * 2 };
+  else               mats = { mat_crystal: 15, mat_dragon_scale: 8 };
+  return { col: baseCol * lvl * lvl, mats };
+}
+function getUpgradeChance(targetLevel) {
+  if (targetLevel <= 7) return 100;
+  if (targetLevel === 8) return 85;
+  if (targetLevel === 9) return 70;
+  return 50;
+}
+function getUpgradeBonus(item) {
+  if (!item) return null;
+  const lvl = (player.itemUpgrades || {})[item.id] || 0;
+  if (!lvl) return null;
+  const bonus = { atk: 0, def: 0, crit: 0, hp: 0 };
+  if (item.type === 'weapon') {
+    bonus.atk = Math.max(2, Math.round((item.atk || 0) * 0.06 * lvl));
+    bonus.crit = Math.floor(lvl / 3);
+    if (lvl >= 10) bonus.atk += Math.round((item.atk || 0) * 0.2);
+  } else if (item.type === 'armor') {
+    bonus.def = Math.max(1, Math.round((item.def || 0) * 0.06 * lvl));
+    bonus.hp = Math.floor(lvl / 3) * 25;
+    if (lvl >= 10) bonus.def += Math.round((item.def || 0) * 0.2);
+  }
+  return bonus;
+}
+function doUpgrade(itemId) {
+  const item = ITEMS_DB[itemId];
+  if (!item) return;
+  if (!player.itemUpgrades) player.itemUpgrades = {};
+  const lvl = player.itemUpgrades[itemId] || 0;
+  if (lvl >= 10) { showToast('Максимальный уровень!'); return; }
+
+  const cost = getUpgradeCost(item, lvl);
+  if (player.col < cost.col) { showToast('Мало Col!'); return; }
+  if (!canPayMaterials(cost.mats)) { showToast('Мало материалов!'); return; }
+
+  const chance = getUpgradeChance(lvl + 1);
+  const success = Math.random() * 100 <= chance;
+
+  // Списываем ресурсы в любом случае
+  player.col -= cost.col;
+  for (const [id, q] of Object.entries(cost.mats)) removeItemFromInventory(id, q);
+
+  if (success) {
+    player.itemUpgrades[itemId] = lvl + 1;
+    if (lvl + 1 === 10) {
+      playSound('achievement');
+      addLog(`⭐ [КУЗНЕЦ] ${item.name} достиг МАСТЕРСКОГО уровня +10!`, 'legendary');
+      showAchievementToast(`🔨 ${item.name}`, '+10 — максимальное улучшение');
+    } else {
+      playSound('levelup');
+      addLog(`🔨 [КУЗНЕЦ] ${item.name} → +${lvl + 1}!`, 'mastery');
+      showToast(`🔨 Успех: ${item.name} +${lvl + 1}`);
+    }
+  } else {
+    playSound('defeat');
+    addLog(`💥 [КУЗНЕЦ] ${item.name} сломался при улучшении! (шанс ${chance}%)`, 'danger');
+    showToast(`💥 Провал! Материалы потеряны`);
+  }
+
+  updateHUD();
+  renderForge();
+  saveGameAuto();
+}
+function renderForge() {
+  const c = document.getElementById('forge-items-container');
+  if (!c) return;
+  c.innerHTML = '';
+  if (!player.itemUpgrades) player.itemUpgrades = {};
+
+  const items = [];
+  const w = ITEMS_DB[player.equippedWeapon];
+  if (w) items.push({ item: w, equipped: true });
+  const a = ITEMS_DB[player.equippedArmor];
+  if (a) items.push({ item: a, equipped: true });
+
+  const seen = new Set([w?.id, a?.id].filter(Boolean));
+  player.inventory.forEach(inv => {
+    const it = ITEMS_DB[inv.id];
+    if (!it || seen.has(it.id)) return;
+    if (it.type !== 'weapon' && it.type !== 'armor') return;
+    items.push({ item: it, equipped: false, count: inv.count });
+    seen.add(it.id);
+  });
+
+  if (items.length === 0) {
+    c.innerHTML = '<div style="color: var(--text-dim); padding: 12px; text-align: center;">Нет улучшаемых предметов.</div>';
+    return;
+  }
+
+  const matNames = { mat_ore: '🪨 Руда', mat_crystal: '💎 Кристалл', mat_dragon_scale: '🐉 Чешуя' };
+
+  items.forEach(({ item, equipped, count }) => {
+    const lvl = player.itemUpgrades[item.id] || 0;
+    const card = document.createElement('div');
+    card.className = 'forge-item';
+
+    const baseStats = [];
+    if (item.atk) baseStats.push(`+${item.atk} ATK`);
+    if (item.def) baseStats.push(`+${item.def} DEF`);
+
+    const bonus = getUpgradeBonus(item);
+    let bonusStr = '';
+    if (bonus) {
+      const parts = [];
+      if (bonus.atk) parts.push(`+${bonus.atk} ATK`);
+      if (bonus.def) parts.push(`+${bonus.def} DEF`);
+      if (bonus.crit) parts.push(`+${bonus.crit}% крит`);
+      if (bonus.hp) parts.push(`+${bonus.hp} HP`);
+      bonusStr = parts.join(' · ');
+    }
+
+    let upgradeSection = '';
+    if (lvl >= 10) {
+      upgradeSection = `<div class="forge-max">⭐ МАСТЕРСКИЙ (10/10)</div>`;
+    } else {
+      const cost = getUpgradeCost(item, lvl);
+      const canAfford = player.col >= cost.col && canPayMaterials(cost.mats);
+      const chance = getUpgradeChance(lvl + 1);
+      const matStr = Object.entries(cost.mats).map(([m, q]) => {
+        const have = getItemCount(m);
+        return `<span class="${have >= q ? 'mat-ok' : 'mat-bad'}">${matNames[m]}: ${have}/${q}</span>`;
+      }).join(' · ');
+      upgradeSection = `
+        <div class="forge-cost">💰 ${cost.col} Col<br>${matStr}</div>
+        <div class="forge-chance">Шанс: ${chance}%</div>
+        <button class="sao-btn btn-class" style="padding: 8px 14px;" ${canAfford ? '' : 'disabled'} onclick="doUpgrade('${item.id}')">🔨 До +${lvl + 1}</button>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="forge-item-left">
+        <div class="forge-item-name">${item.name} ${equipped ? '<span class="eq-tag">ЭКИПИРОВАНО</span>' : ''}${count > 1 ? ` <span class="count-tag">×${count}</span>` : ''}</div>
+        <div class="forge-item-base">${baseStats.join(' · ') || '—'}</div>
+        <div class="forge-item-level">Уровень: <b>+${lvl}</b> / 10</div>
+        ${bonusStr ? `<div class="forge-item-bonus">Бонус: ${bonusStr}</div>` : ''}
+      </div>
+      <div class="forge-item-right">${upgradeSection}</div>
+    `;
+    c.appendChild(card);
+  });
+}
+function openForge() {
+  if (combatState.active) { showToast('Нельзя в бою!'); return; }
+  renderForge();
+  openModal('modal-forge');
+}
+
+/* ═══════════════════════════════════════════════════════════════
    SHOP
    ═══════════════════════════════════════════════════════════════ */
 function openShop() { document.getElementById('shop-title').textContent = `МАГАЗИН ЭТАЖА ${getCurrentFloor()}`; switchShopTab('buy'); openModal('modal-shop'); }
@@ -3104,6 +3344,10 @@ function getShopStock(floor) {
       addedIds.add(arm.id);
     }
   }));
+    // Материалы для кузницы
+  stock.push('mat_ore');
+  if (floor >= 15) stock.push('mat_crystal');
+  if (floor >= 45) stock.push('mat_dragon_scale');
   return stock;
 }
 function renderShopItems() {
@@ -3263,6 +3507,7 @@ function loadGame() {
     if (!player.bossesDefeated) player.bossesDefeated = {};
     if (!player.unlockedSkills) player.unlockedSkills = { slash: true };
     if (!player.skillMastery) player.skillMastery = {};
+    if (!player.itemUpgrades) player.itemUpgrades = {};
     if (!player.raceId) player.raceId = 'human';
     if (!player.gender) player.gender = 'male';
     if (player.donateCurrency === undefined) player.donateCurrency = 0;
@@ -3287,6 +3532,7 @@ document.getElementById('btn-open-inventory').addEventListener('click', () => { 
 document.getElementById('btn-open-status').addEventListener('click', () => { renderStatusModal(); openModal('modal-status'); });
 document.getElementById('btn-open-achievements').addEventListener('click', openAchievements);
 document.getElementById('btn-open-skills').addEventListener('click', openSkillsModal);
+document.getElementById('btn-open-forge').addEventListener('click', openForge);
 document.getElementById('btn-open-donate').addEventListener('click', openDonateModal);
 document.getElementById('btn-open-admin').addEventListener('click', openAdminLogin);
 document.getElementById('btn-save-game').addEventListener('click', () => saveGame(false));
