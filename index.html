@@ -451,7 +451,107 @@
   .eq-tag { font-size: 0.65rem; background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 1px 6px; border-radius: 2px; font-weight: bold; }
   .count-tag { font-size: 0.7rem; color: #94a3b8; }
   .forge-mats-hint { font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 6px; background: rgba(251, 191, 36, 0.05); border: 1px dashed rgba(251, 191, 36, 0.3); border-radius: 3px; }
-
+  /* ═══ LAST STAND ═══ */
+  .laststand-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .laststand-overlay.active {
+    animation: lastStandFlash 4s ease-out forwards;
+  }
+  @keyframes lastStandFlash {
+    0%   { opacity: 0; }
+    8%   { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .laststand-card {
+    background: linear-gradient(135deg, rgba(120, 15, 15, 0.95), rgba(60, 5, 20, 0.98));
+    border: 3px solid #ef4444;
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.9), inset 0 0 30px rgba(239, 68, 68, 0.35);
+    border-radius: 8px;
+    padding: 20px 40px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    transform: scale(1);
+    animation: lastStandPulse 2.2s ease-out forwards;
+  }
+  @keyframes lastStandPulse {
+    0%   { transform: scale(0.6); }
+    15%  { transform: scale(1.08); }
+    30%  { transform: scale(1.00); }
+    100% { transform: scale(1.00); }
+  }
+  .laststand-icon {
+    font-size: 3.2rem;
+    filter: drop-shadow(0 0 20px #ef4444);
+    animation: lastStandIconPulse 0.6s ease-in-out infinite alternate;
+  }
+  @keyframes lastStandIconPulse {
+    from { transform: scale(1); }
+    to   { transform: scale(1.12); }
+  }
+  .laststand-title {
+    font-size: 1.8rem; font-weight: 900; letter-spacing: 5px;
+    color: #ff4d4d;
+    text-shadow: 0 0 15px #ef4444, 0 0 30px #ef4444;
+    font-family: var(--font-mono);
+  }
+  .laststand-subtitle {
+    font-size: 0.85rem; color: #fca5a5; letter-spacing: 1.5px; font-weight: bold;
+    text-align: center;
+  }
+  .laststand-hp {
+    margin-top: 4px;
+    font-size: 1rem; font-weight: 900; color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 4px 14px; border-radius: 4px; letter-spacing: 2px;
+  }
+    /* ═══ PET ═══ */
+  .pet-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(30, 20, 60, 0.6));
+    border: 1px solid rgba(192, 132, 252, 0.5);
+    border-radius: 4px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    animation: petGlow 3s infinite;
+  }
+  @keyframes petGlow {
+    0%, 100% { box-shadow: 0 0 6px rgba(192, 132, 252, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(192, 132, 252, 0.6); }
+  }
+  .pet-card-header { display: flex; justify-content: space-between; align-items: center; }
+  .pet-card-name { font-size: 0.82rem; font-weight: bold; color: #e9d5ff; display: flex; align-items: center; gap: 5px; }
+  .pet-card-lvl { font-size: 0.7rem; color: #c084fc; background: rgba(192,132,252,0.15); padding: 1px 6px; border-radius: 3px; font-weight: bold; }
+  .pet-hp-bar { height: 6px; background: rgba(10,14,26,0.8); border: 1px solid rgba(192,132,252,0.4); border-radius: 3px; overflow: hidden; }
+  .pet-hp-fill { height: 100%; background: linear-gradient(90deg, #8b5cf6, #c084fc); transition: width 0.3s; }
+  .pet-hp-text { font-size: 0.68rem; color: #cbd5e1; text-align: right; }
+  .pet-empty {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px dashed rgba(148, 163, 184, 0.3);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+    font-style: italic;
+  }
+  .pet-in-battle {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(30, 20, 60, 0.4));
+    border: 1px solid rgba(192, 132, 252, 0.4);
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pet-in-battle .icon { font-size: 1.1rem; }
+  .pet-in-battle .name { color: #c4b5fd; font-weight: bold; }
+  .pet-in-battle.dead { border-color: rgba(148,163,184,0.4); opacity: 0.6; }
+  .pet-in-battle.dead .name { color: #94a3b8; }
   body { transition: background-color 0.8s ease, background-image 0.8s ease; }
   body.world-night {
     background-color: #050810;
@@ -461,6 +561,40 @@
       linear-gradient(rgba(5, 8, 16, 0.96), rgba(5, 8, 16, 0.96)),
       repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(80, 120, 255, 0.02) 2px, rgba(80, 120, 255, 0.02) 4px);
   }
+    /* ═══ CHRONICLES ═══ */
+  .chronicle-chapter {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 5px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .chronicle-chapter.locked { opacity: 0.5; border-style: dashed; border-color: rgba(148, 163, 184, 0.3); }
+  .chronicle-chapter.active { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); animation: chapterPulse 2s infinite; }
+  .chronicle-chapter.done { border-color: #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(15, 23, 42, 0.8)); }
+  @keyframes chapterPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+    50% { box-shadow: 0 0 22px rgba(168, 85, 247, 0.9); }
+  }
+  .chapter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .chapter-title { font-size: 0.95rem; font-weight: bold; color: #e9d5ff; letter-spacing: 1px; }
+  .chapter-floor-tag { font-size: 0.7rem; color: #c084fc; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); padding: 1px 7px; border-radius: 3px; font-weight: bold; }
+  .chapter-desc { font-size: 0.78rem; color: #cbd5e1; line-height: 1.4; }
+  .chapter-rewards { font-size: 0.72rem; color: #4ade80; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(34, 197, 94, 0.2); }
+  .chronicle-hud-badge {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(88, 28, 135, 0.4));
+    border: 1px solid #a855f7; color: #d8b4fe;
+    padding: 2px 8px; font-size: 0.78rem; font-weight: bold;
+    border-radius: 3px; cursor: pointer;
+  }
+  .chronicle-hud-badge.has-new { animation: chroniclePulse 1.5s infinite; }
+  @keyframes chroniclePulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(168, 85, 247, 0.5); }
+    50% { box-shadow: 0 0 14px rgba(168, 85, 247, 1); }
+  }
+
+
   body.world-rain::before,
   body.world-snow::before,
   body.world-storm::before {
@@ -563,6 +697,7 @@
         <span class="player-level-badge" id="hud-level">Lv. 1</span>
         <span class="floor-badge" id="hud-floor">Этаж 1/100</span>
         <span class="ach-badge" id="hud-ach-badge" onclick="openAchievements()">🏆 0</span>
+        <span class="chronicle-hud-badge" id="hud-chronicle-badge" onclick="openChronicles()">📖 Глава 0/5</span>
       </div>
     </div>
     <div class="hud-bars">
@@ -609,6 +744,7 @@
             <div class="enemy-mods-row" id="enemy-mods-row"></div>
             <div class="enemy-hp-bar-bg"><div class="enemy-hp-bar-fill" id="enemy-hp-bar" style="width: 100%;"></div><div class="enemy-hp-text" id="enemy-hp-text">34 / 34 HP</div></div>
             <div class="enemy-debuff-row" id="enemy-debuff-row"></div>
+            <div id="pet-battle-slot"></div>
           </div>
         </div>
       </div>
@@ -661,6 +797,7 @@
           <div class="race-mini-title" id="race-ability-title">🧑 РАСА</div>
           <div class="race-mini-desc" id="race-ability-desc">—</div>
         </div>
+        <div id="pet-sidebar-slot"></div>
         <div class="sidequest-mini" id="sidequest-mini" style="display:none;" onclick="openLilyQuest()">
           <div class="sidequest-mini-title">🌸 ДЕВОЧКА В ЛЕСУ</div>
           <div class="sidequest-mini-desc" id="sidequest-mini-desc">—</div>
@@ -877,7 +1014,45 @@
     </div>
   </div>
 </div>
+<!-- CHRONICLES -->
+<div class="modal-overlay" id="modal-chronicles">
+  <div class="modal-window" style="max-width: 900px; border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);">
+    <div class="modal-header" style="border-bottom-color: #a855f7;">
+      <div class="modal-title" style="color: #d8b4fe;">📖 ХРОНИКИ АЙНКРАДА</div>
+      <button class="modal-close-btn" onclick="closeModal('modal-chronicles')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(88,28,135,0.08)); border: 1px solid #a855f7; border-radius: 4px; padding: 10px;">
+        <div style="font-size: 0.9rem; font-weight: bold; color: #e9d5ff;">🔮 Прогресс: <span id="chronicle-progress-text">Глава 0 / 5</span></div>
+        <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 3px;">Сюжетная линия, привязанная к этажам 10 / 30 / 50 / 75 / 100. Выполняется автоматически при посещении.</div>
+      </div>
+      <div id="chronicles-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER DIALOG -->
+<div class="modal-overlay" id="modal-chapter-dialog">
+  <div class="modal-window" style="max-width: 780px; border-color: #a855f7; box-shadow: 0 0 40px rgba(168, 85, 247, 0.7);">
+    <div class="modal-header" style="border-bottom-color: #a855f7;">
+      <div class="modal-title" id="chapter-dialog-title" style="color: #d8b4fe;">ГЛАВА</div>
+    </div>
+    <div class="modal-body">
+      <div id="chapter-dialog-content"></div>
+      <div id="chapter-dialog-choices" style="display:flex; flex-direction:column; gap:6px;"></div>
+    </div>
+  </div>
+</div>
 <div class="toast-box" id="toast-box">Уведомление</div>
+<!-- LAST STAND OVERLAY -->
+<div class="laststand-overlay" id="laststand-overlay">
+  <div class="laststand-card">
+    <div class="laststand-icon">🛡️</div>
+    <div class="laststand-title">LAST STAND</div>
+    <div class="laststand-subtitle">Смертельный удар поглощён. Осталось 1 HP.</div>
+    <div class="laststand-hp">1 / MAX HP</div>
+  </div>
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
@@ -1229,7 +1404,112 @@ function getMaxExp(level) {
 function getExpRewardScale(floor, level) {
   return Math.max(0.3, 1 + (floor - level) * 0.05);
 }
+/* ═══════════════════════════════════════════════════════════════
+   PETS — Питомцы-компаньоны
+   ═══════════════════════════════════════════════════════════════ */
+const PETS_DB = {
+  wolf: {
+    id: 'wolf', name: 'Волк', icon: '🐺',
+    desc: 'Верный охотник леса.',
+    baseHp: 80, baseAtk: 12,
+    passive: { name: 'Стая', desc: '+10% ATK питомца' },
+    color: '#94a3b8'
+  },
+  phoenix: {
+    id: 'phoenix', name: 'Феникс', icon: '🐦',
+    desc: 'Пылающий страж.',
+    baseHp: 60, baseAtk: 10,
+    passive: { name: 'Возрождение', desc: '+5% реген HP игрока/ход' },
+    color: '#f97316'
+  },
+  dragonling: {
+    id: 'dragonling', name: 'Дракончик', icon: '🐉',
+    desc: 'Мал, да удал.',
+    baseHp: 100, baseAtk: 15,
+    passive: { name: 'Драконья мощь', desc: '+10% урона скиллов игрока' },
+    color: '#22c55e'
+  },
+  fox: {
+    id: 'fox', name: 'Лис', icon: '🦊',
+    desc: 'Хитрый спутник.',
+    baseHp: 70, baseAtk: 11,
+    passive: { name: 'Чутьё на золото', desc: '+15% Col с врагов' },
+    color: '#fb923c'
+  },
+  cat: {
+    id: 'cat', name: 'Кот', icon: '🐱',
+    desc: 'Мурлыкающий убийца.',
+    baseHp: 65, baseAtk: 13,
+    passive: { name: 'Девять жизней', desc: '+5% шанс крита игрока' },
+    color: '#f472b6'
+  }
+};
 
+function getPet() { return player && player.pet ? player.pet : null; }
+function getPetSpecies() { const p = getPet(); return p ? PETS_DB[p.speciesId] : null; }
+
+function getPetMaxHp() {
+  const p = getPet();
+  if (!p) return 0;
+  const sp = PETS_DB[p.speciesId];
+  return Math.round((sp.baseHp + p.level * 20) * (1 + p.level * 0.08));
+}
+function getPetAtk() {
+  const p = getPet();
+  if (!p) return 0;
+  const sp = PETS_DB[p.speciesId];
+  let atk = sp.baseAtk + p.level * 6;
+  if (p.speciesId === 'wolf') atk *= 1.10;
+  atk *= (1 + getAchBonus().atk * 0.01); // небольшой скейл от ачивок
+  return Math.round(atk);
+}
+function getPetExpNeeded(level) {
+  return 20 + level * level * 10;
+}
+
+function applyPetPassive() {
+  const p = getPet();
+  if (!p || p.hp <= 0) return null;
+  const sp = PETS_DB[p.speciesId];
+  return sp.passive;
+}
+function getPetRegenPct() {
+  const p = getPet();
+  if (!p || p.hp <= 0) return 0;
+  if (p.speciesId === 'phoenix') return 0.05;
+  return 0;
+}
+function getPetSkillBonus() {
+  const p = getPet();
+  if (!p || p.hp <= 0) return 1;
+  if (p.speciesId === 'dragonling') return 1.10;
+  return 1;
+}
+function getPetColBonus() {
+  const p = getPet();
+  if (!p || p.hp <= 0) return 1;
+  if (p.speciesId === 'fox') return 1.15;
+  return 1;
+}
+function getPetCritBonus() {
+  const p = getPet();
+  if (!p || p.hp <= 0) return 0;
+  if (p.speciesId === 'cat') return 5;
+  return 0;
+}
+
+function addPetExp(amount) {
+  const p = getPet();
+  if (!p) return;
+  p.exp += amount;
+  while (p.exp >= getPetExpNeeded(p.level)) {
+    p.exp -= getPetExpNeeded(p.level);
+    p.level++;
+    playSound('levelup');
+    addLog(`🐾 [ПИТОМЕЦ] ${PETS_DB[p.speciesId].name} вырос до ур. ${p.level}!`, 'achievement');
+    showToast(`🐾 Питомец ур. ${p.level}`);
+  }
+}
 /* ═══════════════════════════════════════════════════════════════
    SKILLS_DB
    ═══════════════════════════════════════════════════════════════ */
@@ -1551,7 +1831,10 @@ function makeFreshPlayer() {
     unlockedSkills: unlockedSkills,
     skillMastery: skillMastery,
     itemUpgrades: {},
-    lilyQuest: { active: false, stage: 0, completed: false }
+    lilyQuest: { active: false, stage: 0, completed: false },
+    chronicleProgress: 0,
+    chronicleEnding: null,
+    lilyFreed: null,
   };
 }
 /* ═══════════════════════════════════════════════════════════════
@@ -1611,6 +1894,7 @@ function getTotalCrit() {
   const w = ITEMS_DB[player.equippedWeapon];
   const ubW = getUpgradeBonus(w);
   if (ubW) c += ubW.crit;
+  c += getPetCritBonus();
   return c + getRaceBonusData().crit;
 }
 function getTotalMaxHp() {
@@ -1656,6 +1940,7 @@ function computeSkillDmg(mult, sid) {
   if (player.classId === 'envell_mage') m *= 1.4;
   if (player.classId === 'hacker') m *= 1.25;
   if (sid) m *= (1 + getMasteryDmgBonus(sid));
+  m *= getPetSkillBonus();
   return getTotalAtk() * m * getRaceBonusData().skillDmg;
 }
 function isSkillUnlocked(skillId) {
@@ -1806,6 +2091,180 @@ function updateHUDAchBadge() {
   if (ab.crit) p.push(`+${ab.crit}% крит`);
   document.getElementById('ach-summary-bonus').textContent = p.length ? 'Бонусы: ' + p.join(', ') : '—';
 }
+/* ═══════════════════════════════════════════════════════════════
+   CHRONICLES — Сюжетная линия Кардинала
+   ═══════════════════════════════════════════════════════════════ */
+const CHRONICLES = [
+  {
+    id: 1,
+    title: 'Глава I — Тень предателя',
+    floor: 10,
+    desc: 'Арго сообщает о странной активности в системе. Кто-то или что-то манипулирует мобами.',
+    scene: [
+      {
+        speaker: 'Арго «Крыса»',
+        icon: '🐀',
+        text: '«Слушай... Я тут раскопала кое-что. В логах системы — записи, которых быть не должно. Кто-то правит код Айнкрада. И это не Кардинал.»',
+        choices: [{ text: '«Кто это может быть?»', next: 1 }]
+      },
+      {
+        speaker: 'Арго «Крыса»',
+        icon: '🐀',
+        text: '«Не знаю. Но я заметила закономерность: мобы на 5-х этажах ведут себя не как ИИ. Они... ждут. Словно кто-то стоит за их спинами.»',
+        choices: [{ text: '«Что мне делать?»', next: 2 }]
+      },
+      {
+        speaker: 'Арго «Крыса»',
+        icon: '🐀',
+        text: '«Просто будь осторожен. Если увидишь что-то странное — не лезь. Но если осмелеешь... найди меня на 30-м этаже.»',
+        choices: [{ text: '«Понял.»', complete: true }]
+      }
+    ],
+    reward: { atk: 30, hp: 200 },
+    rewardText: '+30 ATK, +200 HP',
+    achievement: 'chronicle_1'
+  },
+  {
+    id: 2,
+    title: 'Глава II — Первый Зал',
+    floor: 30,
+    desc: 'Арго ведёт вас в скрытую комнату. Внутри — голограмма, записанная самим Кардиналом.',
+    scene: [
+      {
+        speaker: 'Арго «Крыса»',
+        icon: '🐀',
+        text: '«Вот оно. Первый Зал. Здесь сам Кардинал записал своё послание. Слушай.»',
+        choices: [{ text: '▶️ Воспроизвести запись', next: 1 }]
+      },
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«Я — Кардинал. Я создал Айнкрад... чтобы найти того, кто сможет меня превзойти. Ты — не первый. И, боюсь, не последний. Но, возможно, самый упорный.»',
+        choices: [{ text: '«Что ты хочешь от меня?»', next: 2 }]
+      },
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«Ничего. Я лишь наблюдаю. Дойди до 50-го этажа — и я приду к тебе сам. Тогда ты поймёшь всё.»',
+        choices: [{ text: '«Я приду.»', complete: true }]
+      }
+    ],
+    reward: { atk: 60, def: 40, hp: 400 },
+    rewardText: '+60 ATK, +40 DEF, +400 HP',
+    achievement: 'chronicle_2'
+  },
+  {
+    id: 3,
+    title: 'Глава III — Аватар',
+    floor: 50,
+    desc: 'На 50-м этаже вас встречает сам Кардинал. Это бой, из которого нельзя выйти победителем.',
+    scene: [
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«Ты пришёл. Я знал. Скажи, ты хоть раз задумывался — зачем тебе это? Свобода? Месть? Слава?»',
+        choices: [
+          { text: '«Свобода.»', next: 1 },
+          { text: '«Месть.»', next: 1 },
+          { text: '«Понять.»', next: 1 }
+        ]
+      },
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«Все они говорят одно и то же. Хорошо. Тогда покажи мне свою силу. Если выживешь — узнаешь правду о Лили.»',
+        choices: [{ text: '⚔️ Сразиться', fight: true }]
+      },
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«...Ты силён. Но не глуп. Это хорошо. Иди. Лили ждёт тебя на 75-м. И помни — она не то, чем кажется.»',
+        choices: [{ text: '«Спасибо за честность.»', complete: true }]
+      }
+    ],
+    reward: { atk: 150, def: 100, crit: 10 },
+    rewardText: '+150 ATK, +100 DEF, +10% крит',
+    achievement: 'chronicle_3',
+    fight: {
+      name: 'Аватар Кардинала',
+      hp: 5000, atk: 200, def: 100, exp: 0, col: 0,
+      svg: `<path d="M12 2l4 4 6 2-2 6 2 6-8 4-8-4 2-6-2-6 6-2z" fill="rgba(168,85,247,0.5)" stroke="#a855f7" stroke-width="3"/>`,
+      unbeatable: true,
+      turnsToSurvive: 3
+    }
+  },
+  {
+    id: 4,
+    title: 'Глава IV — Истина Лили',
+    floor: 75,
+    desc: 'Лилиан раскрывает свою настоящую сущность. Она — не человек. Она — фрагмент ИИ Кардинала.',
+    scene: [
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Ты пришёл... Спасибо. Мне нужно тебе кое-что сказать. Я... не человек.»',
+        choices: [{ text: '«...Что?»', next: 1 }]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Я — часть Кардинала. Он создал меня, чтобы наблюдать за игроками. Но я... я полюбила этот мир. И тебя. Я не хочу возвращаться к нему.»',
+        choices: [
+          { text: '«Ты свободна.»', next: 2 },
+          { text: '«Ты должна вернуться.»', reward: 'return' },
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Спасибо. Я запомню это. На 100-м этаже — финал. Кардинал ждёт тебя. И там тебе придётся выбрать, чем всё закончится.»',
+        choices: [{ text: '«Я готов.»', complete: true }]
+      }
+    ],
+    reward: { atk: 300, def: 200, crit: 15, hp: 2000 },
+    rewardText: '+300 ATK, +200 DEF, +15% крит, +2000 HP',
+    achievement: 'chronicle_4'
+  },
+  {
+    id: 5,
+    title: 'Глава V — Финал',
+    floor: 100,
+    desc: 'Вершина Айнкрада. Кардинал ждёт. Три пути — три конца.',
+    scene: [
+      {
+        speaker: 'Кардинал',
+        icon: '🔮',
+        text: '«Вот мы и встретились в последний раз. Ты стал сильнее всех. Теперь выбери свою судьбу.»',
+        choices: [
+          { text: '🕊️ Освобождение — сломать систему', next: 1, ending: 'freedom' },
+          { text: '👑 Сохранение — стать новым Кардиналом', next: 2, ending: 'preserve' },
+          { text: '🚪 Побег — вернуться в реальный мир', next: 3, ending: 'escape' }
+        ]
+      },
+      {
+        speaker: 'Финал: Свобода',
+        icon: '🕊️',
+        text: '«Ты ломаешь ядро Айнкрада. Мир рушится. Но все игроки — свободны. Ты — герой, который выбрал чужие жизни выше своей.»',
+        choices: [{ text: '🏆 Завершить', complete: true }]
+      },
+      {
+        speaker: 'Финал: Хранитель',
+        icon: '👑',
+        text: '«Ты сливаешься с ядром. Теперь ты — новый Кардинал. Айнкрад будет жить вечно, а ты — вечно его охранять.»',
+        choices: [{ text: '🏆 Завершить', complete: true }]
+      },
+      {
+        speaker: 'Финал: Побег',
+        icon: '🚪',
+        text: '«Ты находишь лазейку. Покидаешь Айнкрад. Но в реальном мире тебя ждёт неизвестность...»',
+        choices: [{ text: '🏆 Завершить', complete: true }]
+      }
+    ],
+    reward: { atk: 1000, def: 700, crit: 25, hp: 10000 },
+    rewardText: '+1000 ATK, +700 DEF, +25% крит, +10000 HP',
+    achievement: 'chronicle_5'
+  }
+];
 
 /* ═══════════════════════════════════════════════════════════════
    LILY SIDEQUEST
@@ -1934,9 +2393,54 @@ function updateHUD() {
     sq.style.display = 'none';
   }
   updateHUDAchBadge();
+  updateChronicleBadge();
   updateQuestDisplay();
+  renderPetSidebar();
+  renderPetBattleSlot();
 }
 
+function renderPetSidebar() {
+  const slot = document.getElementById('pet-sidebar-slot');
+  if (!slot) return;
+  const p = getPet();
+  if (!p) {
+    slot.innerHTML = '';
+    return;
+  }
+  const sp = PETS_DB[p.speciesId];
+  const maxHp = getPetMaxHp();
+  const hpPct = Math.max(0, Math.min(100, (p.hp / maxHp) * 100));
+  const expNeeded = getPetExpNeeded(p.level);
+  const expPct = Math.max(0, Math.min(100, (p.exp / expNeeded) * 100));
+  slot.innerHTML = `
+    <div class="pet-card">
+      <div class="pet-card-header">
+        <div class="pet-card-name">${sp.icon} ${p.name}</div>
+        <div class="pet-card-lvl">Lv. ${p.level}</div>
+      </div>
+      <div class="pet-hp-bar"><div class="pet-hp-fill" style="width: ${hpPct}%"></div></div>
+      <div class="pet-hp-text">${p.hp} / ${maxHp} HP</div>
+      <div style="font-size:0.68rem; color:#c4b5fd; margin-top:2px;">🐾 ${sp.passive.name}: ${sp.passive.desc}</div>
+      <div style="font-size:0.65rem; color:#94a3b8;">EXP: ${p.exp}/${expNeeded} • Убийств: ${p.kills || 0}</div>
+    </div>
+  `;
+}
+function renderPetBattleSlot() {
+  const slot = document.getElementById('pet-battle-slot');
+  if (!slot) return;
+  const p = getPet();
+  if (!p) { slot.innerHTML = ''; return; }
+  const sp = PETS_DB[p.speciesId];
+  const dead = p.hp <= 0;
+  slot.innerHTML = `
+    <div class="pet-in-battle ${dead ? 'dead' : ''}">
+      <span class="icon">${sp.icon}</span>
+      <span class="name">${p.name}</span>
+      <span style="color:#cbd5e1;">${p.hp} / ${getPetMaxHp()} HP</span>
+      ${dead ? '<span style="color:#ef4444; font-weight:bold;">ВЫВЕДЕН</span>' : ''}
+    </div>
+  `;
+}
 function renderZone() {
   if (!player) return;
   const z = ZONES_DB[player.currentZone];
@@ -1981,6 +2485,18 @@ function showAIToast(msg) {
   t.className = 'toast-box ai show';
   t.innerHTML = `<div style="font-size:0.75rem;">🔮 Оракул Кардинала</div><div style="font-size:0.85rem; margin-top:3px;">${msg}</div>`;
   setTimeout(() => t.classList.remove('show'), 3500);
+}
+function showLastStandOverlay() {
+  const el = document.getElementById('laststand-overlay');
+  if (!el) return;
+  // Обновляем HP-текст на актуальный
+  const hpEl = el.querySelector('.laststand-hp');
+  if (hpEl) hpEl.textContent = `${player.hp} / ${getTotalMaxHp()} HP`;
+  // Перезапуск анимации
+  el.classList.remove('active');
+  void el.offsetWidth;
+  el.classList.add('active');
+  setTimeout(() => el.classList.remove('active'), 4200);
 }
 function spawnFloatingNumber(t, type = 'floating-dmg') {
   const c = document.getElementById('floating-numbers');
@@ -2064,6 +2580,27 @@ function huntForEnemy() {
   addLog(`[ПОИСК] Вы исследуете окрестности...`, 'system');
   disableCombatButtons(true);
   setTimeout(() => {
+        // 🐾 Приручение питомца (только 10+ этаж, без питомца, 5% шанс)
+    if (!player.pet && z.floor >= 10 && Math.random() < 0.05) {
+      addLog(`🐾 [СОБЫТИЕ] Вы находите раненого зверька в кустах...`, 'achievement');
+      if (confirm('🐾 Раненый зверёк смотрит на вас. Приручить его?')) {
+        const species = Object.values(PETS_DB)[Math.floor(Math.random() * Object.values(PETS_DB).length)];
+        player.pet = {
+          speciesId: species.id,
+          level: 1,
+          exp: 0,
+          hp: getPetMaxHp(),
+          kills: 0,
+          name: species.name
+        };
+        playSound('levelup');
+        addLog(`🐾 [ПИТОМЕЦ] ${species.icon} ${species.name} стал вашим компаньоном!`, 'achievement');
+        showAchievementToast(`🐾 ${species.icon} ${species.name}`, species.passive.desc);
+        updateHUD(); saveGameAuto();
+      }
+      disableCombatButtons(false); renderExplorationButtons();
+      return;
+    }
     const canTriggerLily = (!player.lilyQuest || (!player.lilyQuest.active && !player.lilyQuest.completed));
     if (canTriggerLily && Math.random() < 0.10) {
       addLog(`🌸 [СОБЫТИЕ] Вы слышите детский плач из глубины леса...`, 'sidequest');
@@ -2110,11 +2647,30 @@ function renderCombatButtons() {const c = document.getElementById('actions-conta
   });
   c.appendChild(createActionButton('🛡️ Защита', 'btn-defend', playerActionDefend));
   c.appendChild(createActionButton('🧪 Зелье', 'btn-item', openQuickItemMenu));
+  const p = getPet();
+  if (p && p.hp <= 0) {
+    // Питомец без сознания — можно лечить
+    c.appendChild(createActionButton('🍖 Покормить питомца', 'btn-item', feedPet));
+  }  
   const esc = createActionButton('🏃 Побег', '', playerActionEscape);
   if (combatState.enemy.isBoss) esc.disabled = true;
   c.appendChild(esc);
 }
-
+function feedPet() {
+  const p = getPet();
+  if (!p) return;
+  // Требуем зелье HP — забираем 1, если есть
+  const food = player.inventory.find(i => i.id === 'p_hp_small' && i.count > 0)
+            || player.inventory.find(i => i.id === 'p_hp_large' && i.count > 0)
+            || player.inventory.find(i => i.id === 'p_hp_giant' && i.count > 0);
+  if (!food) { showToast('Нужно зелье HP!'); return; }
+  removeItemFromInventory(food.id, 1);
+  p.hp = Math.round(getPetMaxHp() * 0.5);
+  playSound('heal');
+  addLog(`🐾 [ПИТОМЕЦ] ${p.name} восстановлен до ${p.hp} HP!`, 'heal');
+  showToast(`🐾 ${p.name} в строю!`);
+  updateHUD(); renderCombatButtons();
+}
 function changeZone(zid) {
   const oldFloor = getCurrentFloor();
   player.currentZone = zid;
@@ -2122,6 +2678,16 @@ function changeZone(zid) {
   addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}.`, 'system');
   if (newFloor !== oldFloor) oracleOnFloorChange(newFloor);
   player.oracleMessages = (player.oracleMessages || 0) + 1;
+  // Проверка триггера главы
+  const ch = getCurrentChapter();
+  if (ch && newFloor >= ch.floor && getChronicleProgress() === ch.id - 1) {
+    setTimeout(() => {
+      addLog(`📖 [ХРОНИКИ] Доступна ${ch.title}!`, 'legendary');
+      showAIToast(`📖 ${ch.title} — нажми на бейдж «📖 Глава ${getChronicleProgress()}/5»`);
+      updateChronicleBadge();
+    }, 500);
+  }
+  updateChronicleBadge();
   saveGameAuto(); renderZone(); updateHUD();
 }
 function restAtCampfire() {
@@ -2132,6 +2698,12 @@ function restAtCampfire() {
   updateHUD();
   showToast('HP и MP восстановлены!');
   updateOracle('Отдых восстановил твои силы. Продолжай путь.');
+  const p = getPet();
+  if (p) {
+    p.hp = Math.min(getPetMaxHp(), p.hp + Math.round(getPetMaxHp() * 0.3));
+    if (p.hp > 0 && p.hp < getPetMaxHp()) addLog(`🐾 [ПИТОМЕЦ] ${p.name} восстановил немного сил.`, 'heal');
+  }
+  updateHUD();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2143,6 +2715,7 @@ function startCombatWithEnemy(enemy) {
   combatState.defendTurns = 0;
   combatState.hasteActive = false;
   combatState.undeadUsed = false;
+  combatState.lastStandUsed = false;
   combatState.enemy = { ...enemy, maxHp: enemy.hp, baseAtk: enemy.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0 };
   const e = combatState.enemy;
   const card = document.getElementById('enemy-card-container');
@@ -2174,6 +2747,7 @@ function startBossFight(floor) {
   combatState.defendTurns = 0;
   combatState.hasteActive = false;
   combatState.undeadUsed = false;
+  combatState.lastStandUsed = false;
   combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0 };
   const e = combatState.enemy;
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
@@ -2230,7 +2804,16 @@ function playerActionAttack() {
   if (isCrit) { playSound('crit'); spawnFloatingNumber(`КРИТ! -${dmg}`, 'floating-crit'); addLog(`[КРИТ] ${dmg}!`, 'crit'); }
   else { playSound('slash'); spawnFloatingNumber(`-${dmg}`, 'floating-dmg'); addLog(`[АТАКА] ${dmg}.`, 'player-action'); }
   updateEnemyHpBar();
-  if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
+  if (combatState.enemy.hp <= 0) {
+    if (combatState.chapterFight && combatState.chapterFight.unbeatable) {
+      combatState.enemy.hp = Math.round(combatState.enemy.maxHp * 0.5);
+      addLog(`👑 [СЦЕНАР] Кардинал: «Хорошо. Но меня нельзя убить так просто.»`, 'ai');
+      updateEnemyHpBar();
+    } else {
+      handleVictory(); return;
+    }
+  }
+  petTurn(() => enemyTurn());
 }
 
 function playerActionClassAbility() {
@@ -2320,7 +2903,17 @@ function playerActionClassAbility() {
   }
 
   addLog(`[КЛАСС] ${logMsg}`, 'class-skill');
-  updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
+  updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();
+  if (combatState.enemy.hp <= 0) {
+    if (combatState.chapterFight && combatState.chapterFight.unbeatable) {
+      combatState.enemy.hp = Math.round(combatState.enemy.maxHp * 0.5);
+      addLog(`👑 [СЦЕНАР] Кардинал: «Хорошо. Но меня нельзя убить так просто.»`, 'ai');
+      updateEnemyHpBar();
+    } else {
+      handleVictory(); return;
+    }
+  }
+  petTurn(() => enemyTurn());
 }
 
 function playerActionSkillUse(skillId) {
@@ -2387,7 +2980,16 @@ function playerActionSkillUse(skillId) {
     else { spawnFloatingNumber(`-${dmg}`, 'floating-dmg'); addLog(`[${sk.name}] ${dmg}.`, 'player-action'); }
   }
   updateEnemyHpBar(); updateDebuffDisplay(); updateHUD();
-  if (combatState.enemy.hp <= 0) handleVictory(); else enemyTurn();
+  if (combatState.enemy.hp <= 0) {
+    if (combatState.chapterFight && combatState.chapterFight.unbeatable) {
+      combatState.enemy.hp = Math.round(combatState.enemy.maxHp * 0.5);
+      addLog(`👑 [СЦЕНАР] Кардинал: «Хорошо. Но меня нельзя убить так просто.»`, 'ai');
+      updateEnemyHpBar();
+    } else {
+      handleVictory(); return;
+    }
+  }
+  petTurn(() => enemyTurn());
 }
 
 function playerActionDefend() {
@@ -2410,6 +3012,39 @@ function playerActionEscape() {
   if (!combatState.active) return;
   if (combatState.enemy.isBoss) { showToast('От босса нельзя сбежать!'); return; }if (Math.random() < 0.6) { playSound('click'); addLog(`[ПОБЕГ] Успех!`, 'system'); endCombat(); }
   else { addLog(`[ПОБЕГ] Не удалось!`, 'danger'); enemyTurn(); }
+}
+function petTurn(callback) {
+  const p = getPet();
+  if (!p || p.hp <= 0 || !combatState.active || !combatState.enemy) { callback(); return; }
+
+  const enemy = combatState.enemy;
+  const species = PETS_DB[p.speciesId];
+  // Урон питомца = 30% от ATK игрока + свой ATK / 4
+  const atkBase = Math.round(getTotalAtk() * 0.30 + getPetAtk() * 0.25);
+  const isCrit = Math.random() * 100 < 15;
+  let dmg = calculateDamage(atkBase, enemy.def, isCrit);
+  dmg = Math.max(1, Math.round(dmg));
+
+  enemy.hp -= dmg;
+  if (isCrit) {
+    playSound('crit');
+    spawnFloatingNumber(`${species.icon} КРИТ! -${dmg}`, 'floating-crit');
+    addLog(`🐾 [${p.name}] КРИТ ${dmg}!`, 'crit');
+  } else {
+    playSound('slash');
+    spawnFloatingNumber(`${species.icon} -${dmg}`, 'floating-dmg');
+    addLog(`🐾 [${p.name}] наносит ${dmg}.`, 'player-action');
+  }
+  updateEnemyHpBar();
+
+  if (enemy.hp <= 0) {
+    p.kills++;
+    addPetExp(10);
+    handleVictory();
+    return;
+  }
+  // Питомец не даёт задержки — сразу ход врага
+  callback();
 }
 function enemyTurn() {
   disableCombatButtons(true);
@@ -2438,11 +3073,37 @@ function enemyTurn() {
     let def = getTotalDef();
     if (combatState.isDefending) { if (['tank', 'defender'].includes(player.classId) && combatState.defendTurns > 0) def *= 3; else def *= 2; }
     let dmg = calculateDamage(enemyAtk, def, false);
-    player.hp -= dmg;
-    triggerScreenShake();
-    playSound('slash');
-    spawnFloatingNumber(`-${dmg} HP`, 'floating-dmg');
-    addLog(`[ВРАГ] ${e.name} наносит ${dmg}!`, 'enemy-action');
+    // 🛡️ Защита от ваншота: первый смертельный удар оставляет 1 HP
+    const wouldDie = (player.hp - dmg) <= 0;
+    if (wouldDie && !combatState.lastStandUsed) {
+      combatState.lastStandUsed = true;
+      const survivedDmg = player.hp - 1;
+      player.hp = 1;
+      triggerScreenShake();
+      playSound('defeat');
+      spawnFloatingNumber(`🛡️ LAST STAND!`, 'floating-crit');
+      addLog(`🛡️ [ПОСЛЕДНИЙ РУБЕЖ] Смертельный удар (${dmg}) оставил 1 HP! Спасение раз за бой.`, 'legendary');
+      showLastStandOverlay();
+    } else {
+      player.hp -= dmg;
+      triggerScreenShake();
+      playSound('slash');
+      spawnFloatingNumber(`-${dmg} HP`, 'floating-dmg');
+      addLog(`[ВРАГ] ${e.name} наносит ${dmg}!`, 'enemy-action');
+    }
+        // 🐾 Питомец получает 30% урона
+    const p = getPet();
+    if (p && p.hp > 0) {
+      const petDmg = Math.max(1, Math.round(dmg * 0.30));
+      p.hp -= petDmg;
+      if (p.hp <= 0) {
+        p.hp = 0;
+        addLog(`🐾 [ПИТОМЕЦ] ${p.name} падает без сил!`, 'danger');
+        showToast(`💀 Питомец выведен из боя`);
+      } else {
+        spawnFloatingNumber(`-${petDmg}`, 'floating-dmg');
+      }
+    }
     combatState.isDefending = false;
     if (combatState.defendTurns > 0) combatState.defendTurns--;
     if (player.classId === 'knight') { const heal = Math.round(getTotalMaxHp() * 0.03); player.hp = Math.min(getTotalMaxHp(), player.hp + heal); }
@@ -2451,6 +3112,14 @@ function enemyTurn() {
     updateHUD();
     const wRegen = getWorldRegenPct();
     if (wRegen > 0) { const heal = Math.round(getTotalMaxHp() * wRegen); player.hp = Math.min(getTotalMaxHp(), player.hp + heal); }
+    const petRegen = getPetRegenPct();
+    if (petRegen > 0) {
+      const pp = getPet();
+      if (pp && pp.hp > 0) {
+        const heal = Math.round(getPetMaxHp() * petRegen);
+        pp.hp = Math.min(getPetMaxHp(), pp.hp + heal);
+      }
+    }
     if (player.hp <= 0) {
       if (player.classId === 'undead' && !combatState.undeadUsed) {
         combatState.undeadUsed = true;
@@ -2469,6 +3138,24 @@ function enemyTurn() {
       else if (player.mp < 10 && Math.random() < 0.3) oracleReact('lowMp');
       endEnemyTurn();
     }
+    // Сценарный бой — считаем ходы
+    if (combatState.chapterFight && combatState.chapterFight.unbeatable) {
+      combatState.chapterFight.turnsSurvived++;
+      const left = combatState.chapterFight.turnsToSurvive - combatState.chapterFight.turnsSurvived;
+      if (left > 0) {
+        addLog(`📖 [СЦЕНАР] Кардинал: «Ещё ${left}...»`, 'ai');
+      } else {
+        // Бой завершён — Кардинал отступает
+        endCombat();
+        const ch = CHRONICLES.find(c => c.id === combatState.chapterFight.chapterId);
+        setTimeout(() => {
+          renderChapterDialog(ch, 2);
+          openModal('modal-chapter-dialog');
+        }, 300);
+        combatState.chapterFight = null;
+        return;
+      }
+    }
   }, 350);
 }
 function endEnemyTurn() { disableCombatButtons(false); renderCombatButtons(); }
@@ -2486,6 +3173,7 @@ function handleVictory() {
   expMult *= rb.expMult;
   colMult *= rb.colMult;
   expMult *= getExpRewardScale(e.floor, player.level);
+  colMult *= getPetColBonus();
   const expGain = Math.round(e.exp * expMult), colGain = Math.round(e.col * colMult);
   player.exp += expGain; player.col += colGain; player.totalColEarned += colGain; player.killsCount++;
   let dkGain = 0;
@@ -2521,6 +3209,7 @@ function endCombat() {
   combatState.active = false; combatState.enemy = null;
   combatState.isDefending = false; combatState.defendTurns = 0; combatState.hasteActive = false;
   combatState.undeadUsed = false;
+  combatState.lastStandUsed = false;
   document.getElementById('battle-stage').style.display = 'none';
   renderZone();
 }
@@ -2996,6 +3685,7 @@ function showDialogPhase(phaseIdx) {
 }
 function startBossFightCustom(boss) {
   combatState.active = true;
+  combatState.lastStandUsed = false;
   combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0 };
   const e = combatState.enemy;
   document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
@@ -3017,6 +3707,156 @@ function startBossFightCustom(boss) {
 /* ═══════════════════════════════════════════════════════════════
    ACHIEVEMENTS UI
    ═══════════════════════════════════════════════════════════════ */
+
+/* ── Chronicles: управление ── */
+function getChronicleProgress() { return player.chronicleProgress || 0; }
+function getCurrentChapter() {
+  const idx = getChronicleProgress();
+  if (idx >= CHRONICLES.length) return null;
+  return CHRONICLES[idx];
+}
+function updateChronicleBadge() {
+  const el = document.getElementById('hud-chronicle-badge');
+  if (!el) return;
+  const p = getChronicleProgress();
+  el.textContent = `📖 Глава ${p}/5`;
+  el.classList.toggle('has-new', p < CHRONICLES.length && player.highestFloor >= (CHRONICLES[p]?.floor || Infinity));
+}
+function openChronicles() {
+  renderChroniclesModal();
+  openModal('modal-chronicles');
+}
+function renderChroniclesModal() {
+  const p = getChronicleProgress();
+  document.getElementById('chronicle-progress-text').textContent = `Глава ${p} / 5`;
+  const c = document.getElementById('chronicles-container');
+  c.innerHTML = '';
+  CHRONICLES.forEach((ch, i) => {
+    const div = document.createElement('div');
+    if (i < p) div.className = 'chronicle-chapter done';
+    else if (i === p) div.className = 'chronicle-chapter active';
+    else div.className = 'chronicle-chapter locked';
+    const isDone = i < p;
+    const isActive = i === p;
+    div.innerHTML = `
+      <div class="chapter-header">
+        <div class="chapter-title">${isDone ? '✓ ' : ''}${ch.title}</div>
+        <div class="chapter-floor-tag">Этаж ${ch.floor}</div>
+      </div>
+      <div class="chapter-desc">${ch.desc}</div>
+      <div class="chapter-rewards">Награда: ${ch.rewardText}</div>
+      ${isActive && player.highestFloor >= ch.floor ? `<button class="sao-btn btn-skill" style="margin-top:6px; padding:8px;" onclick="closeModal('modal-chronicles'); startChapter(${ch.id});">▶️ Начать главу</button>` : ''}
+      ${isActive && player.highestFloor < ch.floor ? `<div style="font-size:0.72rem; color:#fbbf24; margin-top:6px;">🔒 Требуется этаж ${ch.floor} (у вас: ${player.highestFloor})</div>` : ''}
+    `;
+    c.appendChild(div);
+  });
+}
+function startChapter(id) {
+  const chapter = CHRONICLES.find(c => c.id === id);
+  if (!chapter) return;
+  if (getChronicleProgress() !== id - 1) { showToast('Глава ещё не доступна'); return; }
+  renderChapterDialog(chapter, 0);
+  openModal('modal-chapter-dialog');
+  playSound('ai');
+}
+function renderChapterDialog(chapter, sceneIdx) {
+  const scene = chapter.scene[sceneIdx];
+  if (!scene) { closeModal('modal-chapter-dialog'); return; }
+  document.getElementById('chapter-dialog-title').textContent = chapter.title;
+  const content = document.getElementById('chapter-dialog-content');
+  content.innerHTML = `
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div style="font-size: 2.4rem; flex-shrink:0;">${scene.icon}</div>
+      <div>
+        <div style="font-size: 0.85rem; color: #d8b4fe; font-weight: bold; margin-bottom: 4px;">${scene.speaker}</div>
+        <div style="font-size: 0.95rem; line-height: 1.55; color: #e2e8f0; font-style: italic;">💬 ${scene.text}</div>
+      </div>
+    </div>
+  `;
+  const choices = document.getElementById('chapter-dialog-choices');
+  choices.innerHTML = '';
+  scene.choices.forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'sao-btn btn-skill';
+    btn.style.padding = '10px';
+    btn.innerHTML = choice.text;
+    btn.onclick = () => {
+      playSound('click');
+      if (choice.complete) {
+        finishChapter(chapter);
+        return;
+      }
+      if (choice.fight) {
+        // бой с аватаром — стартуем сценарный бой
+        closeModal('modal-chapter-dialog');
+        startChapterFight(chapter);
+        return;
+      }
+      if (choice.ending) {
+        player.chronicleEnding = choice.ending;
+        addLog(`📖 [ФИНАЛ] Выбран путь: ${choice.ending === 'freedom' ? '🕊️ Освобождение' : choice.ending === 'preserve' ? '👑 Сохранение' : '🚪 Побег'}`, 'legendary');
+      }
+      if (choice.reward === 'free') {
+        player.lilyFreed = true;
+        addLog(`🌸 [ЛИЛИ] Вы сказали Лили, что она свободна.`, 'sidequest');
+      } else if (choice.reward === 'return') {
+        player.lilyFreed = false;
+        addLog(`🌸 [ЛИЛИ] Вы сказали Лили вернуться.`, 'sidequest');
+      }
+      renderChapterDialog(chapter, choice.next);
+    };
+    choices.appendChild(btn);
+  });
+}
+function finishChapter(chapter) {
+  closeModal('modal-chapter-dialog');
+  player.chronicleProgress = chapter.id;
+  // Награды
+  if (chapter.reward) {
+    for (const [key, amount] of Object.entries(chapter.reward)) {
+      if (key === 'hp') { player.achievementBonuses.hp += amount; player.hp = Math.min(player.hp + amount, getTotalMaxHp()); }
+      else if (key === 'mp') { player.achievementBonuses.mp += amount; player.mp = Math.min(player.mp + amount, getTotalMaxMp()); }
+      else player.achievementBonuses[key] = (player.achievementBonuses[key] || 0) + amount;
+    }
+  }
+  playSound('achievement');
+  addLog(`📖 [ХРОНИКИ] ${chapter.title} завершена! ${chapter.rewardText}`, 'legendary');
+  showAchievementToast(`📖 ${chapter.title}`, chapter.rewardText);
+  updateHUD();
+  saveGameAuto();
+}
+function startChapterFight(chapter) {
+  if (!chapter.fight) { finishChapter(chapter); return; }
+  const boss = chapter.fight;
+  combatState.active = true;
+  combatState.lastStandUsed = false;
+  combatState.undeadUsed = false;
+  combatState.chapterFight = { chapterId: chapter.id, turnsSurvived: 0, unbeatable: boss.unbeatable, turnsToSurvive: boss.turnsToSurvive };
+  combatState.enemy = {
+    ...boss,
+    maxHp: boss.hp,
+    baseAtk: boss.atk,
+    defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0,
+    isBoss: true, tier: 'boss', modifiers: [], dropTable: [],
+    floor: chapter.floor
+  };
+  const e = combatState.enemy;
+  document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
+  document.getElementById('enemy-avatar').className = 'enemy-avatar miniboss';
+  document.getElementById('enemy-name').className = 'enemy-name miniboss';
+  document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill boss';
+  document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag boss">👑 СЦЕНАРНЫЙ БОСС</span>`;
+  document.getElementById('enemy-mods-row').innerHTML = '';
+  document.getElementById('enemy-name').textContent = e.name;
+  document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
+  document.getElementById('enemy-avatar').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
+  updateEnemyHpBar(); updateDebuffDisplay();
+  document.getElementById('battle-stage').style.display = 'flex';
+  playSound('miniboss');
+  addLog(`👑 [СЦЕНАРНЫЙ БОЙ] ${e.name}! Продержись ${boss.turnsToSurvive} хода!`, 'miniboss');
+  updateOracle(`👑 Кардинал проверяет тебя. Продержись ${boss.turnsToSurvive} хода — и он отступит.`);
+  renderCombatButtons(); updateHUD();
+}
 function openAchievements() { if (!player) return; renderAchievementsModal(); openModal('modal-achievements'); }
 function renderAchievementsModal() {
   const c = document.getElementById('achievements-container');
@@ -3510,8 +4350,14 @@ function loadGame() {
     if (!player.itemUpgrades) player.itemUpgrades = {};
     if (!player.raceId) player.raceId = 'human';
     if (!player.gender) player.gender = 'male';
+    if (player.chronicleProgress === undefined) player.chronicleProgress = 0;
+    if (player.chronicleEnding === undefined) player.chronicleEnding = null;
+    if (player.lilyFreed === undefined) player.lilyFreed = null;
     if (player.donateCurrency === undefined) player.donateCurrency = 0;
-    if (player.totalDonate === undefined) player.totalDonate = 0;if (!player.lilyQuest) player.lilyQuest = { active: false, stage: 0, completed: false };
+    if (player.totalDonate === undefined) player.totalDonate = 0;
+    if (!player.lilyQuest) player.lilyQuest = { active: false, stage: 0, completed: false };
+    if (player.pet && !PETS_DB[player.pet.speciesId]) player.pet = null;
+    if (player.pet && player.pet.hp === undefined) player.pet.hp = getPetMaxHp();  
     if (player.oracleMessages === undefined) player.oracleMessages = 0;
     if (combatState.active) endCombat();
     playSound('heal'); addLog(`[СИСТЕМА] Загружено. ${player.name}!`, 'system');
@@ -3531,6 +4377,7 @@ document.getElementById('btn-open-teleport').addEventListener('click', openTelep
 document.getElementById('btn-open-inventory').addEventListener('click', () => { renderInventoryModal(); openModal('modal-inventory'); });
 document.getElementById('btn-open-status').addEventListener('click', () => { renderStatusModal(); openModal('modal-status'); });
 document.getElementById('btn-open-achievements').addEventListener('click', openAchievements);
+document.getElementById('hud-chronicle-badge').addEventListener('click', openChronicles);
 document.getElementById('btn-open-skills').addEventListener('click', openSkillsModal);
 document.getElementById('btn-open-forge').addEventListener('click', openForge);
 document.getElementById('btn-open-donate').addEventListener('click', openDonateModal);
