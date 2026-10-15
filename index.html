@@ -1926,9 +1926,7 @@ function getCritMultiplier() {
 }
 function calculateDamage(atk, def, isCrit = false) {
   const v = 0.85 + Math.random() * (1.15 - 0.85);
-  // Было: def * 0.5 — защита врага почти не влияла.
-  // Стало: def * 0.9 — теперь DEF врага реально режет урон.
-  let dmg = (v * atk) - (def * 0.9);
+  let dmg = (v * atk) - (def * 0.7);
   if (isCrit) dmg *= getCritMultiplier() * 0.85; // крит ослаблен на 15%
   return Math.max(1, Math.round(dmg));
 }
