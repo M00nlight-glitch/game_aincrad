@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Логи игры в реальном времени</title>
+    <style>
+        body { font-family: monospace; background: #0a0e1a; color: #e2e8f0; padding: 20px; margin: 0; }
+        h2 { color: #6ee7ff; }
+        #status { font-size: 0.8rem; margin-bottom: 8px; color: #4ade80; }
+        #status.error { color: #f87171; }
+        #log-container { border: 1px solid #6ee7ff; border-radius: 5px; padding: 15px; height: 78vh; overflow-y: auto; background: #0f172a; }
+        .log-entry { padding: 8px; border-bottom: 1px solid #1e3a5f; font-size: 0.9rem; }
+        .log-time { color: #94a3b8; font-size: 0.8rem; }
+        .log-player { color: #6ee7ff; font-weight: bold; }
+        .log-event { color: #fbbf24; }
+        .log-victory { color: #4ade80; }
+        .log-boss { color: #d946ef; font-weight: bold; }
+        .log-levelup { color: #c084fc; }
+        .log-achievement { color: #ffd700; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>🖥️ Прямой эфир: Логи игры</h2>
+    <div id="status">Подключение к Firebase…</div>
+    <div id="log-container">Ожидание событий…</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAcTc1fHp6HdYpyayjvM4U2tgekIrMO1yw",
+            authDomain: "sao-aincrad-logs.firebaseapp.com",
+            databaseURL: "https://sao-aincrad-logs-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "sao-aincrad-logs",
+            storageBucket: "sao-aincrad-logs.firebasestorage.app",
+            messagingSenderId: "947121465211",
+            appId: "1:947121465211:web:adcd3dd1bae5e7ac3c3fde"
+        };
+
+        const statusEl = document.getElementById('status');
+        const container = document.getElementById('log-container');
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+            const logsRef = ref(db, 'gameLogs');
+            statusEl.textContent = '✅ Подключено. Ждём события…';
+
+            let firstLog = true;
+            onChildAdded(logsRef, (snapshot) => {
+                if (firstLog) { container.innerHTML = ''; firstLog = false; }
+                const log = snapshot.val();
+
+                const logDiv = document.createElement('div');
+                logDiv.className = 'log-entry';
+
+                const time = new Date(log.timestamp).toLocaleTimeString('ru-RU');
+                let eventClass = 'log-event';
+                if (log.eventType === 'VICTORY') eventClass = 'log-victory';
+                else if (log.eventType === 'BOSS' || log.eventType === 'MINIBOSS') eventClass = 'log-boss';
+                else if (log.eventType === 'LEVELUP') eventClass = 'log-levelup';
+                else if (log.eventType === 'ACHIEVEMENT') eventClass = 'log-achievement';
+
+                logDiv.innerHTML = `
+                    <span class="log-time">[${time}]</span>
+                    <span class="log-player">${log.playerName || '?'}</span>
+                    (Этаж ${log.floor ?? '?'}, Ур. ${log.level ?? '?'}):
+                    <span class="${eventClass}">${log.eventType}</span>
+                    ${log.data && log.data.message ? '— ' + log.data.message : ''}
+                `;
+                container.prepend(logDiv);
+                if (container.children.length > 200) container.lastChild.remove();
+            });
+        } catch (e) {
+            statusEl.textContent = '❌ Ошибка Firebase: ' + e.message;
+            statusEl.className = 'error';
+            console.error(e);
+        }
+    </script>
+</body>
+</html>

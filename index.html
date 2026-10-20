@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAO: Aincrad Chronicles v5.0 | 100 Floors + AI Oracle</title>
+<title>SAO: Aincrad Chronicles v5.0</title>
 <style>
   :root {
     --bg-dark: #0a0e1a; --bg-panel: rgba(14, 23, 42, 0.88);
@@ -433,6 +433,7 @@
   /* ═══ WORLD CLOCK ═══ */
   .world-badge { display: flex; align-items: center; gap: 4px; background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(30, 58, 138, 0.25)); border: 1px solid var(--cyan-neon); color: var(--cyan-bright); padding: 4px 10px; border-radius: 3px; font-size: 0.8rem; font-weight: bold; cursor: help; letter-spacing: 0.5px; }
   .world-badge:hover { box-shadow: 0 0 10px var(--cyan-glow); }
+
     /* ═══ FORGE ═══ */
   .forge-item { display: flex; gap: 12px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 4px; padding: 10px 12px; margin-bottom: 6px; }
   .forge-item:hover { border-color: #fbbf24; box-shadow: 0 0 12px rgba(251, 191, 36, 0.25); }
@@ -993,7 +994,7 @@
     <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/></svg>
     <div class="death-title">YOU DIED</div>
     <div class="death-subtitle">Ваши HP упали до нуля.</div>
-    <div class="death-warning">⚠ PERMADEATH: Персонаж удалён навсегда.</div>
+    <div class="death-warning">⚠Персонаж удалён навсегда.</div>
     <button class="sao-btn btn-boss" style="width: 100%; font-size: 1rem; padding: 12px;" onclick="confirmPermadeath()">СОЗДАТЬ НОВОГО ПЕРСОНАЖА</button>
   </div>
 </div>
@@ -1054,6 +1055,9 @@
   </div>
 </div>
 
+<!-- Firebase compat SDK (классический, без модулей) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════
    AUDIO
@@ -1572,7 +1576,7 @@ const SKILLS_DB = {
   'th_6': { id: 'th_6', name: '⚡ Паралич', desc: '250% + оглуш. 2х', mpCost: 35, reqLevel: 18, reqCol: 4200, dmgMult: 2.5, stun: 2, icon: '⚡' },
   'th_7': { id: 'th_7', name: '☠️ Смертельная кража', desc: '450% + Col', mpCost: 55, reqLevel: 24, reqCol: 7000, dmgMult: 4.5, stealCol: true, icon: '☠️' },
   'bash': { id: 'bash', name: '🛡️ Удар щитом', desc: '150% + оглуш.', mpCost: 15, reqLevel: 3, reqCol: 300, dmgMult: 1.5, stun: 1, icon: '🛡️' },'bulwark': { id: 'bulwark', name: '⛰️ Оплот', desc: '25% HP', mpCost: 20, reqLevel: 5, reqCol: 700, isHeal: true, healPct: 0.25, icon: '⛰️' },
-  'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% + оглуш. 2х', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
+  'earthquake': { id: 'earthquake', name: '💥 Землетрясение', desc: '300% + оглуш.', mpCost: 40, reqLevel: 12, reqCol: 2200, dmgMult: 3.0, stun: 2, icon: '💥' },
   'tk_1': { id: 'tk_1', name: '⚙️ Провокация', desc: '150%', mpCost: 18, reqLevel: 4, reqCol: 450, dmgMult: 1.5, icon: '⚙️' },
   'tk_2': { id: 'tk_2', name: '🛡️ Железная стена', desc: 'heal 30%', mpCost: 25, reqLevel: 6, reqCol: 900, isHeal: true, healPct: 0.3, icon: '🛡️' },
   'tk_3': { id: 'tk_3', name: '💥 Отражение', desc: '200%', mpCost: 28, reqLevel: 9, reqCol: 1500, dmgMult: 2.0, bonusCrit: 10, icon: '💥' },
@@ -1858,7 +1862,6 @@ function getEffectiveMpCost(sid) {
 }
 function addMasteryExp(sid) {
   const m = getSkillMastery(sid);
-  if (m.level >= 5) return;
   m.exp++;
   if (m.exp >= 10) {
     m.exp = 0; m.level++;
@@ -2337,8 +2340,6 @@ function renderLilyStage() {
 function updateHUD() {
   if (!player) return;
   const maxHp = getTotalMaxHp(), maxMp = getTotalMaxMp();
-  if (player.hp > maxHp) player.hp = maxHp;
-  if (player.mp > maxMp) player.mp = maxMp;
   document.getElementById('hud-name').textContent = player.name;
   document.getElementById('hud-class').textContent = getClass().name;
   document.getElementById('hud-race').textContent = `${getRace().icon} ${getRace().name}`;
@@ -2359,8 +2360,11 @@ function updateHUD() {
   if (hpPct <= 25) hpBar.className = 'bar-fill hp-red';
   else if (hpPct <= 50) hpBar.className = 'bar-fill hp-yellow';
   document.getElementById('hud-hp-text').textContent = `${player.hp} / ${maxHp}`;
-  document.getElementById('hud-mp-bar').style.width = `${Math.max(0, Math.min(100, (player.mp / maxMp) * 100))}%`;
   document.getElementById('hud-mp-text').textContent = `${player.mp} / ${maxMp}`;
+  // Автоматическое расширение бара, если HP/MP больше 100%
+  document.getElementById('hud-hp-bar').style.width = `${Math.max(0, (player.hp / maxHp) * 100)}%`;
+  document.getElementById('hud-mp-bar').style.width = `${Math.max(0, (player.mp / maxMp) * 100)}%`;
+  document.getElementById('hud-mp-bar').style.width = `${Math.max(0, Math.min(100, (player.mp / maxMp) * 100))}%`;
   document.getElementById('hud-exp-bar').style.width = `${Math.max(0, Math.min(100, (player.exp / player.maxExp) * 100))}%`;
   document.getElementById('hud-exp-text').textContent = `${player.exp} / ${player.maxExp}`;
   document.getElementById('hud-col').textContent = `${player.col}`;
@@ -2465,6 +2469,14 @@ function addLog(t, type = '') {
   l.appendChild(e);
   while (l.children.length > 100) { l.removeChild(l.firstChild); }
   l.scrollTop = l.scrollHeight;
+
+  // Отправка в Firebase (безопасно — даже если логгер не готов, ничего не сломается)
+  if (['victory', 'achievement', 'levelup', 'boss', 'miniboss', 'elite'].includes(type)) {
+    if (typeof window.sendGameLog === 'function') {
+      if (typeof window.syncLogContext === 'function') window.syncLogContext();
+      window.sendGameLog(type.toUpperCase(), { message: t, rawType: type });
+    }
+  }
 }
 function showToast(m) {
   const t = document.getElementById('toast-box');
@@ -3220,7 +3232,7 @@ function checkLevelUp() {
     player.baseAtk += 6; player.baseDef += 4; player.baseCrit += 1.0;
     player.maxExp = getMaxExp(player.level);
     playSound('levelup');
-    addLog(`[LEVEL UP] Lv. ${player.level}!`, 'system');
+    addLog(`[LEVEL UP] Lv. ${player.level}!`, 'levelup');
     showToast(`LEVEL UP! Lv. ${player.level}`);
     oracleReact('levelUp');
   }
@@ -3328,8 +3340,9 @@ function openSkillsModal() {
     const colOk = player.col >= sk.reqCol;
     const canBuy = !unlocked && levelOk && colOk;
     const m = getSkillMastery(sid);
-    const mStars = [0,1,2,3,4,5].map(i => i < m.level ? '<span class="filled">⭐</span>' : '<span>⭐</span>').join('');
-    const mPct = (m.exp / 10) * 100;
+    const mStars = [0,1,2,3,4,5].map(i => i < m.level ? '<span class="filled">⭐</span>' : '<span>⭐</span>').join('') + (m.level > 5 ? ` <span style="color:#fde047;font-size:0.8rem;">+${m.level-5}</span>` : '');
+    const neededExp = 10 + (m.level * 5);
+    const mPct = Math.min(100, (m.exp / neededExp) * 100);
     const cost = getEffectiveMpCost(sid);
     const dmgBonus = Math.round(getMasteryDmgBonus(sid) * 100);
     const div = document.createElement('div');
@@ -3345,7 +3358,7 @@ function openSkillsModal() {
         </div>
         <div>${unlocked ? '<div style="color:#4ade80; font-weight:bold;">✓ ИЗУЧЕНО</div>' : `<button class="sao-btn mini-btn ${canBuy ? 'btn-item' : ''}" ${canBuy ? '' : 'disabled'} onclick="learnSkill('${sid}')">Изучить</button>`}</div>
       </div>
-      ${unlocked ? `<div class="mastery-bar"><span class="mastery-label">Мастерство:</span><span class="mastery-stars">${mStars}</span><div class="mastery-progress-mini"><div class="mastery-progress-fill" style="width:${m.level >= 5 ? 100 : mPct}%"></div></div><span class="mastery-text">${m.level >= 5 ? 'MAX' : m.exp + '/10'}</span></div>` : ''}
+      ${unlocked ? `<div class="mastery-bar"><span class="mastery-label">Мастерство:</span><span class="mastery-stars">${mStars}</span><div class="mastery-progress-mini"><div class="mastery-progress-fill" style="width:${mPct}%"></div></div><span class="mastery-text">${m.exp}/${neededExp}</span></div>` : ''}
     `;
     container.appendChild(div);
   });
@@ -4439,7 +4452,7 @@ function renderColorOptions() {
 }
 function openCharacterCreation(isPerma = false) {
   document.getElementById('creation-overlay').classList.add('active');
-  document.getElementById('creation-name-input').value = isPerma ? '' : 'KIRITO';
+  document.getElementById('creation-name-input').value = isPerma ? '' : '';
   selectedClass = 'swordsman'; selectedRace = 'human'; selectedGender = 'male'; selectedColor = '#22c55e';
   document.getElementById('creation-error').textContent = '';
   renderGenderOptions(); renderClassOptions(); renderRaceOptions(); renderColorOptions();
@@ -4475,6 +4488,71 @@ window.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem(SAVE_KEY)) { if (!loadGame()) openCharacterCreation(false); }
   else openCharacterCreation(false);
 });
+
+// ═══════════════════════════════════════════════════════════════
+// FIREBASE LOGGER
+// ═══════════════════════════════════════════════════════════════
+(function initFirebaseLogger() {
+  // Если SDK не загрузился (нет соединения / блокировщик) — тихо пропускаем
+  if (typeof firebase === 'undefined') {
+    console.warn('[Firebase] SDK не загружен. Логи не будут отправляться.');
+    window.sendGameLog = () => {};
+    window.syncLogContext = () => {};
+    return;
+  }
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAcTc1fHp6HdYpyayjvM4U2tgekIrMO1yw",
+    authDomain: "sao-aincrad-logs.firebaseapp.com",
+    databaseURL: "https://sao-aincrad-logs-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "sao-aincrad-logs",
+    storageBucket: "sao-aincrad-logs.firebasestorage.app",
+    messagingSenderId: "947121465211",
+    appId: "1:947121465211:web:adcd3dd1bae5e7ac3c3fde"
+  };
+
+  try {
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Уникальный ID сессии
+    let sessionId = sessionStorage.getItem('gameSessionId');
+    if (!sessionId) {
+      sessionId = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem('gameSessionId', sessionId);
+    }
+
+    window.sendGameLog = function(eventType, eventData) {
+      try {
+        db.ref('gameLogs').push({
+          timestamp: new Date().toISOString(),
+          playerName: window._gamePlayerName || 'Unknown',
+          floor: window._gameFloor || 0,
+          level: window._gameLevel || 0,
+          eventType: eventType,
+          data: eventData || {},
+          sessionId: sessionId
+        }).catch(err => console.warn('[Firebase log]', err));
+      } catch (e) {
+        console.warn('[Firebase log exception]', e);
+      }
+    };
+
+    window.syncLogContext = function() {
+      if (typeof player !== 'undefined' && player) {
+        window._gamePlayerName = player.name;
+        window._gameLevel = player.level;
+        window._gameFloor = (typeof getCurrentFloor === 'function') ? getCurrentFloor() : 0;
+      }
+    };
+
+    console.log('[Firebase] Logger ready. sessionId =', sessionId);
+  } catch (e) {
+    console.error('[Firebase init failed]', e);
+    window.sendGameLog = () => {};
+    window.syncLogContext = () => {};
+  }
+})();
 </script>
 </body>
 </html>
