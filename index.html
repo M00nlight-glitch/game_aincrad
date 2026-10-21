@@ -3640,9 +3640,10 @@ let _adminPlayersCache = {};
 
 function renderAdminPlayersPanel(container) {
   container.innerHTML = `
-    <div class="admin-section-title">👥 Игроки в облаке</div>
+    <div id="admin-players-banner" style="margin-bottom:8px;"></div>
     <div style="display:flex; gap:6px; margin-bottom:8px;">
       <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="loadAllPlayersAdmin()">🔄 Обновить</button>
+      <button class="sao-btn btn-admin" id="admin-pause-cloud-btn" style="flex:1; padding:8px;" onclick="toggleCloudAutoSave()">⏸️ Пауза</button>
       <input type="text" id="admin-players-search" placeholder="🔍 Поиск по имени..."
              oninput="filterAdminPlayers()"
              style="flex:2; padding:8px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; font-family:var(--font-mono);">
@@ -3665,9 +3666,35 @@ function renderAdminPlayersPanel(container) {
       </div>
     </div>
   `;
+  updateAdminPlayersBanner();
+  loadAllPlayersAdmin();
   loadAllPlayersAdmin();
 }
+function updateAdminPlayersBanner() {
+  const banner = document.getElementById('admin-players-banner');
+  if (!banner) return;
+  const btn = document.getElementById('admin-pause-cloud-btn');
 
+  if (btn) {
+    btn.textContent = _cloudAutoSavePaused ? '▶️ Возобновить' : '⏸️ Пауза';
+    btn.style.background = _cloudAutoSavePaused ? 'rgba(34,197,94,0.25)' : '';
+    btn.style.borderColor = _cloudAutoSavePaused ? '#22c55e' : '';
+  }
+
+  if (_cloudAutoSavePaused) {
+    banner.innerHTML = `
+      <div style="padding:8px; background:rgba(34,197,94,0.12); border:1px solid #22c55e; border-radius:4px; color:#4ade80; font-size:0.78rem; font-weight:bold;">
+        ▶️ Автосохранение в облако приостановлено. Игра не будет перезаписывать твои правки.<br>
+        <span style="color:#cbd5e1; font-weight:normal;">Ручное 💾 из игры всё равно работает — не нажимай его, пока правишь.</span>
+      </div>`;
+  } else {
+    banner.innerHTML = `
+      <div style="padding:8px; background:rgba(251,191,36,0.10); border:1px solid #fbbf24; border-radius:4px; color:#fde047; font-size:0.78rem;">
+        ⚠️ Автосохранение активно — игра может перезаписать правки через 5 сек после любого действия.<br>
+        <span style="color:#cbd5e1;">Рекомендуется нажать <b>⏸️ Пауза</b> перед редактированием.</span>
+      </div>`;
+  }
+}
 function loadAllPlayersAdmin() {
   if (!window._firebaseDB) {
     document.getElementById('admin-players-list').innerHTML =
@@ -3799,8 +3826,21 @@ function saveAdminPlayerJSON() {
     errEl.textContent = '❌ Нужен JSON-объект';
     return;
   }
+
+  // ⬇️⬇️⬇️ ДОБАВИТЬ: отменяем отложенное автосохранение, чтобы оно не перезаписало правку
+  cancelPendingCloudSave();
+
   window._firebaseDB.ref('players/' + key).set(parsed)
     .then(() => {
+      // ⬇️⬇️⬇️ ДОБАВИТЬ: если правим СЕБЯ — синхронизируем локальный player
+      if (player && safePlayerKey(player.name) === key) {
+        const clean = JSON.parse(JSON.stringify(parsed));
+        ['_atk','_def','_maxHp','_maxMp','_class','_race','online'].forEach(f => delete clean[f]);
+        Object.assign(player, clean);
+        localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile }));
+        updateHUD();
+        renderZone();
+      }
       errEl.style.color = '#4ade80';
       errEl.textContent = '✓ Сохранено в облако!';
       showToast('💾 Игрок сохранён');
@@ -4827,15 +4867,35 @@ function safePlayerKey(name) {
 }
 
 let _cloudSaveTimer = null;
+let _cloudAutoSavePaused = false;
+
 function scheduleCloudSave(force = false) {
   if (!player || !window._firebaseDB) return;
+  // Пауза блокирует ТОЛЬКО автосохранение, ручное (force) всегда работает
+  if (!force && _cloudAutoSavePaused) {
+    if (_cloudSaveTimer) { clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
+    return;
+  }
   if (force) {
     if (_cloudSaveTimer) { clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
     savePlayerToCloud();
     return;
   }
-  if (_cloudSaveTimer) return; // уже запланировано
+  if (_cloudSaveTimer) return;
   _cloudSaveTimer = setTimeout(() => { _cloudSaveTimer = null; savePlayerToCloud(); }, 5000);
+}
+
+function cancelPendingCloudSave() {
+  if (_cloudSaveTimer) { clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
+}
+
+function toggleCloudAutoSave() {
+  _cloudAutoSavePaused = !_cloudAutoSavePaused;
+  if (_cloudAutoSavePaused) cancelPendingCloudSave();
+  showToast(_cloudAutoSavePaused
+    ? '⏸️ Автосохранение в облако ПАУЗА'
+    : '▶️ Автосохранение включено');
+  if (typeof updateAdminPlayersBanner === 'function') updateAdminPlayersBanner();
 }
 
 function savePlayerToCloud() {
@@ -4921,7 +4981,6 @@ function loadGame() {
     worldClockStarted = false; startWorldClock();
     _presenceStarted = false;
     startPresence();               // ⬅️ онлайн-статус
-    scheduleCloudSave(true);       // ⬅️ синк
     return true;
   } catch (e) { showToast('Ошибка!'); return false; }
 }
@@ -5036,7 +5095,59 @@ document.getElementById('creation-start-btn').addEventListener('click', () => {
 window.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem(SAVE_KEY)) { if (!loadGame()) openCharacterCreation(false); }
   else openCharacterCreation(false);
+  // Через 1.5с — тихо проверяем, нет ли в облаке более нового сейва
+  setTimeout(checkCloudNewerVersion, 1500);
 });
+
+async function checkCloudNewerVersion() {
+  if (!player || !window._firebaseDB) return;
+  try {
+    const snap = await window._firebaseDB.ref('players/' + safePlayerKey(player.name)).once('value');
+    const cloud = snap.val();
+    if (!cloud) return;
+
+    const localTime = player.lastOnline ? new Date(player.lastOnline).getTime() : 0;
+    const cloudTime = cloud.lastOnline ? new Date(cloud.lastOnline).getTime() : 0;
+
+    // Разница > 60 сек в пользу облака → спрашиваем
+    if (cloudTime > localTime + 60000) {
+      const msg = '☁️ В облаке есть более свежий сейв:\n' +
+                  new Date(cloud.lastOnline).toLocaleString('ru-RU') +
+                  '\n\nЗагрузить его? (отменить = использовать локальный)';
+      if (confirm(msg)) {
+        applyCloudPlayerToSession(cloud);
+        addLog('☁️ [ОБЛАКО] Загружена свежая версия из облака.', 'system');
+        showToast('☁️ Загружено из облака');
+      }
+    }
+  } catch (e) { console.warn('[Cloud check]', e); }
+}
+
+function applyCloudPlayerToSession(cloud) {
+  // Чистим служебные поля
+  ['_atk','_def','_maxHp','_maxMp','_class','_race','online'].forEach(f => delete cloud[f]);
+  // Дефолты
+  if (!cloud.achievements) cloud.achievements = {};
+  if (!cloud.dynamicAchievements) cloud.dynamicAchievements = [];
+  if (!cloud.achievementBonuses) cloud.achievementBonuses = { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 };
+  if (!cloud.unlockedFloors) cloud.unlockedFloors = { 1: true };
+  if (!cloud.bossesDefeated) cloud.bossesDefeated = {};
+  if (!cloud.unlockedSkills) cloud.unlockedSkills = { slash: true };
+  if (!cloud.skillMastery) cloud.skillMastery = {};
+  if (!cloud.itemUpgrades) cloud.itemUpgrades = {};
+  if (!cloud.inventory) cloud.inventory = [];
+
+  player = cloud;
+  characterProfile = {
+    name: player.name, classId: player.classId, raceId: player.raceId,
+    gender: player.gender || 'male', color: player.color || '#22c55e'
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile }));
+  _presenceStarted = false;
+  startPresence();
+  updateHUD();
+  renderZone();
+}
 
 // ═══════════════════════════════════════════════════════════════
 // FIREBASE LOGGER
