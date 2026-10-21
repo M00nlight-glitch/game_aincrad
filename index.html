@@ -951,7 +951,11 @@
         <button class="modal-tab admin active" data-admin-tab="economy" onclick="switchAdminTab('economy')">💰 Экономика</button>
         <button class="modal-tab admin" data-admin-tab="progression" onclick="switchAdminTab('progression')">⭐ Прокачка</button>
         <button class="modal-tab admin" data-admin-tab="items" onclick="switchAdminTab('items')">🎒 Предметы</button>
-        <button class="modal-tab admin" data-admin-tab="floors" onclick="switchAdminTab('floors')">🗼 Этажи</button><button class="modal-tab admin" data-admin-tab="system" onclick="switchAdminTab('system')">⚙️ Система</button>
+        <button class="modal-tab admin" data-admin-tab="floors" onclick="switchAdminTab('floors')">🗼 Этажи</button>
+        <button class="modal-tab admin" data-admin-tab="system" onclick="switchAdminTab('system')">⚙️ Система</button>
+        <button class="modal-tab admin" data-admin-tab="db" onclick="switchAdminTab('db')">🗄️ База</button>
+        <button class="modal-tab admin" data-admin-tab="players" onclick="switchAdminTab('players')">👥 Игроки</button>
+        <button class="modal-tab admin" data-admin-tab="logs" onclick="switchAdminTab('logs')">📜 Логи</button>
       </div>
       <div id="admin-panel-content"></div>
     </div>
@@ -3186,6 +3190,14 @@ function handleVictory() {
   colMult *= getPetColBonus();
   const expGain = Math.round(e.exp * expMult), colGain = Math.round(e.col * colMult);
   player.exp += expGain; player.col += colGain; player.totalColEarned += colGain; player.killsCount++;
+
+  // 🐾 Питомец получает долю опыта, даже если сам не бил (даже при ваншоте)
+  const petAlive = getPet();
+  if (petAlive && petAlive.hp > 0) {
+    const petExpGain = Math.max(1, Math.round(expGain * 0.4)); // 40% от опыта врага
+    addPetExp(petExpGain);
+    addLog(`🐾 [ПИТОМЕЦ] ${petAlive.name} получает ${petExpGain} EXP.`, 'system');
+  }
   let dkGain = 0;
   if (e.isBoss) dkGain = 15;
   else if (e.tier === 'miniboss') dkGain = 5;
@@ -3613,7 +3625,477 @@ function switchAdminTab(tab) {
       { label: '🚪 Выйти', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } },
       { label: '☠️ Убить себя', fn: () => { player.hp = 0; updateHUD(); handlePlayerDeath(); } }
     ]);
+  } else if (tab === 'db') {
+    renderAdminDBPanel(c);
+  } else if (tab === 'logs') {
+    renderAdminLogsPanel(c);
+  } else if (tab === 'players') {
+    renderAdminPlayersPanel(c);
   }
+}
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN: Все игроки из облака
+   ═══════════════════════════════════════════════════════════════ */
+let _adminPlayersCache = {};
+
+function renderAdminPlayersPanel(container) {
+  container.innerHTML = `
+    <div class="admin-section-title">👥 Игроки в облаке</div>
+    <div style="display:flex; gap:6px; margin-bottom:8px;">
+      <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="loadAllPlayersAdmin()">🔄 Обновить</button>
+      <input type="text" id="admin-players-search" placeholder="🔍 Поиск по имени..."
+             oninput="filterAdminPlayers()"
+             style="flex:2; padding:8px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; font-family:var(--font-mono);">
+    </div>
+    <div id="admin-players-list" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,68,68,0.3); border-radius:5px; padding:8px; min-height:120px; max-height:55vh; overflow-y:auto;">
+      <div style="color:#94a3b8; text-align:center; padding:8px;">Загрузка...</div>
+    </div>
+
+    <div id="admin-player-editor" style="display:none; margin-top:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(255,68,68,0.5); border-radius:5px; padding:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <div style="font-size:0.85rem; color:#ff8888; font-weight:bold;">✎ Редактирование: <span id="admin-player-editor-key">—</span></div>
+        <button class="sao-btn btn-admin" style="padding:4px 10px; font-size:0.75rem;" onclick="closeAdminPlayerEditor()">✕ Закрыть</button>
+      </div>
+      <textarea id="admin-player-json" rows="14" spellcheck="false"
+        style="width:100%; padding:8px; background:rgba(5,8,15,0.95); border:1px solid var(--admin-red); color:#e2e8f0; border-radius:3px; font-family:var(--font-mono); font-size:0.72rem; resize:vertical;"></textarea>
+      <div id="admin-player-editor-err" style="color:#f87171; font-size:0.75rem; min-height:1em; margin-top:3px;"></div>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="saveAdminPlayerJSON()">💾 Сохранить в облако</button>
+        <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="formatAdminPlayerJSON()">📐 Форматировать</button>
+      </div>
+    </div>
+  `;
+  loadAllPlayersAdmin();
+}
+
+function loadAllPlayersAdmin() {
+  if (!window._firebaseDB) {
+    document.getElementById('admin-players-list').innerHTML =
+      '<div style="color:#f87171; padding:8px;">❌ Firebase не готов</div>';
+    return;
+  }
+  const listEl = document.getElementById('admin-players-list');
+  listEl.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:8px;">Загрузка...</div>';
+
+  window._firebaseDB.ref('players').once('value').then(snap => {
+    _adminPlayersCache = snap.val() || {};
+    renderAdminPlayersList();
+  }).catch(err => {
+    listEl.innerHTML = `<div style="color:#f87171; padding:8px;">Ошибка: ${escapeHtml(err.message)}<br><small>Проверьте Firebase Rules (нужен .read: true для players).</small></div>`;
+  });
+}
+
+function renderAdminPlayersList() {
+  const listEl = document.getElementById('admin-players-list');
+  if (!listEl) return;
+  const keys = Object.keys(_adminPlayersCache);
+  if (keys.length === 0) {
+    listEl.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:8px;">Игроков пока нет. Создай персонажа в игре.</div>';
+    return;
+  }
+  const searchEl = document.getElementById('admin-players-search');
+  const q = (searchEl?.value || '').toLowerCase().trim();
+
+  const filtered = keys
+    .map(k => ({ key: k, data: _adminPlayersCache[k] }))
+    .filter(({ key, data }) => !q || key.toLowerCase().includes(q) || (data.name || '').toLowerCase().includes(q))
+    .sort((a, b) => (b.data.lastOnline || '').localeCompare(a.data.lastOnline || ''));
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:8px;">Никого не найдено</div>';
+    return;
+  }
+
+  const now = Date.now();
+  listEl.innerHTML = filtered.map(({ key, data }) => {
+    const isOnline = data.online === true ||
+      (data.lastOnline && (now - new Date(data.lastOnline).getTime()) < 90 * 1000);
+    const dot = isOnline ? '🟢' : '⚫';
+    const last = data.lastOnline ? new Date(data.lastOnline).toLocaleString('ru-RU') : '—';
+    const cls = data._class || data.classId || '?';
+    const race = data._race || data.raceId || '?';
+    return `
+      <div style="padding:7px; border-bottom:1px solid rgba(255,68,68,0.15); display:flex; justify-content:space-between; gap:6px; align-items:flex-start;">
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:0.85rem; color:#fff;">
+            ${dot} <b style="color:#6ee7ff;">${escapeHtml(data.name || key)}</b>
+            <span style="color:#c084fc; font-size:0.72rem;">Lv.${data.level || 1}</span>
+            <span style="color:#fbbf24; font-size:0.72rem;">эт.${data.highestFloor || data.floor || 1}</span>
+          </div>
+          <div style="font-size:0.7rem; color:#94a3b8;">
+            ${escapeHtml(cls)} • ${escapeHtml(race)} • 💰 ${data.col || 0} • 💎 ${data.donateCurrency || 0}
+          </div>
+          <div style="font-size:0.68rem; color:#64748b;">последний вход: ${last}</div>
+        </div>
+        <div style="display:flex; gap:3px; flex-shrink:0; flex-wrap:wrap;">
+          <button onclick="viewAdminPlayer('${escapeAttr(key)}')"   title="Смотреть JSON" style="background:#1e3a5f; border:1px solid #6ee7ff; color:#fff; padding:3px 7px; border-radius:3px; cursor:pointer; font-size:0.7rem;">👁</button>
+          <button onclick="editAdminPlayer('${escapeAttr(key)}')"   title="Редактировать" style="background:#78350f; border:1px solid #fbbf24; color:#fff; padding:3px 7px; border-radius:3px; cursor:pointer; font-size:0.7rem;">✎</button>
+          <button onclick="playAsAdminPlayer('${escapeAttr(key)}')" title="Играть за него" style="background:#14532d; border:1px solid #22c55e; color:#fff; padding:3px 7px; border-radius:3px; cursor:pointer; font-size:0.7rem;">🎮</button>
+          <button onclick="deleteAdminPlayer('${escapeAttr(key)}')" title="Удалить" style="background:#7f1d1d; border:1px solid #ef4444; color:#fff; padding:3px 7px; border-radius:3px; cursor:pointer; font-size:0.7rem;">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterAdminPlayers() { renderAdminPlayersList(); }
+
+function viewAdminPlayer(key) {
+  const data = _adminPlayersCache[key];
+  if (!data) return;
+  openAdminPlayerEditor(key, data, true);
+}
+
+function editAdminPlayer(key) {
+  const data = _adminPlayersCache[key];
+  if (!data) return;
+  openAdminPlayerEditor(key, data, false);
+}
+
+function openAdminPlayerEditor(key, data, readOnly) {
+  const editor = document.getElementById('admin-player-editor');
+  const jsonEl = document.getElementById('admin-player-json');
+  document.getElementById('admin-player-editor-key').textContent = key;
+  jsonEl.value = JSON.stringify(data, null, 2);
+  jsonEl.readOnly = !!readOnly;
+  document.getElementById('admin-player-editor-err').textContent = readOnly ? '🔒 Только просмотр' : '';
+  const saveBtn = document.querySelector('#admin-player-editor button[onclick="saveAdminPlayerJSON()"]');
+  if (saveBtn) saveBtn.style.display = readOnly ? 'none' : '';
+  editor.style.display = 'block';
+  editor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closeAdminPlayerEditor() {
+  document.getElementById('admin-player-editor').style.display = 'none';
+  document.getElementById('admin-player-editor-err').textContent = '';
+}
+
+function formatAdminPlayerJSON() {
+  const jsonEl = document.getElementById('admin-player-json');
+  try {
+    jsonEl.value = JSON.stringify(JSON.parse(jsonEl.value), null, 2);
+    document.getElementById('admin-player-editor-err').textContent = '✓ Отформатировано';
+    document.getElementById('admin-player-editor-err').style.color = '#4ade80';
+    setTimeout(() => document.getElementById('admin-player-editor-err').textContent = '', 2000);
+  } catch (e) {
+    document.getElementById('admin-player-editor-err').textContent = '❌ ' + e.message;
+    document.getElementById('admin-player-editor-err').style.color = '#f87171';
+  }
+}
+
+function saveAdminPlayerJSON() {
+  const jsonEl = document.getElementById('admin-player-json');
+  const errEl = document.getElementById('admin-player-editor-err');
+  const key = document.getElementById('admin-player-editor-key').textContent;
+  let parsed;
+  try { parsed = JSON.parse(jsonEl.value); }
+  catch (e) {
+    errEl.style.color = '#f87171';
+    errEl.textContent = '❌ Невалидный JSON: ' + e.message;
+    return;
+  }
+  if (!parsed || typeof parsed !== 'object') {
+    errEl.style.color = '#f87171';
+    errEl.textContent = '❌ Нужен JSON-объект';
+    return;
+  }
+  window._firebaseDB.ref('players/' + key).set(parsed)
+    .then(() => {
+      errEl.style.color = '#4ade80';
+      errEl.textContent = '✓ Сохранено в облако!';
+      showToast('💾 Игрок сохранён');
+      loadAllPlayersAdmin();
+    })
+    .catch(err => {
+      errEl.style.color = '#f87171';
+      errEl.textContent = '❌ ' + err.message;
+    });
+}
+
+function deleteAdminPlayer(key) {
+  if (!confirm('Удалить игрока "' + key + '" из облака?')) return;
+  window._firebaseDB.ref('players/' + key).remove()
+    .then(() => { showToast('🗑️ Удалён: ' + key); loadAllPlayersAdmin(); })
+    .catch(err => showToast('❌ ' + err.message));
+}
+
+function playAsAdminPlayer(key) {
+  if (!confirm('Загрузить игрока "' + key + '" в текущую сессию?\nТекущий прогресс будет перезаписан!')) return;
+  window._firebaseDB.ref('players/' + key).once('value').then(snap => {
+    const data = snap.val();
+    if (!data) { showToast('Игрок не найден'); return; }
+    // чистим служебные поля
+    delete data._atk; delete data._def; delete data._maxHp; delete data._maxMp;
+    delete data._class; delete data._race; delete data.online;
+    // дефолты (на случай старых сейвов)
+    if (!data.achievements) data.achievements = {};
+    if (!data.dynamicAchievements) data.dynamicAchievements = [];
+    if (!data.achievementBonuses) data.achievementBonuses = { atk: 0, def: 0, hp: 0, mp: 0, crit: 0 };
+    if (!data.unlockedFloors) data.unlockedFloors = { 1: true };
+    if (!data.bossesDefeated) data.bossesDefeated = {};
+    if (!data.unlockedSkills) data.unlockedSkills = { slash: true };
+    if (!data.skillMastery) data.skillMastery = {};
+    if (!data.itemUpgrades) data.itemUpgrades = {};
+    if (!data.inventory) data.inventory = [];
+
+    player = data;
+    characterProfile = {
+      name: player.name, classId: player.classId, raceId: player.raceId,
+      gender: player.gender || 'male', color: player.color || '#22c55e'
+    };
+    _presenceStarted = false;
+    saveGame(false);
+    updateHUD(); renderZone(); startPresence();
+    closeModal('modal-admin');
+    showToast('🎮 Играем за: ' + player.name);
+    addLog('🔧 [АДМИН] Загружен игрок: ' + player.name, 'admin');
+  }).catch(err => showToast('❌ ' + err.message));
+}
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN: Собственная база данных (adminData)
+   ═══════════════════════════════════════════════════════════════ */
+function renderAdminDBPanel(container) {
+  container.innerHTML = `
+    <div class="admin-section-title">🗄️ Собственная база данных (adminData)</div>
+    <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,68,68,0.4); border-radius:5px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+      <div style="font-size:0.82rem; color:#ff8888; font-weight:bold;">➕ Создать / изменить запись</div>
+      <label style="font-size:0.72rem; color:#cbd5e1;">Ключ (латиница, цифры, _):
+        <input type="text" id="admin-db-key" placeholder="myNote" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px; font-family:var(--font-mono);">
+      </label>
+      <label style="font-size:0.72rem; color:#cbd5e1;">Значение (JSON объект, массив, число или строка):
+        <textarea id="admin-db-value" rows="6" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px; font-family:var(--font-mono); resize:vertical;" placeholder='{ "title": "заметка", "text": "привет мир", "priority": 1 }'></textarea>
+      </label>
+      <div style="display:flex; gap:6px;">
+        <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="saveAdminDBEntry()">💾 Сохранить</button>
+        <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="clearAdminDBForm()">🧹 Очистить форму</button>
+      </div>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <button class="sao-btn btn-admin" style="flex:1; padding:8px;" onclick="loadAdminDB()">🔄 Обновить</button>
+      <button class="sao-btn btn-admin" style="flex:1; padding:8px; background:rgba(80,0,0,0.6);" onclick="wipeAdminDB()">🗑️ Очистить БД</button>
+    </div>
+    <div id="admin-db-list" style="margin-top:8px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,68,68,0.3); border-radius:5px; padding:8px; font-size:0.78rem; min-height:100px; max-height:400px; overflow-y:auto;">
+      <div style="color:#94a3b8; text-align:center; padding:8px;">Загрузка...</div>
+    </div>
+  `;
+  loadAdminDB();
+}
+
+function saveAdminDBEntry() {
+  if (!window._firebaseDB) { showToast('Firebase не готов'); return; }
+  const key = document.getElementById('admin-db-key').value.trim();
+  const rawVal = document.getElementById('admin-db-value').value.trim();
+  if (!key) { showToast('Введите ключ'); return; }
+  if (!/^[A-Za-z0-9_-]+$/.test(key)) { showToast('Ключ: только латиница/цифры/_/-'); return; }
+  if (!rawVal) { showToast('Введите значение'); return; }
+
+  let value;
+  try { value = JSON.parse(rawVal); }
+  catch { value = rawVal; }
+
+  window._firebaseDB.ref('adminData/' + key).set(value)
+    .then(() => { showToast('💾 Сохранено: ' + key); playSound('admin'); loadAdminDB(); })
+    .catch(err => showToast('❌ ' + err.message));
+}
+
+function clearAdminDBForm() {
+  document.getElementById('admin-db-key').value = '';
+  document.getElementById('admin-db-value').value = '';
+}
+
+function loadAdminDB() {
+  if (!window._firebaseDB) return;
+  const list = document.getElementById('admin-db-list');
+  if (!list) return;
+  list.innerHTML = '<div style="color:#94a3b8; text-align:center;">Загрузка...</div>';
+
+  window._firebaseDB.ref('adminData').once('value').then(snap => {
+    const data = snap.val();
+    if (!data) {
+      list.innerHTML = '<div style="color:#94a3b8; text-align:center;">БД пуста. Создайте первую запись.</div>';
+      return;
+    }
+    const keys = Object.keys(data).sort();
+    list.innerHTML = keys.map(k => {
+      const val = data[k];
+      const valStr = typeof val === 'object' && val !== null ? JSON.stringify(val) : String(val);
+      const preview = valStr.length > 140 ? valStr.slice(0, 140) + '…' : valStr;
+      return `
+        <div class="admin-db-item" data-key="${escapeAttr(k)}" style="padding:6px; border-bottom:1px solid rgba(255,68,68,0.15); display:flex; justify-content:space-between; gap:5px; align-items:flex-start;">
+          <div style="flex:1; word-break:break-word;">
+            <span style="color:#6ee7ff; font-weight:bold;">${escapeHtml(k)}</span>
+            <div style="color:#cbd5e1; font-family:var(--font-mono); font-size:0.72rem; margin-top:2px;">${escapeHtml(preview)}</div>
+          </div>
+          <div style="display:flex; gap:3px; flex-shrink:0;">
+            <button class="admin-db-edit" title="Редактировать" style="background:#1e3a5f; border:1px solid #6ee7ff; color:#fff; padding:2px 6px; border-radius:3px; cursor:pointer; font-size:0.7rem;">✎</button>
+            <button class="admin-db-del" title="Удалить" style="background:#7f1d1d; border:1px solid #ef4444; color:#fff; padding:2px 6px; border-radius:3px; cursor:pointer; font-size:0.7rem;">✕</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    list.querySelectorAll('.admin-db-item').forEach(el => {
+      const key = el.dataset.key;
+      el.querySelector('.admin-db-edit').addEventListener('click', () => editAdminDBEntry(key));
+      el.querySelector('.admin-db-del').addEventListener('click', () => deleteAdminDBEntry(key));
+    });
+  }).catch(err => {
+    list.innerHTML = `<div style="color:#f87171;">Ошибка: ${escapeHtml(err.message)}<br><small>Проверьте Firebase Rules (нужно .read: true для adminData).</small></div>`;
+  });
+}
+
+function editAdminDBEntry(key) {
+  if (!window._firebaseDB) return;
+  window._firebaseDB.ref('adminData/' + key).once('value').then(snap => {
+    const val = snap.val();
+    const valStr = typeof val === 'object' && val !== null ? JSON.stringify(val, null, 2) : String(val);
+    document.getElementById('admin-db-key').value = key;
+    document.getElementById('admin-db-value').value = valStr;
+    document.getElementById('admin-db-value').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('admin-db-value').focus();
+  });
+}
+
+function deleteAdminDBEntry(key) {
+  if (!window._firebaseDB) return;
+  if (!confirm('Удалить запись «' + key + '»?')) return;
+  window._firebaseDB.ref('adminData/' + key).remove()
+    .then(() => { showToast('🗑️ Удалено: ' + key); loadAdminDB(); })
+    .catch(err => showToast('❌ ' + err.message));
+}
+
+function wipeAdminDB() {
+  if (!window._firebaseDB) return;
+  if (!confirm('⚠️ Очистить ВСЮ базу adminData?')) return;
+  if (!confirm('Точно? Все записи будут удалены безвозвратно.')) return;
+  window._firebaseDB.ref('adminData').remove()
+    .then(() => { showToast('🗑️ БД очищена'); loadAdminDB(); })
+    .catch(err => showToast('❌ ' + err.message));
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN: Управление Firebase-логами (подделка/удаление)
+   ═══════════════════════════════════════════════════════════════ */
+function renderAdminLogsPanel(container) {
+  container.innerHTML = `
+    <div class="admin-section-title">📜 Управление логами в Firebase</div>
+    <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,68,68,0.4); border-radius:5px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+      <div style="font-size:0.82rem; color:#ff8888; font-weight:bold;">➕ Отправить поддельный лог</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+        <label style="font-size:0.72rem; color:#cbd5e1;">Имя игрока:
+          <input type="text" id="log-fake-player" value="Admin" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px;">
+        </label>
+        <label style="font-size:0.72rem; color:#cbd5e1;">Тип события:
+          <select id="log-fake-type" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px;">
+            <option value="VICTORY">VICTORY</option>
+            <option value="BOSS">BOSS</option>
+            <option value="MINIBOSS">MINIBOSS</option>
+            <option value="ELITE">ELITE</option>
+            <option value="LEVELUP">LEVELUP</option>
+            <option value="ACHIEVEMENT">ACHIEVEMENT</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="SYSTEM">SYSTEM</option>
+            <option value="DONATE">DONATE</option>
+          </select>
+        </label>
+        <label style="font-size:0.72rem; color:#cbd5e1;">Этаж:
+          <input type="number" id="log-fake-floor" value="1" min="1" max="100" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px;">
+        </label>
+        <label style="font-size:0.72rem; color:#cbd5e1;">Уровень:
+          <input type="number" id="log-fake-level" value="1" min="1" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px;">
+        </label>
+      </div>
+      <label style="font-size:0.72rem; color:#cbd5e1;">Сообщение:
+        <textarea id="log-fake-message" rows="3" style="width:100%; padding:6px; background:rgba(10,14,26,0.9); border:1px solid var(--admin-red); color:#fff; border-radius:3px; margin-top:3px; font-family:var(--font-mono); resize:vertical;">Тестовый лог от админа 😈</textarea>
+      </label>
+      <button class="sao-btn btn-admin" style="padding:8px;" onclick="sendFakeLog()">📤 Отправить в Firebase</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
+      <button class="sao-btn btn-admin" style="padding:8px;" onclick="previewLogs()">📥 Показать последние 20</button>
+      <button class="sao-btn btn-admin" style="padding:8px; background:rgba(80,0,0,0.6);" onclick="deleteAllLogs()">🗑️ Удалить ВСЕ логи</button>
+    </div>
+
+    <div id="admin-log-preview" style="margin-top:8px; max-height:400px; overflow-y:auto; background:rgba(0,0,0,0.4); border:1px solid rgba(255,68,68,0.3); border-radius:5px; padding:8px; font-size:0.75rem;">
+      <div style="color:#94a3b8; text-align:center; padding:8px;">Нажмите «Показать» для загрузки</div>
+    </div>
+  `;
+}
+
+function sendFakeLog() {
+  if (!window._firebaseDB) { showToast('❌ Firebase не готов'); return; }
+  const playerName = document.getElementById('log-fake-player').value.trim() || 'Admin';
+  const eventType  = document.getElementById('log-fake-type').value;
+  const message    = document.getElementById('log-fake-message').value.trim();
+  const floor      = parseInt(document.getElementById('log-fake-floor').value) || 1;
+  const level      = parseInt(document.getElementById('log-fake-level').value) || 1;
+
+  window._firebaseDB.ref('gameLogs').push({
+    timestamp: new Date().toISOString(),
+    playerName, floor, level, eventType,
+    data: { message, fake: true },
+    sessionId: 'admin_' + Date.now()
+  }).then(() => {
+    showToast('✅ Поддельный лог отправлен!');
+    playSound('admin');
+  }).catch(err => {
+    showToast('❌ ' + err.message);
+    console.error(err);
+  });
+}
+
+function previewLogs() {
+  if (!window._firebaseDB) { showToast('❌ Firebase не готов'); return; }
+  const preview = document.getElementById('admin-log-preview');
+  preview.innerHTML = '<div style="color:#94a3b8; text-align:center;">Загрузка...</div>';
+
+  window._firebaseDB.ref('gameLogs').limitToLast(20).once('value').then(snap => {
+    const logs = [];
+    snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
+    if (logs.length === 0) {
+      preview.innerHTML = '<div style="color:#94a3b8; text-align:center;">Логов нет</div>';
+      return;
+    }
+    logs.reverse();
+    preview.innerHTML = logs.map(l => `
+      <div style="padding:5px; border-bottom:1px solid rgba(255,68,68,0.15); display:flex; justify-content:space-between; gap:5px; align-items:flex-start;">
+        <div style="flex:1; word-break:break-word;">
+          <span style="color:#6ee7ff; font-weight:bold;">${l.playerName || '?'}</span>
+          <span style="color:#94a3b8;"> (эт.${l.floor}, ур.${l.level})</span>
+          <span style="color:#fbbf24;"> [${l.eventType}]</span>
+          ${l.data && l.data.message ? ` — ${l.data.message}` : ''}
+          ${l.data && l.data.fake ? ' <span style="color:#f472b6; font-size:0.65rem;">[ФЕЙК]</span>' : ''}
+        </div>
+        <button onclick="deleteLogById('${l.id}')" title="Удалить" style="background:#7f1d1d; border:1px solid #ef4444; color:#fff; padding:2px 6px; border-radius:3px; cursor:pointer; font-size:0.7rem; flex-shrink:0;">✕</button>
+      </div>
+    `).join('');
+  }).catch(err => {
+    preview.innerHTML = `<div style="color:#f87171;">Ошибка чтения: ${err.message}<br><small>Возможно, правила БД запрещают чтение. Тогда используйте только отправку.</small></div>`;
+  });
+}
+
+function deleteLogById(id) {
+  if (!window._firebaseDB) return;
+  if (!confirm('Удалить этот лог?')) return;
+  window._firebaseDB.ref('gameLogs/' + id).remove()
+    .then(() => { showToast('🗑️ Лог удалён'); previewLogs(); })
+    .catch(err => showToast('❌ ' + err.message));
+}
+
+function deleteAllLogs() {
+  if (!window._firebaseDB) return;
+  if (!confirm('⚠️ УДАЛИТЬ ВСЕ ЛОГИ? Это необратимо!')) return;
+  if (!confirm('Точно уверен? Все логи будут стёрты навсегда.')) return;
+  window._firebaseDB.ref('gameLogs').remove()
+    .then(() => {
+      showToast('🗑️ Все логи удалены!');
+      document.getElementById('admin-log-preview').innerHTML = '<div style="color:#94a3b8; text-align:center;">Удалено</div>';
+    })
+    .catch(err => showToast('❌ ' + err.message));
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4330,9 +4812,67 @@ function handlePlayerDeath() {
 }
 function confirmPermadeath() {
   document.getElementById('death-overlay').classList.remove('active');
+  if (player) deletePlayerFromCloud(player.name).catch(()=>{});
   player = null;
+  _presenceStarted = false;
   combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
   openCharacterCreation(true);
+}
+/* ═══════════════════════════════════════════════════════════════
+   CLOUD PLAYERS — глобальная база игроков в Firebase
+   ═══════════════════════════════════════════════════════════════ */
+function safePlayerKey(name) {
+  // Firebase-ключи не могут содержать . # $ [ ] /
+  return String(name || 'unknown').replace(/[.#$\[\]\/]/g, '_');
+}
+
+let _cloudSaveTimer = null;
+function scheduleCloudSave(force = false) {
+  if (!player || !window._firebaseDB) return;
+  if (force) {
+    if (_cloudSaveTimer) { clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
+    savePlayerToCloud();
+    return;
+  }
+  if (_cloudSaveTimer) return; // уже запланировано
+  _cloudSaveTimer = setTimeout(() => { _cloudSaveTimer = null; savePlayerToCloud(); }, 5000);
+}
+
+function savePlayerToCloud() {
+  if (!player || !window._firebaseDB) return;
+  try {
+    const data = JSON.parse(JSON.stringify(player));
+    data.lastOnline = new Date().toISOString();
+    // удобные вычисляемые поля для админа
+    data._atk    = getTotalAtk();
+    data._def    = getTotalDef();
+    data._maxHp  = getTotalMaxHp();
+    data._maxMp  = getTotalMaxMp();
+    data._class  = (CLASSES_DB[player.classId] || {}).name || player.classId;
+    data._race   = (RACES_DB[player.raceId]   || {}).name || player.raceId;
+    window._firebaseDB.ref('players/' + safePlayerKey(player.name)).set(data)
+      .catch(err => console.warn('[Cloud save]', err));
+  } catch (e) { console.warn('[Cloud save]', e); }
+}
+
+function deletePlayerFromCloud(name) {
+  if (!window._firebaseDB) return Promise.resolve();
+  return window._firebaseDB.ref('players/' + safePlayerKey(name)).remove();
+}
+
+/* ── Presence: онлайн-статус ── */
+let _presenceStarted = false;
+function startPresence() {
+  if (_presenceStarted || !player || !window._firebaseDB) return;
+  _presenceStarted = true;
+  const statusRef = window._firebaseDB.ref('players/' + safePlayerKey(player.name) + '/online');
+  const connRef   = window._firebaseDB.ref('.info/connected');
+  connRef.on('value', snap => {
+    if (snap.val() === true) {
+      statusRef.onDisconnect().set(false);
+      statusRef.set(true);
+    }
+  });
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4341,7 +4881,11 @@ function confirmPermadeath() {
 const SAVE_KEY = 'sao_aincrad_rpg_save_v12';
 function saveGame(isAuto = false) {
   if (!player) return;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile })); if (!isAuto) { playSound('click'); showToast('Сохранено!'); addLog(`[СИСТЕМА] Сохранено.`, 'system'); } } catch (e) { showToast('Ошибка!'); }
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ player, profile: characterProfile }));
+    scheduleCloudSave(!isAuto); // авто-сохранение → дебаунс 5с; ручное → сразу
+    if (!isAuto) { playSound('click'); showToast('Сохранено!'); addLog(`[СИСТЕМА] Сохранено.`, 'system'); }
+  } catch (e) { showToast('Ошибка!'); }
 }
 function saveGameAuto() { saveGame(true); }
 function loadGame() {
@@ -4375,6 +4919,9 @@ function loadGame() {
     updateOracle('С возвращением, ' + player.name + '. Продолжим твой путь.');
     renderZone(); updateHUD();
     worldClockStarted = false; startWorldClock();
+    _presenceStarted = false;
+    startPresence();               // ⬅️ онлайн-статус
+    scheduleCloudSave(true);       // ⬅️ синк
     return true;
   } catch (e) { showToast('Ошибка!'); return false; }
 }
@@ -4479,6 +5026,8 @@ document.getElementById('creation-start-btn').addEventListener('click', () => {
   playSound('levelup'); showToast(`${player.name} создан!`);
   renderZone(); updateHUD(); saveGameAuto();
   worldClockStarted = false; startWorldClock();
+  startPresence();               // ⬅️ онлайн-статус
+  scheduleCloudSave(true);       // ⬅️ сразу в облако
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4514,6 +5063,7 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    window._firebaseDB = db; 
 
     // Уникальный ID сессии
     let sessionId = sessionStorage.getItem('gameSessionId');
