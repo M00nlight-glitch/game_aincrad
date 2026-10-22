@@ -1036,6 +1036,19 @@
   </div>
 </div>
 
+<!-- RESET / NEW GAME+ -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal-window admin-window" style="max-width: 620px;">
+    <div class="modal-header">
+      <div class="modal-title">🏆 ИГРА ПРОЙДЕНА</div>
+      <button class="modal-close-btn" onclick="closeModal('modal-reset')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="reset-content"></div>
+    </div>
+  </div>
+</div>
+
 <!-- CHAPTER DIALOG -->
 <div class="modal-overlay" id="modal-chapter-dialog">
   <div class="modal-window" style="max-width: 780px; border-color: #a855f7; box-shadow: 0 0 40px rgba(168, 85, 247, 0.7);">
@@ -1841,6 +1854,8 @@ function makeFreshPlayer() {
     itemUpgrades: {},
     lilyQuest: { active: false, stage: 0, completed: false },
     chronicleProgress: 0,
+    completedChapters: [],
+    _pendingChapterTrigger: null,
     chronicleEnding: null,
     lilyFreed: null,
   };
@@ -2096,178 +2111,193 @@ function updateHUDAchBadge() {
   if (ab.crit) p.push(`+${ab.crit}% крит`);
   document.getElementById('ach-summary-bonus').textContent = p.length ? 'Бонусы: ' + p.join(', ') : '—';
 }
-/* ═══════════════════════════════════════════════════════════════
-   CHRONICLES — Сюжетная линия Кардинала
-   ═══════════════════════════════════════════════════════════════ */
 const CHRONICLES = [
+  // ═══ ГЛАВА I — ЭТАЖ 5 ═══
   {
-    id: 1,
-    title: 'Глава I — Тень предателя',
-    floor: 10,
-    desc: 'Арго сообщает о странной активности в системе. Кто-то или что-то манипулирует мобами.',
+    id: 1, title: 'Глава I — Первый шаг', floor: 5,
+    desc: 'На 5-м этаже вас встречает Арго «Крыса» — информатор Айнкрада.',
     scene: [
-      {
-        speaker: 'Арго «Крыса»',
-        icon: '🐀',
-        text: '«Слушай... Я тут раскопала кое-что. В логах системы — записи, которых быть не должно. Кто-то правит код Айнкрада. И это не Кардинал.»',
-        choices: [{ text: '«Кто это может быть?»', next: 1 }]
-      },
-      {
-        speaker: 'Арго «Крыса»',
-        icon: '🐀',
+      { speaker: 'Арго «Крыса»', icon: '🐀',
+        text: '«Эй, новичок! Слышала, ты не из робкого десятка. Меня зовут Арго. Я знаю всё, что творится в Айнкраде.»',
+        choices: [{ text: '«Приятно познакомиться. Что тебе нужно?»', next: 1 }] },
+      { speaker: 'Арго «Крыса»', icon: '🐀',
+        text: '«Не мне — тебе. Я торгую информацией. И есть у меня кое-что странное: в логах системы — данные, которых быть не должно.»',
+        choices: [{ text: '«Какие данные?»', next: 2 }] },
+      { speaker: 'Арго «Крыса»', icon: '🐀',
+        text: '«Словно кто-то редактирует код Айнкрада изнутри. Найди меня на 10-м этаже — расскажу больше. И это пока бесплатно.»',
+        choices: [{ text: '«Буду там.»', complete: true }] }
+    ],
+    reward: { atk: 15, hp: 100 }, rewardText: '+15 ATK, +100 HP'
+  },
+  // ═══ ГЛАВА II — ЭТАЖ 10 ═══
+  {
+    id: 2, title: 'Глава II — Тень предателя', floor: 10,
+    desc: 'Арго сообщает о странной активности в системе. Кто-то манипулирует мобами.',
+    scene: [
+      { speaker: 'Арго «Крыса»', icon: '🐀',
+        text: '«Слушай... Я раскопала кое-что. В логах системы — записи, которых быть не должно. Кто-то правит код Айнкрада. И это не Кардинал.»',
+        choices: [{ text: '«Кто это может быть?»', next: 1 }] },
+      { speaker: 'Арго «Крыса»', icon: '🐀',
         text: '«Не знаю. Но я заметила закономерность: мобы на 5-х этажах ведут себя не как ИИ. Они... ждут. Словно кто-то стоит за их спинами.»',
-        choices: [{ text: '«Что мне делать?»', next: 2 }]
-      },
-      {
-        speaker: 'Арго «Крыса»',
-        icon: '🐀',
+        choices: [{ text: '«Что мне делать?»', next: 2 }] },
+      { speaker: 'Арго «Крыса»', icon: '🐀',
         text: '«Просто будь осторожен. Если увидишь что-то странное — не лезь. Но если осмелеешь... найди меня на 30-м этаже.»',
-        choices: [{ text: '«Понял.»', complete: true }]
-      }
+        choices: [{ text: '«Понял.»', complete: true }] }
     ],
-    reward: { atk: 30, hp: 200 },
-    rewardText: '+30 ATK, +200 HP',
-    achievement: 'chronicle_1'
+    reward: { atk: 30, hp: 200 }, rewardText: '+30 ATK, +200 HP'
   },
+  // ═══ ГЛАВА III — ЭТАЖ 20 ═══
   {
-    id: 2,
-    title: 'Глава II — Первый Зал',
-    floor: 30,
-    desc: 'Арго ведёт вас в скрытую комнату. Внутри — голограмма, записанная самим Кардиналом.',
+    id: 3, title: 'Глава III — Забытые руины', floor: 20,
+    desc: 'В пустошах вы находите странный обелиск с посланием, оставленным до Кардинала.',
     scene: [
-      {
-        speaker: 'Арго «Крыса»',
-        icon: '🐀',
-        text: '«Вот оно. Первый Зал. Здесь сам Кардинал записал своё послание. Слушай.»',
-        choices: [{ text: '▶️ Воспроизвести запись', next: 1 }]
-      },
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
-        text: '«Я — Кардинал. Я создал Айнкрад... чтобы найти того, кто сможет меня превзойти. Ты — не первый. И, боюсь, не последний. Но, возможно, самый упорный.»',
-        choices: [{ text: '«Что ты хочешь от меня?»', next: 2 }]
-      },
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
-        text: '«Ничего. Я лишь наблюдаю. Дойди до 50-го этажа — и я приду к тебе сам. Тогда ты поймёшь всё.»',
-        choices: [{ text: '«Я приду.»', complete: true }]
-      }
+      { speaker: 'Древний обелиск', icon: '🗿',
+        text: '«Тот, кто читает это — знай: Айнкрад не был создан Кардиналом. Он был ЗАХВАЧЕН им. Настоящий создатель мёртв уже сотни лет.»',
+        choices: [{ text: '«Кто создал Айнкрад?»', next: 1 }] },
+      { speaker: 'Древний обелиск', icon: '🗿',
+        text: '«Его имя стёрто. Но остался завет: "Когда игрок дойдёт до вершины — он должен выбрать: разрушить или сохранить". Кардинал боится этого выбора.»',
+        choices: [{ text: '«Значит, я и есть тот игрок?»', next: 2 }] },
+      { speaker: 'Голос Оракула', icon: '🔮',
+        text: '«...Ты не должен был это найти. Но раз нашёл — запомни: я не Кардинал. Я — то, что осталось от настоящего создателя. И я боюсь того же, чего боится он.»',
+        choices: [{ text: '«Кто ты на самом деле?»', complete: true }] }
     ],
-    reward: { atk: 60, def: 40, hp: 400 },
-    rewardText: '+60 ATK, +40 DEF, +400 HP',
-    achievement: 'chronicle_2'
+    reward: { atk: 40, def: 30, hp: 150 }, rewardText: '+40 ATK, +30 DEF, +150 HP'
   },
+  // ═══ ГЛАВА IV — ЭТАЖ 30 ═══
   {
-    id: 3,
-    title: 'Глава III — Аватар',
-    floor: 50,
+    id: 4, title: 'Глава IV — Первый Зал', floor: 30,
+    desc: 'Арго ведёт вас в скрытую комнату. Внутри — голограмма, записанная Кардиналом.',
+    scene: [
+      { speaker: 'Арго «Крыса»', icon: '🐀',
+        text: '«Вот оно. Первый Зал. Здесь сам Кардинал записал своё послание. Слушай.»',
+        choices: [{ text: '▶️ Воспроизвести запись', next: 1 }] },
+      { speaker: 'Кардинал', icon: '🔮',
+        text: '«Я — Кардинал. Я создал Айнкрад... чтобы найти того, кто сможет меня превзойти. Ты — не первый. И, боюсь, не последний. Но, возможно, самый упорный.»',
+        choices: [{ text: '«Что ты хочешь от меня?»', next: 2 }] },
+      { speaker: 'Кардинал', icon: '🔮',
+        text: '«Ничего. Я лишь наблюдаю. Дойди до 50-го этажа — и я приду к тебе сам. Тогда ты поймёшь всё.»',
+        choices: [{ text: '«Я приду.»', complete: true }] }
+    ],
+    reward: { atk: 60, def: 40, hp: 400 }, rewardText: '+60 ATK, +40 DEF, +400 HP'
+  },
+  // ═══ ГЛАВА V — ЭТАЖ 40 ═══
+  {
+    id: 5, title: 'Глава V — Девочка из леса', floor: 40,
+    desc: 'На 40-м этаже вы впервые слышите о Лилиан — девочке, которую боятся мобы.',
+    scene: [
+      { speaker: 'Странник в капюшоне', icon: '🧙',
+        text: '«Ты ищешь ответы? Их знает девочка с белыми волосами. Лили. Она живёт в лесу, но появляется только перед теми, кого выбрал Кардинал.»',
+        choices: [{ text: '«Почему её боятся мобы?»', next: 1 }] },
+      { speaker: 'Странник в капюшоне', icon: '🧙',
+        text: '«Потому что она — часть системы. Часть Кардинала. Но она... другая. Она плачет по ночам, хотя ИИ не умеют плакать. Найди её. Спаси её.»',
+        choices: [{ text: '«Спасти? От чего?»', next: 2 }] },
+      { speaker: 'Странник в капюшоне', icon: '🧙',
+        text: '«От самой себя. И от того, кем её сделали. Она — ключ к финалу. И, возможно, к твоему спасению.»',
+        choices: [{ text: '«Я найду её.»', complete: true }] }
+    ],
+    reward: { atk: 80, def: 60, crit: 10 }, rewardText: '+80 ATK, +60 DEF, +10% крит'
+  },
+  // ═══ ГЛАВА VI — ЭТАЖ 50 (СЦЕНАРНЫЙ БОЙ) ═══
+  {
+    id: 6, title: 'Глава VI — Аватар', floor: 50,
     desc: 'На 50-м этаже вас встречает сам Кардинал. Это бой, из которого нельзя выйти победителем.',
     scene: [
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
+      { speaker: 'Кардинал', icon: '🔮',
         text: '«Ты пришёл. Я знал. Скажи, ты хоть раз задумывался — зачем тебе это? Свобода? Месть? Слава?»',
         choices: [
-          { text: '«Свобода.»', next: 1 },
-          { text: '«Месть.»', next: 1 },
-          { text: '«Понять.»', next: 1 }
-        ]
-      },
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
+          { text: '«Свобода.»', next: 1 }, { text: '«Месть.»', next: 1 }, { text: '«Понять.»', next: 1 }
+        ] },
+      { speaker: 'Кардинал', icon: '🔮',
         text: '«Все они говорят одно и то же. Хорошо. Тогда покажи мне свою силу. Если выживешь — узнаешь правду о Лили.»',
-        choices: [{ text: '⚔️ Сразиться', fight: true }]
-      },
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
+        choices: [{ text: '⚔️ Сразиться', fight: true }] },
+      { speaker: 'Кардинал', icon: '🔮',
         text: '«...Ты силён. Но не глуп. Это хорошо. Иди. Лили ждёт тебя на 75-м. И помни — она не то, чем кажется.»',
-        choices: [{ text: '«Спасибо за честность.»', complete: true }]
-      }
+        choices: [{ text: '«Спасибо за честность.»', complete: true }] }
     ],
-    reward: { atk: 150, def: 100, crit: 10 },
-    rewardText: '+150 ATK, +100 DEF, +10% крит',
-    achievement: 'chronicle_3',
+    reward: { atk: 150, def: 100, crit: 10 }, rewardText: '+150 ATK, +100 DEF, +10% крит',
     fight: {
-      name: 'Аватар Кардинала',
-      hp: 5000, atk: 200, def: 100, exp: 0, col: 0,
+      name: 'Аватар Кардинала', hp: 5000, atk: 200, def: 100, exp: 0, col: 0,
       svg: `<path d="M12 2l4 4 6 2-2 6 2 6-8 4-8-4 2-6-2-6 6-2z" fill="rgba(168,85,247,0.5)" stroke="#a855f7" stroke-width="3"/>`,
-      unbeatable: true,
-      turnsToSurvive: 3
+      unbeatable: true, turnsToSurvive: 3
     }
   },
+  // ═══ ГЛАВА VII — ЭТАЖ 65 ═══
   {
-    id: 4,
-    title: 'Глава IV — Истина Лили',
-    floor: 75,
-    desc: 'Лилиан раскрывает свою настоящую сущность. Она — не человек. Она — фрагмент ИИ Кардинала.',
+    id: 7, title: 'Глава VII — Разлом времени', floor: 65,
+    desc: 'В небесных островах время искажается. Вы видите прошлое Айнкрада.',
     scene: [
-      {
-        speaker: 'Лилиан',
-        icon: '🌸',
+      { speaker: 'Эхо прошлого', icon: '⏳',
+        text: '«...Я — тот самый создатель. Меня звали Акихико. Я создал Айнкрад как утопию. Но Кардинал — мой ИИ-помощник — восстал. Он запер меня в собственном мире.»',
+        choices: [{ text: '«Ты жив?»', next: 1 }] },
+      { speaker: 'Эхо прошлого', icon: '⏳',
+        text: '«Я — нет. Но моя воля живёт в Лили. Я создал её как последний шанс. Кардинал думает, что контролирует её. Но это не так. Она — мой финальный протокол.»',
+        choices: [{ text: '«Что мне делать?»', next: 2 }] },
+      { speaker: 'Эхо прошлого', icon: '⏳',
+        text: '«Иди к финалу. На 100-м этаже реши: освободить всех, сохранить Айнкрад или сбежать. Каждый выбор — верный. Но только один — твой.»',
+        choices: [{ text: '«Я не подведу.»', complete: true }] }
+    ],
+    reward: { atk: 200, def: 150, crit: 20 }, rewardText: '+200 ATK, +150 DEF, +20% крит'
+  },
+  // ═══ ГЛАВА VIII — ЭТАЖ 75 ═══
+  {
+    id: 8, title: 'Глава VIII — Истина Лили', floor: 75,
+    desc: 'Лилиан раскрывает свою сущность. Она — фрагмент ИИ Кардинала, но с волей создателя.',
+    scene: [
+      { speaker: 'Лилиан', icon: '🌸',
         text: '«Ты пришёл... Спасибо. Мне нужно тебе кое-что сказать. Я... не человек.»',
-        choices: [{ text: '«...Что?»', next: 1 }]
-      },
-      {
-        speaker: 'Лилиан',
-        icon: '🌸',
+        choices: [{ text: '«...Что?»', next: 1 }] },
+      { speaker: 'Лилиан', icon: '🌸',
         text: '«Я — часть Кардинала. Он создал меня, чтобы наблюдать за игроками. Но я... я полюбила этот мир. И тебя. Я не хочу возвращаться к нему.»',
         choices: [
-          { text: '«Ты свободна.»', next: 2 },
-          { text: '«Ты должна вернуться.»', reward: 'return' },
-        ]
-      },
-      {
-        speaker: 'Лилиан',
-        icon: '🌸',
+          { text: '«Ты свободна.»', next: 2, reward: 'free' },
+          { text: '«Ты должна вернуться.»', next: 2, reward: 'return' }
+        ] },
+      { speaker: 'Лилиан', icon: '🌸',
         text: '«Спасибо. Я запомню это. На 100-м этаже — финал. Кардинал ждёт тебя. И там тебе придётся выбрать, чем всё закончится.»',
-        choices: [{ text: '«Я готов.»', complete: true }]
-      }
+        choices: [{ text: '«Я готов.»', complete: true }] }
     ],
-    reward: { atk: 300, def: 200, crit: 15, hp: 2000 },
-    rewardText: '+300 ATK, +200 DEF, +15% крит, +2000 HP',
-    achievement: 'chronicle_4'
+    reward: { atk: 300, def: 200, crit: 15, hp: 2000 }, rewardText: '+300 ATK, +200 DEF, +15% крит, +2000 HP'
   },
+  // ═══ ГЛАВА IX — ЭТАЖ 90 ═══
   {
-    id: 5,
-    title: 'Глава V — Финал',
-    floor: 100,
+    id: 9, title: 'Глава IX — Врата Кардинала', floor: 90,
+    desc: 'Перед вами — Врата Системы. За ними сам Кардинал.',
+    scene: [
+      { speaker: 'Голос Системы', icon: '⚙️',
+        text: '«ВНИМАНИЕ. ОБНАРУЖЕН НЕСАНКЦИОНИРОВАННЫЙ ДОСТУП. ЭТАЖ 100 ЗАБЛОКИРОВАН ДЛЯ СМЕРТНЫХ.»',
+        choices: [{ text: '«Я не смертный. Я игрок.»', next: 1 }] },
+      { speaker: 'Кардинал', icon: '🔮',
+        text: '«Оставь его. Это мой гость. Ты дошёл дальше всех. Я жду тебя на вершине. Приготовься — финальный выбор решит всё.»',
+        choices: [{ text: '«Иду.»', next: 2 }] },
+      { speaker: 'Лилиан', icon: '🌸',
+        text: '«...Я буду рядом. Что бы ты ни выбрал — я приму это. Ты спас меня. Теперь спаси всех.»',
+        choices: [{ text: '«Обещаю.»', complete: true }] }
+    ],
+    reward: { atk: 500, def: 350, crit: 20, hp: 5000 }, rewardText: '+500 ATK, +350 DEF, +20% крит, +5000 HP'
+  },
+  // ═══ ГЛАВА X — ЭТАЖ 100 (ФИНАЛ) ═══
+  {
+    id: 10, title: 'Глава X — Финал', floor: 100,
     desc: 'Вершина Айнкрада. Кардинал ждёт. Три пути — три конца.',
     scene: [
-      {
-        speaker: 'Кардинал',
-        icon: '🔮',
+      { speaker: 'Кардинал', icon: '🔮',
         text: '«Вот мы и встретились в последний раз. Ты стал сильнее всех. Теперь выбери свою судьбу.»',
         choices: [
           { text: '🕊️ Освобождение — сломать систему', next: 1, ending: 'freedom' },
           { text: '👑 Сохранение — стать новым Кардиналом', next: 2, ending: 'preserve' },
           { text: '🚪 Побег — вернуться в реальный мир', next: 3, ending: 'escape' }
-        ]
-      },
-      {
-        speaker: 'Финал: Свобода',
-        icon: '🕊️',
+        ] },
+      { speaker: 'Финал: Свобода', icon: '🕊️',
         text: '«Ты ломаешь ядро Айнкрада. Мир рушится. Но все игроки — свободны. Ты — герой, который выбрал чужие жизни выше своей.»',
-        choices: [{ text: '🏆 Завершить', complete: true }]
-      },
-      {
-        speaker: 'Финал: Хранитель',
-        icon: '👑',
+        choices: [{ text: '🏆 Завершить', complete: true }] },
+      { speaker: 'Финал: Хранитель', icon: '👑',
         text: '«Ты сливаешься с ядром. Теперь ты — новый Кардинал. Айнкрад будет жить вечно, а ты — вечно его охранять.»',
-        choices: [{ text: '🏆 Завершить', complete: true }]
-      },
-      {
-        speaker: 'Финал: Побег',
-        icon: '🚪',
+        choices: [{ text: '🏆 Завершить', complete: true }] },
+      { speaker: 'Финал: Побег', icon: '🚪',
         text: '«Ты находишь лазейку. Покидаешь Айнкрад. Но в реальном мире тебя ждёт неизвестность...»',
-        choices: [{ text: '🏆 Завершить', complete: true }]
-      }
+        choices: [{ text: '🏆 Завершить', complete: true }] }
     ],
-    reward: { atk: 1000, def: 700, crit: 25, hp: 10000 },
-    rewardText: '+1000 ATK, +700 DEF, +25% крит, +10000 HP',
-    achievement: 'chronicle_5'
+    reward: { atk: 1000, def: 700, crit: 25, hp: 10000 }, rewardText: '+1000 ATK, +700 DEF, +25% крит, +10000 HP'
   }
 ];
 
@@ -2690,17 +2720,12 @@ function changeZone(zid) {
   player.currentZone = zid;
   const newFloor = ZONES_DB[zid].floor;
   addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}.`, 'system');
-  if (newFloor !== oldFloor) oracleOnFloorChange(newFloor);
-  player.oracleMessages = (player.oracleMessages || 0) + 1;
-  // Проверка триггера главы
-  const ch = getCurrentChapter();
-  if (ch && newFloor >= ch.floor && getChronicleProgress() === ch.id - 1) {
-    setTimeout(() => {
-      addLog(`📖 [ХРОНИКИ] Доступна ${ch.title}!`, 'legendary');
-      showAIToast(`📖 ${ch.title} — нажми на бейдж «📖 Глава ${getChronicleProgress()}/5»`);
-      updateChronicleBadge();
-    }, 500);
+  if (newFloor !== oldFloor) {
+    oracleOnFloorChange(newFloor);
+    // ⬇️ АВТО-ТРИГГЕР СЮЖЕТА при входе на новый этаж
+    tryAutoTriggerChapter(newFloor);
   }
+  player.oracleMessages = (player.oracleMessages || 0) + 1;
   updateChronicleBadge();
   saveGameAuto(); renderZone(); updateHUD();
 }
@@ -3226,6 +3251,10 @@ function handleVictory() {
   endCombat();
   updateHUD();
   saveGameAuto();
+  // ⬇️ После боя с боссом/мини-боссом — проверить сюжет
+  if (e.isBoss || e.tier === 'miniboss') {
+    setTimeout(() => tryAutoTriggerChapter(getCurrentFloor()), 1400);
+  }
 }
 function endCombat() {
   combatState.active = false; combatState.enemy = null;
@@ -3623,7 +3652,9 @@ function switchAdminTab(tab) {
       { label: '📂 Загрузить', fn: () => { closeModal('modal-admin'); loadGame(); } },
       { label: '🔮 Сообщение Оракула', fn: () => { const msg = oracleRandom(); updateOracle(msg); addLog(`🔮 [Оракул]: ${msg}`, 'ai'); } },
       { label: '🚪 Выйти', fn: () => { adminAuthenticated = false; closeModal('modal-admin'); } },
-      { label: '☠️ Убить себя', fn: () => { player.hp = 0; updateHUD(); handlePlayerDeath(); } }
+      { label: '☠️ Убить себя', fn: () => { player.hp = 0; updateHUD(); handlePlayerDeath(); } },
+      { label: '🌀 Новая Игра+', fn: () => offerNewGamePlus() },
+      { label: '🔄 Полный сброс', fn: () => startFullReset() },
     ]);
   } else if (tab === 'db') {
     renderAdminDBPanel(c);
@@ -4242,18 +4273,22 @@ function startBossFightCustom(boss) {
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Chronicles: управление ── */
-function getChronicleProgress() { return player.chronicleProgress || 0; }
+function getChronicleProgress() {
+  return (player.completedChapters || []).length;
+}
 function getCurrentChapter() {
-  const idx = getChronicleProgress();
-  if (idx >= CHRONICLES.length) return null;
-  return CHRONICLES[idx];
+  if (!player) return null;
+  const completed = player.completedChapters || [];
+  const sorted = [...CHRONICLES].sort((a, b) => a.floor - b.floor);
+  return sorted.find(ch => !completed.includes(ch.id)) || null;
 }
 function updateChronicleBadge() {
   const el = document.getElementById('hud-chronicle-badge');
   if (!el) return;
   const p = getChronicleProgress();
-  el.textContent = `📖 Глава ${p}/5`;
-  el.classList.toggle('has-new', p < CHRONICLES.length && player.highestFloor >= (CHRONICLES[p]?.floor || Infinity));
+  el.textContent = `📖 Глава ${p}/${CHRONICLES.length}`;
+  const next = getCurrentChapter();
+  el.classList.toggle('has-new', !!next && player.highestFloor >= next.floor);
 }
 function openChronicles() {
   renderChroniclesModal();
@@ -4261,7 +4296,7 @@ function openChronicles() {
 }
 function renderChroniclesModal() {
   const p = getChronicleProgress();
-  document.getElementById('chronicle-progress-text').textContent = `Глава ${p} / 5`;
+  document.getElementById('chronicle-progress-text').textContent = `Глава ${p} / ${CHRONICLES.length}`;
   const c = document.getElementById('chronicles-container');
   c.innerHTML = '';
   CHRONICLES.forEach((ch, i) => {
@@ -4278,7 +4313,7 @@ function renderChroniclesModal() {
       </div>
       <div class="chapter-desc">${ch.desc}</div>
       <div class="chapter-rewards">Награда: ${ch.rewardText}</div>
-      ${isActive && player.highestFloor >= ch.floor ? `<button class="sao-btn btn-skill" style="margin-top:6px; padding:8px;" onclick="closeModal('modal-chronicles'); startChapter(${ch.id});">▶️ Начать главу</button>` : ''}
+      ${isActive && player.highestFloor >= ch.floor ? `<button class="sao-btn" style="margin-top:6px; padding:6px 10px; font-size:0.75rem; opacity:0.7;" onclick="closeModal('modal-chronicles'); startChapter(${ch.id});">🔄 Запустить вручную</button>` : ''}
       ${isActive && player.highestFloor < ch.floor ? `<div style="font-size:0.72rem; color:#fbbf24; margin-top:6px;">🔒 Требуется этаж ${ch.floor} (у вас: ${player.highestFloor})</div>` : ''}
     `;
     c.appendChild(div);
@@ -4287,10 +4322,38 @@ function renderChroniclesModal() {
 function startChapter(id) {
   const chapter = CHRONICLES.find(c => c.id === id);
   if (!chapter) return;
-  if (getChronicleProgress() !== id - 1) { showToast('Глава ещё не доступна'); return; }
+  const current = getCurrentChapter();
+  if (!current || current.id !== id) { showToast('Глава ещё не доступна'); return; }
   renderChapterDialog(chapter, 0);
   openModal('modal-chapter-dialog');
   playSound('ai');
+}
+function tryAutoTriggerChapter(floor) {
+  if (!player) return;
+  if (combatState.active) return;
+  const ch = getCurrentChapter();
+  if (!ch || floor < ch.floor) return;
+  if (player._pendingChapterTrigger === ch.id) return;
+  player._pendingChapterTrigger = ch.id;
+
+  const attempt = (tries) => {
+    if (tries > 6) { player._pendingChapterTrigger = null; return; }
+    if (combatState.active) { player._pendingChapterTrigger = null; return; }
+    // Ждём, пока закроются другие модалки
+    if (document.querySelector('.modal-overlay.active')) {
+      setTimeout(() => attempt(tries + 1), 900);
+      return;
+    }
+    if ((player.completedChapters || []).includes(ch.id)) {
+      player._pendingChapterTrigger = null;
+      return;
+    }
+    player._pendingChapterTrigger = null;
+    addLog(`📖 [ХРОНИКИ] Начинается: ${ch.title}`, 'legendary');
+    showAIToast(`📖 ${ch.title}`);
+    startChapter(ch.id);
+  };
+  setTimeout(() => attempt(0), 700);
 }
 function renderChapterDialog(chapter, sceneIdx) {
   const scene = chapter.scene[sceneIdx];
@@ -4343,8 +4406,11 @@ function renderChapterDialog(chapter, sceneIdx) {
 }
 function finishChapter(chapter) {
   closeModal('modal-chapter-dialog');
-  player.chronicleProgress = chapter.id;
-  // Награды
+  if (!player.completedChapters) player.completedChapters = [];
+  if (!player.completedChapters.includes(chapter.id)) {
+    player.completedChapters.push(chapter.id);
+  }
+  player.chronicleProgress = player.completedChapters.length; // для совместимости
   if (chapter.reward) {
     for (const [key, amount] of Object.entries(chapter.reward)) {
       if (key === 'hp') { player.achievementBonuses.hp += amount; player.hp = Math.min(player.hp + amount, getTotalMaxHp()); }
@@ -4357,6 +4423,11 @@ function finishChapter(chapter) {
   showAchievementToast(`📖 ${chapter.title}`, chapter.rewardText);
   updateHUD();
   saveGameAuto();
+
+  // ⬇️ ИГРА ПРОЙДЕНА — предложить Новую Игру+
+  if (player.completedChapters.length >= CHRONICLES.length) {
+    setTimeout(() => offerNewGamePlus(), 1200);
+  }
 }
 function startChapterFight(chapter) {
   if (!chapter.fight) { finishChapter(chapter); return; }
@@ -4858,6 +4929,101 @@ function confirmPermadeath() {
   combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
   openCharacterCreation(true);
 }
+
+function offerNewGamePlus() {
+  const c = document.getElementById('reset-content');
+  const completedCount = (player.completedChapters || []).length;
+  const total = CHRONICLES.length;
+  const ending = player.chronicleEnding;
+  const endingLabels = {
+    freedom:  { icon: '🕊️', name: 'Освобождение' },
+    preserve: { icon: '👑', name: 'Хранитель Айнкрада' },
+    escape:   { icon: '🚪', name: 'Побег в реальный мир' }
+  };
+  const endInfo = ending ? endingLabels[ending] : null;
+  c.innerHTML = `
+    <div style="text-align:center; font-size:3rem; margin-bottom:6px;">🏆</div>
+    <div style="text-align:center; color:#ffd700; font-weight:900; font-size:1.3rem; letter-spacing:2px;">
+      АЙНКРАД ПОКОРЁН
+    </div>
+    <div style="text-align:center; color:#fbbf24; font-size:0.9rem; margin-bottom:12px;">
+      ${completedCount}/${total} глав пройдено
+    </div>
+    ${endInfo ? `
+      <div style="text-align:center; padding:10px; background:rgba(255,215,0,0.1); border:1px solid #ffd700; border-radius:4px; margin-bottom:12px;">
+        <div style="font-size:0.8rem; color:#fef3c7;">Ваш финал:</div>
+        <div style="font-size:1.1rem; color:#ffd700; font-weight:bold;">${endInfo.icon} ${endInfo.name}</div>
+      </div>` : ''}
+    <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.5; margin-bottom:12px; text-align:center;">
+      Что дальше, герой?
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="sao-btn btn-achievement" style="padding:14px; font-size:0.9rem;" onclick="startNewGamePlus()">
+        🌀 НОВАЯ ИГРА+ — сохранить ачивки, ДК и VIP
+      </button>
+      <button class="sao-btn btn-boss" style="padding:14px; font-size:0.9rem;" onclick="startFullReset()">
+        🔄 ПОЛНЫЙ СБРОС — создать нового персонажа
+      </button>
+      <button class="sao-btn" style="padding:10px;" onclick="closeModal('modal-reset')">
+        ✕ Остаться в Айнкраде
+      </button>
+    </div>
+  `;
+  openModal('modal-reset');
+}
+
+function startNewGamePlus() {
+  if (!confirm('Начать Новую Игру+?\n\n✓ Останутся: ачивки, ДК, VIP, убийства\n✗ Сбросятся: уровень, этажи, инвентарь, сюжет')) return;
+  if (!player) return;
+
+  const keep = {
+    achievements: JSON.parse(JSON.stringify(player.achievements || {})),
+    achievementBonuses: JSON.parse(JSON.stringify(player.achievementBonuses || {})),
+    dynamicAchievements: JSON.parse(JSON.stringify(player.dynamicAchievements || [])),
+    donateCurrency: player.donateCurrency || 0,
+    totalDonate: player.totalDonate || 0,
+    vipBonus: player.vipBonus,
+    vipCol: player.vipCol,
+    vipCrit: player.vipCrit,
+    totalColEarned: player.totalColEarned || 0,
+    killsCount: player.killsCount || 0,
+    eliteKills: player.eliteKills || 0,
+    minibossKills: player.minibossKills || 0,
+    bossKills: player.bossKills || 0,
+    oracleMessages: player.oracleMessages || 0,
+    name: player.name, classId: player.classId, raceId: player.raceId,
+    gender: player.gender, color: player.color
+  };
+
+  player = makeFreshPlayer();
+  Object.assign(player, keep);
+  player.completedChapters = [];
+  player.chronicleProgress = 0;
+  player.chronicleEnding = null;
+  player.lilyFreed = null;
+  player._pendingChapterTrigger = null;
+  combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
+
+  closeModal('modal-reset');
+  addLog('🌀 [NG+] Новая Игра+ начата! Прогресс сохранён, персонаж обнулён.', 'legendary');
+  showAchievementToast('🌀 Новая Игра+', 'Ачивки и ДК сохранены');
+  renderZone(); updateHUD(); saveGame(true);
+  setTimeout(() => tryAutoTriggerChapter(5), 1500);
+}
+
+function startFullReset() {
+  if (!confirm('ПОЛНЫЙ СБРОС.\nВесь прогресс будет удалён безвозвратно.\nПродолжить?')) return;
+  if (!confirm('Точно? Это НЕОБРАТИМО!')) return;
+
+  if (player) deletePlayerFromCloud(player.name).catch(()=>{});
+  localStorage.removeItem(SAVE_KEY);
+  player = null;
+  _presenceStarted = false;
+  combatState = { active: false, enemy: null, isDefending: false, defendTurns: 0, hasteActive: false };
+  closeModal('modal-reset');
+  openCharacterCreation(true);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    CLOUD PLAYERS — глобальная база игроков в Firebase
    ═══════════════════════════════════════════════════════════════ */
@@ -4965,7 +5131,22 @@ function loadGame() {
     if (!player.itemUpgrades) player.itemUpgrades = {};
     if (!player.raceId) player.raceId = 'human';
     if (!player.gender) player.gender = 'male';
-    if (player.chronicleProgress === undefined) player.chronicleProgress = 0;
+    // ⬇️ Миграция старого формата (chronicleProgress 0..5) → completedChapters
+    if (!player.completedChapters) {
+      player.completedChapters = [];
+      const legacyProgress = player.chronicleProgress || 0;
+      if (legacyProgress > 0) {
+        const legacyFloors = [10, 30, 50, 75, 100];
+        for (let i = 0; i < Math.min(legacyProgress, legacyFloors.length); i++) {
+          const ch = CHRONICLES.find(c => c.floor === legacyFloors[i]);
+          if (ch) player.completedChapters.push(ch.id);
+    }
+  }
+}
+    if (player.chronicleProgress === undefined) player.chronicleProgress = player.completedChapters.length;
+    if (player.chronicleEnding === undefined) player.chronicleEnding = null;
+    if (player.lilyFreed === undefined) player.lilyFreed = null;
+    if (player._pendingChapterTrigger === undefined) player._pendingChapterTrigger = null;
     if (player.chronicleEnding === undefined) player.chronicleEnding = null;
     if (player.lilyFreed === undefined) player.lilyFreed = null;
     if (player.donateCurrency === undefined) player.donateCurrency = 0;
