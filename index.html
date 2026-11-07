@@ -2250,7 +2250,291 @@
       margin-top: 8px;
       margin-bottom: 4px;
     }
+    /* ═══ NEW INVENTORY (paper-doll) ═══ */
+  .inv-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 14px;
+    min-height: 400px;
+  }
+  @media (max-width: 720px) {
+    .inv-layout { grid-template-columns: 1fr; }
+  }
 
+  /* ── Кукла ── */
+  .paperdoll {
+    background: linear-gradient(180deg, rgba(15,23,42,0.9), rgba(10,14,26,0.9));
+    border: 1px solid rgba(110,231,255,0.25);
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+  .paperdoll-avatar {
+   width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(110,231,255,0.15), rgba(30,58,138,0.4));
+    border: 2px solid var(--cyan-neon);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    box-shadow: 0 0 20px rgba(110,231,255,0.4);
+    position: relative;
+    margin-top: 4px;
+  }
+  .paperdoll-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 1px dashed rgba(110,231,255,0.3);
+    border-radius: 50%;
+    animation: pdPulse 3s infinite;
+  }
+  @keyframes pdPulse {
+    0%,100% { transform: scale(1); opacity: 0.4; }
+    50%     { transform: scale(1.06); opacity: 0.8; }
+  }
+  .paperdoll-name {
+    font-weight: 900; letter-spacing: 2px; color: #fff;
+    text-shadow: 0 0 8px var(--cyan-neon);
+    font-size: 0.95rem;
+    margin-top: -4px;
+  }
+  .paperdoll-class {
+    font-size: 0.72rem; color: var(--cyan-neon);
+    margin-top: -4px;
+  }
+  .paperdoll-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .pd-slot {
+    background: rgba(10,14,26,0.8);
+    border: 1px dashed rgba(110,231,255,0.25);
+    border-radius: 4px;
+    padding: 8px;
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 74px;
+    position: relative;
+  }
+  .pd-slot:hover {
+    border-color: var(--cyan-bright);
+    background: rgba(110,231,255,0.06);
+  }
+  .pd-slot.filled {
+    border-style: solid;
+    border-color: var(--cyan-neon);
+    background: linear-gradient(135deg, rgba(110,231,255,0.08), rgba(30,58,138,0.15));
+  }
+  .pd-slot-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+  .pd-slot-name {
+    font-size: 0.65rem;
+    color: #cbd5e1;
+    text-align: center;
+    line-height: 1.15;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    max-width: 100%;
+  }
+  .pd-slot-name.empty { color: #475569; font-style: italic; }
+  .pd-slot-label {
+    position: absolute;
+    top: 2px; left: 4px;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .pd-slot.locked {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+  .pd-slot.locked:hover {
+    border-color: rgba(148,163,184,0.3);
+    background: rgba(10,14,26,0.8);
+  }
+
+  /* ── Мини-статы под куклой ── */
+  .paperdoll-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .pd-stat {
+    background: rgba(10,14,26,0.7);
+    border: 1px solid rgba(110,231,255,0.12);
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-size: 0.72rem;
+    display: flex; justify-content: space-between;
+  }
+  .pd-stat-label { color: var(--text-dim); }
+  .pd-stat-val { color: #fff; font-weight: bold; }
+  .pd-stat-val.up   { color: #4ade80; }
+  .pd-stat-val.down { color: #f87171; }
+
+  /* ── Сумка ── */
+  .bag-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(110,231,255,0.15);
+  }
+  .bag-filters {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .bag-filter {
+    background: transparent;
+    border: 1px solid rgba(110,231,255,0.2);
+    color: var(--text-dim);
+    padding: 3px 9px;
+    font-size: 0.72rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .bag-filter:hover { border-color: var(--cyan-neon); color: var(--cyan-neon); }
+  .bag-filter.active {
+    background: rgba(110,231,255,0.15);
+    border-color: var(--cyan-bright);
+    color: var(--cyan-bright);
+  }
+  .bag-count-badge {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+  .bag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 6px;
+    margin-top: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .bag-item {
+    background: rgba(15,23,42,0.8);
+    border: 1px solid rgba(110,231,255,0.2);
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    position: relative;
+    transition: all 0.15s;
+    min-height: 90px;
+  }
+  .bag-item:hover {
+    border-color: var(--cyan-bright);
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(110,231,255,0.25);
+  }
+  .bag-item.rarity-legendary { border-color: var(--legendary-gold); background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(180,130,0,0.04)); }
+  .bag-item.rarity-donate    { border-color: var(--donate-pink); background: linear-gradient(135deg, rgba(255,105,180,0.08), rgba(60,20,50,0.15)); }
+  .bag-item.rarity-rare      { border-color: var(--elite-purple); background: linear-gradient(135deg, rgba(192,132,252,0.06), rgba(30,20,50,0.1)); }
+  .bag-item-icon {
+    font-size: 1.5rem;
+    text-align: center;
+    line-height: 1;
+  }
+  .bag-item-name {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.2;
+  }
+  .bag-item-count {
+    position: absolute;
+    top: 3px; right: 4px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--cyan-neon);
+    color: var(--cyan-bright);
+    font-size: 0.62rem;
+    font-weight: bold;
+    padding: 0 5px;
+    border-radius: 8px;
+  }
+  .bag-item-stats {
+    font-size: 0.62rem;
+    color: #4ade80;
+    text-align: center;
+  }
+  .bag-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-dim);
+    padding: 20px;
+    font-style: italic;
+    font-size: 0.8rem;
+  }
+
+  /* ── Item action popover ── */
+  .bag-item-actions {
+    display: flex;
+    gap: 3px;
+    margin-top: 2px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .bag-item:hover .bag-item-actions { opacity: 1; }
+  .bag-item-actions button {
+  flex: 1;
+  padding: 2px 4px;
+  font-size: 0.6rem;
+  border-radius: 3px;
+    border: 1px solid;
+    background: transparent;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .bag-item-actions .ba-equip   { color: #4ade80; border-color: #4ade80; }
+  .bag-item-actions .ba-use     { color: #60a5fa; border-color: #60a5fa; }
+  .bag-item-actions .ba-equip:hover { background: rgba(74,222,128,0.2); }
+  .bag-item-actions .ba-use:hover   { background: rgba(96,165,250,0.2); }
+
+/* ── Сравнение ── */
+  .compare-hint {
+    font-size: 0.68rem;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: rgba(74,222,128,0.1);
+    border: 1px solid #4ade80;
+    color: #4ade80;
+    margin-top: 6px;
+    text-align: center;
+  }
+  .compare-hint.bad {
+    background: rgba(248,113,113,0.1);
+    border-color: #f87171;
+    color: #f87171;
+  }
     /* ═══ CREATION ═══ */
     .creation-overlay {
       position: fixed;
@@ -2921,15 +3205,6 @@
       transition: background-color 0.8s ease, background-image 0.8s ease;
     }
 
-    body.world-night {
-      background-color: #050810;
-      background-image:
-        radial-gradient(circle at 50% 0%, rgba(80, 100, 180, 0.06) 0%, transparent 60%),
-        radial-gradient(circle at 80% 80%, rgba(30, 30, 80, 0.08) 0%, transparent 50%),
-        linear-gradient(rgba(5, 8, 16, 0.96), rgba(5, 8, 16, 0.96)),
-        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(80, 120, 255, 0.02) 2px, rgba(80, 120, 255, 0.02) 4px);
-    }
-
     /* ═══ CHRONICLES ═══ */
     .chronicle-chapter {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), rgba(15, 23, 42, 0.8));
@@ -3178,6 +3453,525 @@
         min-height: 150px;
       }
     }
+    /* ═══ СТАТУСЫ ВРАГА v2 ═══ */
+.effect-tag {
+  font-size: 0.7rem;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  animation: effectPulse 1.5s infinite;
+}
+.effect-tag.bleed  { background: rgba(220,38,38,0.18); border: 1px solid #ef4444; color: #fca5a5; }
+.effect-tag.burn   { background: rgba(249,115,22,0.18); border: 1px solid #f97316; color: #fdba74; }
+.effect-tag.poison { background: rgba(132,204,22,0.18); border: 1px solid #84cc16; color: #bef264; }
+.effect-tag.chill  { background: rgba(96,165,250,0.18); border: 1px solid #60a5fa; color: #93c5fd; }
+.effect-tag.shock  { background: rgba(251,191,36,0.18); border: 1px solid #fbbf24; color: #fde047; }
+.effect-tag.weaken { background: rgba(168,85,247,0.18); border: 1px solid #a855f7; color: #d8b4fe; }
+.effect-tag.stun   { background: rgba(148,163,184,0.18); border: 1px solid #94a3b8; color: #cbd5e1; }
+.effect-tag.freeze { background: rgba(125,211,252,0.18); border: 1px solid #7dd3fc; color: #bae6fd; }
+@keyframes effectPulse { 0%,100%{opacity:0.85;} 50%{opacity:1;} }
+
+/* ═══ COMBO METER ═══ */
+.combo-wrap {
+  position: absolute;
+  top: 6px; right: 6px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10,14,26,0.85);
+  border: 1px solid rgba(110,231,255,0.3);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  transition: all 0.2s;
+}
+.combo-wrap.active {
+  border-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(251,191,36,0.7);
+}
+.combo-wrap.max {
+  border-color: #ffd700;
+  box-shadow: 0 0 20px #ffd700;
+  animation: comboMax 0.8s infinite alternate;
+}
+@keyframes comboMax { from{transform:scale(1);} to{transform:scale(1.06);} }
+.combo-bar {
+  width: 80px; height: 6px;
+  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.combo-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fde047);
+  transition: width 0.25s;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.5);
+}
+.combo-label { color: #fde047; font-weight: bold; }
+.combo-ultimate {
+  font-size: 0.75rem;
+  color: #fff;
+  background: linear-gradient(135deg,#ffd700,#f59e0b);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-weight: 900;
+  animation: ultPulse 0.6s infinite alternate;
+  cursor: pointer;
+}
+@keyframes ultPulse { from{box-shadow:0 0 6px #ffd700;} to{box-shadow:0 0 14px #ffd700;} }
+
+/* ═══ ПАРИРОВАНИЕ (QTE) ═══ */
+.parry-overlay {
+  position: fixed; inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+.parry-overlay.active {
+  opacity: 1;
+  animation: parryFlash 1.2s ease-out forwards;
+}
+@keyframes parryFlash {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.parry-button {
+  pointer-events: auto;
+  background: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(120,20,20,0.95));
+  border: 3px solid #fbbf24;
+  box-shadow: 0 0 40px #ef4444, inset 0 0 20px rgba(251,191,36,0.4);
+  padding: 20px 40px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  cursor: pointer;
+  animation: parryPulse 0.4s infinite alternate;
+}
+@keyframes parryPulse { from{transform:scale(1);} to{transform:scale(1.08);} }
+.parry-button:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
+
+/* ═══ СЛАБОСТИ БОССА ═══ */
+.weakness-row {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  font-size: 0.7rem;
+  margin-top: 3px;
+}
+.weakness-tag {
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.weakness-tag.weak { background: rgba(34,197,94,0.18); border: 1px solid #22c55e; color: #4ade80; }
+.weakness-tag.immune { background: rgba(239,68,68,0.18); border: 1px solid #ef4444; color: #f87171; }
+
+/* ═══ МИРОВЫЕ СОБЫТИЯ ═══ */
+.world-event-banner {
+  position: fixed;
+  top: 60px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 95;
+  background: linear-gradient(135deg, rgba(60,30,90,0.97), rgba(20,10,40,0.98));
+  border: 2px solid #a855f7;
+  box-shadow: 0 0 30px rgba(168,85,247,0.8);
+  border-radius: 6px;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s;
+  max-width: 90vw;
+}
+.world-event-banner.active {
+  opacity: 1;
+  animation: worldBanner 4s ease-out;
+}
+@keyframes worldBanner {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.9); }
+  12% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+.world-event-icon { font-size: 2rem; }
+.world-event-text { display: flex; flex-direction: column; gap: 2px; }
+.world-event-title { font-size: 0.95rem; font-weight: 900; color: #d8b4fe; letter-spacing: 1px; }
+.world-event-desc { font-size: 0.78rem; color: #e9d5ff; }
+.world-event-timer { font-size: 0.72rem; color: #fbbf24; font-weight: bold; }
+
+.world-badge.event-active {
+  border-color: #a855f7;
+  background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(88,28,135,0.35));
+  color: #d8b4fe;
+  animation: worldPulse 1.5s infinite;
+}
+@keyframes worldPulse {
+  0%,100%{box-shadow:0 0 6px rgba(168,85,247,0.5);}
+  50%{box-shadow:0 0 16px rgba(168,85,247,1);}
+}
+
+/* ═══ МОДИФИКАТОРЫ ПОДЗЕМЕЛИЙ ═══ */
+.dungeon-intro-overlay {
+  position: fixed; inset: 0;
+  background: rgba(4,7,15,0.94);
+  backdrop-filter: blur(6px);
+  z-index: 95;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.dungeon-intro-overlay.active { display: flex; }
+.dungeon-intro-card {
+  background: var(--bg-panel);
+  border: 2px solid #6ee7ff;
+  box-shadow: 0 0 35px rgba(110,231,255,0.5);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 560px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dungeon-intro-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #6ee7ff;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px #6ee7ff;
+}
+.dungeon-mods-list { display: flex; flex-direction: column; gap: 8px; }
+.dungeon-mod-card {
+  background: linear-gradient(135deg, rgba(168,85,247,0.10), rgba(15,23,42,0.8));
+  border: 1px solid rgba(168,85,247,0.5);
+  border-left: 4px solid #a855f7;
+  border-radius: 4px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dungeon-mod-card:hover {
+  border-color: #d8b4fe;
+  background: rgba(168,85,247,0.18);
+  transform: translateX(3px);
+}
+.dungeon-mod-card.selected {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(120,80,0,0.1));
+  box-shadow: 0 0 12px rgba(255,215,0,0.5);
+}
+.dungeon-mod-name {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #e9d5ff;
+  margin-bottom: 2px;
+}
+.dungeon-mod-desc { font-size: 0.78rem; color: #cbd5e1; }
+.dungeon-mod-reward { font-size: 0.75rem; color: #4ade80; font-weight: bold; margin-top: 3px; }
+
+.dungeon-active-mods {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px 8px;
+  background: rgba(168,85,247,0.10);
+  border: 1px solid rgba(168,85,247,0.4);
+  border-radius: 3px;
+  font-size: 0.72rem;
+  margin-bottom: 4px;
+}
+.dungeon-active-mods .dmod {
+  background: rgba(168,85,247,0.2);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: #d8b4fe;
+  font-weight: bold;
+}
+
+/* ═══ ЭВОЛЮЦИЯ ПИТОМЦА ═══ */
+.pet-card.evolved {
+  background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(120,80,0,0.15));
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251,191,36,0.6);
+}
+.pet-card.evolved .pet-card-name { color: #fde047; }
+/* ═══ LILIAN QUEST v2 ═══ */
+.lily-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(244,114,182,0.12), rgba(190,24,93,0.08));
+  border: 1px solid #f472b6;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+.lily-hp-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(10,14,26,0.9);
+  border: 1px solid rgba(244,114,182,0.5);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 120px;
+}
+.lily-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ec4899, #f9a8d4);
+  transition: width 0.4s ease;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
+}
+.lily-hp-text { color: #fbcfe8; font-weight: bold; white-space: nowrap; }
+
+.lily-timer {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lily-timer.warn {
+  animation: lilyTimerPulse 0.7s infinite;
+}
+@keyframes lilyTimerPulse {
+  0%,100% { box-shadow: 0 0 4px rgba(239,68,68,0.5); }
+  50%     { box-shadow: 0 0 14px rgba(239,68,68,1); }
+}
+
+.lily-choice-btn {
+  position: relative;
+  overflow: hidden;
+}
+.lily-choice-btn.hidden-choice {
+  border-color: #a855f7;
+  background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(88,28,135,0.15));
+  animation: hiddenChoicePulse 2s infinite;
+}
+@keyframes hiddenChoicePulse {
+  0%,100% { box-shadow: 0 0 6px rgba(168,85,247,0.4); }
+  50%     { box-shadow: 0 0 16px rgba(168,85,247,0.9); }
+}
+.lily-choice-btn.hidden-choice::after {
+  content: '✨';
+  position: absolute;
+  top: 3px; right: 6px;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.lily-dmg-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: #ef4444;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px #ef4444;
+  animation: lilyDmgFloat 1.2s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes lilyDmgFloat {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  20%  { opacity: 1; transform: translateY(-4px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+}
+
+.lily-scene-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,114,182,0.3), rgba(190,24,93,0.5));
+  border: 2px solid #f472b6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 0 15px rgba(244,114,182,0.5);
+  flex-shrink: 0;
+  animation: lilyAvatarPulse 3s infinite;
+}
+@keyframes lilyAvatarPulse {
+  0%,100% { box-shadow: 0 0 10px rgba(244,114,182,0.4); }
+  50%     { box-shadow: 0 0 22px rgba(244,114,182,0.9); }
+}
+/* ═══ WHAT'S NEW ═══ */
+.whats-new-window {
+  border-color: #6ee7ff;
+  box-shadow: 0 0 40px rgba(110, 231, 255, 0.5);
+}
+
+.whats-new-hero {
+  text-align: center;
+  padding: 20px 16px;
+  background: linear-gradient(135deg, rgba(110, 231, 255, 0.15), rgba(168, 85, 247, 0.10));
+  border: 2px solid #6ee7ff;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.whats-new-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(110, 231, 255, 0.15), transparent 30%);
+  animation: whatsNewRotate 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes whatsNewRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.whats-new-version {
+  position: relative;
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #000;
+  background: linear-gradient(135deg, #6ee7ff, #00f0ff);
+  padding: 3px 14px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  box-shadow: 0 0 15px rgba(110, 231, 255, 0.8);
+}
+
+.whats-new-title {
+  position: relative;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #fff;
+  text-shadow: 0 0 20px #6ee7ff, 0 0 40px rgba(110, 231, 255, 0.5);
+}
+
+.whats-new-subtitle {
+  position: relative;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.whats-new-section {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(110, 231, 255, 0.25);
+  border-left: 4px solid #6ee7ff;
+  border-radius: 5px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+
+.whats-new-section.purple { border-left-color: #a855f7; }
+.whats-new-section.gold   { border-left-color: #ffd700; }
+.whats-new-section.pink   { border-left-color: #f472b6; }
+.whats-new-section.red    { border-left-color: #ef4444; }
+.whats-new-section.green  { border-left-color: #22c55e; }
+
+.whats-new-section-title {
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #6ee7ff;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.whats-new-section.purple .whats-new-section-title { color: #d8b4fe; }
+.whats-new-section.gold   .whats-new-section-title { color: #ffd700; }
+.whats-new-section.pink   .whats-new-section-title { color: #f9a8d4; }
+.whats-new-section.red    .whats-new-section-title { color: #fca5a5; }
+.whats-new-section.green  .whats-new-section-title { color: #4ade80; }
+
+.whats-new-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.whats-new-item {
+  font-size: 0.82rem;
+  color: #e2e8f0;
+  line-height: 1.45;
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.whats-new-item .marker {
+  color: #6ee7ff;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.whats-new-section.purple .marker { color: #a855f7; }
+.whats-new-section.gold   .marker { color: #ffd700; }
+.whats-new-section.pink   .marker { color: #f472b6; }
+.whats-new-section.red    .marker { color: #ef4444; }
+.whats-new-section.green  .marker { color: #22c55e; }
+
+.whats-new-item.highlight {
+  background: rgba(255, 215, 0, 0.08);
+  padding: 3px 6px;
+  border-radius: 3px;
+  border-left: 2px solid #ffd700;
+}
+
+.whats-new-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.whats-new-tag.new {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+}
+
+.whats-new-tag.fix {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid #fbbf24;
+  color: #fde047;
+}
+/* ═══ ЛИЛИ В СЮЖЕТЕ ═══ */
+.lily-bond-badge {
+  animation: lilyBondPulse 2.5s infinite;
+}
+@keyframes lilyBondPulse {
+  0%,100% { box-shadow: 0 0 4px rgba(244,114,182,0.3); }
+  50%     { box-shadow: 0 0 12px rgba(244,114,182,0.7); }
+}
   </style>
 </head>
 
@@ -3413,6 +4207,7 @@
         <button class="sao-btn footer-btn btn-class" id="btn-open-forge">🔨 Кузница</button>
         <button class="sao-btn footer-btn btn-donate" id="btn-open-donate">💎 Донат</button>
         <button class="sao-btn footer-btn btn-admin" id="btn-open-admin">🔧 Админ</button>
+        <button class="sao-btn footer-btn" id="btn-open-whats-new" style="border-color: #6ee7ff; color: #6ee7ff;" title="Что нового">📋</button>
         <button class="sao-btn footer-btn" id="btn-save-game">💾</button>
         <button class="sao-btn footer-btn" id="btn-load-game">📂</button>
       </div>
@@ -3439,21 +4234,44 @@
     </div>
   </div>
 
-  <!-- INVENTORY -->
-  <div class="modal-overlay" id="modal-inventory">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-title">🎒 ИНВЕНТАРЬ</div><button class="modal-close-btn"
-          onclick="closeModal('modal-inventory')">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="font-size:0.82rem; color:var(--cyan-neon);">ЭКИПИРОВАНО</div>
-        <div class="items-list" id="equipped-items-list"></div>
-        <div style="font-size:0.82rem; color:var(--cyan-neon); margin-top:6px;">СУМКА</div>
-        <div class="items-list" id="bag-items-list"></div>
+<!-- INVENTORY (paper-doll) -->
+<div class="modal-overlay" id="modal-inventory">
+  <div class="modal-window" style="max-width: 950px;">
+    <div class="modal-header">
+      <div class="modal-title">🎒 ИНВЕНТАРЬ И ЭКИПИРОВКА</div>
+      <button class="modal-close-btn" onclick="closeModal('modal-inventory')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="inv-layout">
+        <!-- ── Кукла ── -->
+        <div class="paperdoll">
+          <div class="paperdoll-avatar" id="pd-avatar">🧑</div>
+          <div class="paperdoll-name" id="pd-name">—</div>
+          <div class="paperdoll-class" id="pd-class">—</div>
+
+          <div class="paperdoll-slots" id="pd-slots"></div>
+
+          <div class="paperdoll-stats" id="pd-stats"></div>
+        </div>
+
+        <!-- ── Сумка ── -->
+        <div style="display:flex; flex-direction:column; gap:8px; min-height:0;">
+          <div class="bag-header">
+            <div class="bag-filters" id="bag-filters">
+              <button class="bag-filter active" data-filter="all">Все</button>
+              <button class="bag-filter" data-filter="weapon">⚔️ Оружие</button>
+              <button class="bag-filter" data-filter="armor">🛡️ Броня</button>
+              <button class="bag-filter" data-filter="consumable">🧪 Зелья</button>
+              <button class="bag-filter" data-filter="valuable">📦 Материалы</button>
+            </div>
+            <div class="bag-count-badge" id="bag-count-badge">0 / 0</div>
+          </div>
+          <div class="bag-grid" id="bag-grid"></div>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
   <!-- SHOP -->
   <div class="modal-overlay" id="modal-shop">
@@ -3624,6 +4442,7 @@
           onclick="closeModal('modal-lily')">✕</button>
       </div>
       <div class="modal-body">
+        <div id="lily-status-bar" style="display:none; margin-bottom:10px;"></div>
         <div id="lily-content"></div>
         <div id="lily-choices" style="display:flex; flex-direction:column; gap:6px;"></div>
       </div>
@@ -3738,7 +4557,62 @@
       <div class="laststand-hp">1 / MAX HP</div>
     </div>
   </div>
+<!-- COMBO OVERLAY -->
+<div class="combo-wrap" id="combo-wrap" style="display:none;">
+  <span class="combo-label">COMBO</span>
+  <div class="combo-bar"><div class="combo-fill" id="combo-fill" style="width:0%"></div></div>
+  <span id="combo-value">0</span>
+</div>
 
+<!-- PARRY QTE -->
+<div class="parry-overlay" id="parry-overlay">
+  <button class="parry-button" id="parry-btn" onclick="onParryClick()">⚔️ ПАРИРУЙ!</button>
+</div>
+
+<!-- WORLD EVENT BANNER -->
+<div class="world-event-banner" id="world-event-banner">
+  <div class="world-event-icon" id="we-icon">🌕</div>
+  <div class="world-event-text">
+    <div class="world-event-title" id="we-title">Кровавая Луна</div>
+    <div class="world-event-desc" id="we-desc">Описание</div>
+    <div class="world-event-timer" id="we-timer">⏱ 0:00</div>
+  </div>
+</div>
+
+<!-- DUNGEON INTRO -->
+<div class="dungeon-intro-overlay" id="dungeon-intro">
+  <div class="dungeon-intro-card">
+    <div class="dungeon-intro-title">💀 ПОДЗЕМЕЛЬЕ ЭТАЖА <span id="dungeon-floor-num">1</span></div>
+    <div style="font-size:0.82rem; color:#cbd5e1; text-align:center;">
+      Выберите модификаторы (до 2-х). Чем сложнее — тем больше награда.
+    </div>
+    <div class="dungeon-mods-list" id="dungeon-mods-list"></div>
+    <div style="display:flex; gap:8px; margin-top:6px;">
+      <button class="sao-btn btn-hunt" style="flex:1; padding:12px;" onclick="confirmDungeonMods()">▶️ ВОЙТИ</button>
+      <button class="sao-btn" style="flex:0.4; padding:12px;" onclick="cancelDungeonIntro()">✕</button>
+    </div>
+  </div>
+<!-- ═══ WHAT'S NEW ═══ -->
+  <div class="modal-overlay" id="modal-whats-new">
+    <div class="modal-window whats-new-window" style="max-width: 900px;">
+      <div class="modal-header">
+        <div class="modal-title">📋 ЧТО НОВОГО</div>
+        <button class="modal-close-btn" onclick="closeModal('modal-whats-new')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="whats-new-hero">
+          <div class="whats-new-version">v6.2</div>
+          <div class="whats-new-title">AINCRAD CHRONICLES</div>
+          <div class="whats-new-subtitle">Большое обновление — бой, мир, Лили</div>
+        </div>
+        <div id="whats-new-sections"></div>
+        <button class="sao-btn btn-boss" style="padding: 14px; font-size: 1rem; margin-top: 8px;" onclick="closeModal('modal-whats-new')">
+          ⚔️ В БОЙ!
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
   <!-- Firebase compat SDK (классический, без модулей) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
@@ -4437,6 +5311,7 @@
       changeIntervalMs: 3 * 60 * 1000 // 3 минуты
     };
     let worldClockStarted = false;
+    let _worldClockIntervalId = null;
 
     function rollWorldState() {
       worldState.timeOfDay = Math.random() < 0.5 ? 'day' : 'night';
@@ -4464,7 +5339,8 @@
       if (worldClockStarted) return;
       worldClockStarted = true;
       rollWorldState();
-      setInterval(tickWorldClock, 1000);
+      if (_worldClockIntervalId) clearInterval(_worldClockIntervalId);  
+      _worldClockIntervalId = setInterval(tickWorldClock, 1000);        
     }
 
     function updateWorldHUD() {
@@ -4535,8 +5411,7 @@
 
     // ── Заменяем старую функцию (убираем CSS-классы мира) ──
     function applyWorldVisuals() {
-      document.body.classList.remove('world-night', 'world-rain', 'world-snow', 'world-storm');
-      if (worldState.timeOfDay === 'night') document.body.classList.add('world-night');
+      document.body.classList.toggle('world-night', worldState.timeOfDay === 'night');
       buildWeatherParticles();
     }
 
@@ -4804,8 +5679,9 @@
       const name = `${DYNAMIC_NAMES_1[Math.floor(Math.random() * DYNAMIC_NAMES_1.length)]} ${DYNAMIC_NAMES_2[Math.floor(Math.random() * DYNAMIC_NAMES_2.length)]}`;
       const dyn = { id: 'dyn_' + Date.now() + '_' + Math.floor(Math.random() * 1000), icon: tpl.icon, name, desc: tpl.desc, rewardText: tpl.rewardText, dynamic: true };
       if (!player.dynamicAchievements) player.dynamicAchievements = [];
+      if (player.dynamicAchievements.length >= 30) return;
       player.dynamicAchievements.push(dyn);
-      if (tpl.reward) {
+      if (tpl.reward) { 
         for (const [key, amount] of Object.entries(tpl.reward)) {
           if (key === 'hp') { player.achievementBonuses.hp += amount; player.hp = Math.min(player.hp + amount, getTotalMaxHp()); }
           else if (key === 'mp') { player.achievementBonuses.mp += amount; player.mp = Math.min(player.mp + amount, getTotalMaxMp()); }
@@ -6270,8 +7146,7 @@
        ═══════════════════════════════════════════════════════════════ */
     function openDonateModal() {
       document.getElementById('donate-player-balance').textContent = player.donateCurrency || 0;
-      switchDonateTab(currentDonateTab);
-      playSound('donate');
+      switchDonateTab(currentDonateTab);   
       openModal('modal-donate');
     }
     function switchDonateTab(tab) {
@@ -6487,7 +7362,6 @@
   `;
       updateAdminPlayersBanner();
       loadAllPlayersAdmin();
-      loadAllPlayersAdmin();
     }
     function updateAdminPlayersBanner() {
       const banner = document.getElementById('admin-players-banner');
@@ -6646,12 +7520,15 @@
         return;
       }
 
-      // ⬇️⬇️⬇️ ДОБАВИТЬ: отменяем отложенное автосохранение, чтобы оно не перезаписало правку
+      // ⬇️ Отменяем отложенное автосохранение и ставим автосейв на паузу,
+      //    чтобы игра не перезаписала правку через 5 секунд
       cancelPendingCloudSave();
+      _cloudAutoSavePaused = true;
+      if (typeof updateAdminPlayersBanner === 'function') updateAdminPlayersBanner();
 
       window._firebaseDB.ref('players/' + key).set(parsed)
         .then(() => {
-          // ⬇️⬇️⬇️ ДОБАВИТЬ: если правим СЕБЯ — синхронизируем локальный player
+          // ⬇️ Если правим СЕБЯ — синхронизируем локальный player
           if (player && safePlayerKey(player.name) === key) {
             const clean = JSON.parse(JSON.stringify(parsed));
             ['_atk', '_def', '_maxHp', '_maxMp', '_class', '_race', 'online'].forEach(f => delete clean[f]);
@@ -6661,16 +7538,18 @@
             renderZone();
           }
           errEl.style.color = '#4ade80';
-          errEl.textContent = '✓ Сохранено в облако!';
-          showToast('💾 Игрок сохранён');
+          errEl.textContent = '✓ Сохранено в облако! (автосейв на паузе)';
+          showToast('💾 Сохранено. Автосейв на паузе');
           loadAllPlayersAdmin();
         })
         .catch(err => {
+          // Если не получилось — снимаем паузу обратно
+          _cloudAutoSavePaused = false;
+          if (typeof updateAdminPlayersBanner === 'function') updateAdminPlayersBanner();
           errEl.style.color = '#f87171';
           errEl.textContent = '❌ ' + err.message;
         });
-    }
-
+      }
     function deleteAdminPlayer(key) {
       if (!confirm('Удалить игрока "' + key + '" из облака?')) return;
       window._firebaseDB.ref('players/' + key).remove()
@@ -7015,57 +7894,6 @@
         ]
       }
     ];
-    function startBossDialog() { showDialogPhase(0); openModal('modal-dialogue'); }
-    function showDialogPhase(phaseIdx) {
-      const phase = BOSS_DIALOG[phaseIdx];
-      if (!phase) { closeModal('modal-dialogue'); return; }
-      document.getElementById('npc-name-title').textContent = phase.name;
-      document.getElementById('npc-speech-text').innerHTML = `<div style="font-style:italic; color:#ff6b9d;">💬 ${phase.text}</div>`;
-      addLog(`💬 [Босс]: ${phase.text.substring(0, 80)}...`, 'boss-talk');
-      const choicesDiv = document.getElementById('npc-choices');
-      choicesDiv.innerHTML = '';
-      phase.choices.forEach(choice => {
-        const btn = document.createElement('button');
-        btn.className = 'sao-btn btn-skill';
-        btn.style.padding = '8px'; btn.style.textAlign = 'left'; btn.style.justifyContent = 'flex-start';
-        btn.innerHTML = choice.text;
-        btn.onclick = () => {
-          playSound('click');
-          if (choice.start) {
-            const floor = getCurrentFloor();
-            closeModal('modal-dialogue');
-            const boss = generateBoss(floor);
-            boss.hp = Math.round(boss.hp * 1.3); boss.maxHp = boss.hp;
-            boss.atk = Math.round(boss.atk * 1.2);
-            boss.name = `${boss.name} (Истинная форма)`;
-            startBossFightCustom(boss);
-          } else { showDialogPhase(choice.next); }
-        };
-        choicesDiv.appendChild(btn);
-      });
-      document.getElementById('npc-close-btn').style.display = 'none';
-    }
-    function startBossFightCustom(boss) {
-      combatState.active = true;
-      combatState.lastStandUsed = false;
-      combatState.enemy = { ...boss, baseAtk: boss.atk, defDebuff: 0, bleedTurns: 0, bleedDmg: 0, frozenTurns: 0, stunnedTurns: 0 };
-      const e = combatState.enemy;
-      document.getElementById('enemy-card-container').className = 'enemy-card miniboss';
-      document.getElementById('enemy-avatar').className = 'enemy-avatar miniboss';
-      document.getElementById('enemy-name').className = 'enemy-name miniboss';
-      document.getElementById('enemy-hp-bar').className = 'enemy-hp-bar-fill boss';
-      document.getElementById('enemy-tier-row').innerHTML = `<span class="tier-tag boss">👑 ИСТИННАЯ ФОРМА</span>`;
-      document.getElementById('enemy-mods-row').innerHTML = '';
-      document.getElementById('enemy-name').textContent = e.name;
-      document.getElementById('enemy-atk-preview').textContent = `ATK: ${e.atk} | DEF: ${e.def}`;
-      document.getElementById('enemy-avatar').innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none">${e.svg}</svg>`;
-      updateEnemyHpBar();
-      document.getElementById('battle-stage').style.display = 'flex';
-      playSound('miniboss');
-      addLog(`👑 [ИСТИННАЯ ФОРМА] ${e.name}! HP ${e.maxHp}`, 'miniboss');
-      renderCombatButtons(); updateHUD();
-    }
-
     /* ═══════════════════════════════════════════════════════════════
        ACHIEVEMENTS UI
        ═══════════════════════════════════════════════════════════════ */
@@ -7325,38 +8153,210 @@
       if (ex.count <= 0) player.inventory = player.inventory.filter(i => i.id !== id);
       updateHUD();
     }
-    function renderInventoryModal() {
-      const eq = document.getElementById('equipped-items-list');
-      const bag = document.getElementById('bag-items-list');
-      eq.innerHTML = ''; bag.innerHTML = '';
-      const w = ITEMS_DB[player.equippedWeapon];
-      if (w) eq.appendChild(createItemCard(w, 1, true, 'weapon'));
-      const a = ITEMS_DB[player.equippedArmor];
-      if (a) eq.appendChild(createItemCard(a, 1, true, 'armor'));
-      if (player.inventory.length === 0) bag.innerHTML = `<div style="color:var(--text-dim); padding:6px;">Пусто.</div>`;
-      else player.inventory.forEach(inv => { const it = ITEMS_DB[inv.id]; if (it) bag.appendChild(createItemCard(it, inv.count, false)); });
+/* ═══════════════════════════════════════════════════════════════
+   INVENTORY v2 — paper-doll + сетка
+   ═══════════════════════════════════════════════════════════════ */
+let _invFilter = 'all';
+
+function getItemIcon(item) {
+  if (!item) return '❔';
+  if (item.type === 'weapon') return WEAPON_TYPES[item.weaponType]?.icon || '⚔️';
+  if (item.type === 'armor')  return '🛡️';
+  if (item.type === 'consumable') {
+    if (item.fullHeal) return '💎';
+    if (item.healHp)   return '🧪';
+    if (item.healMp)   return '💧';
+    if (item.teleportTown) return '🌀';
+    return '🧪';
+  }
+  if (item.type === 'valuable') {
+    if (item.id === 'mat_ore') return '🪨';
+    if (item.id === 'mat_crystal') return '💎';
+    if (item.id === 'mat_dragon_scale') return '🐉';
+    if (item.id === 'mat_lily_charm') return '🌸';
+    return '📦';
+  }
+  return '❔';
+}
+function getItemRarityClass(item) {
+  if (!item) return '';
+  if (item.donate) return 'rarity-donate';
+  if (item.legendary) return 'rarity-legendary';
+  if (item.type === 'weapon' && (item.atk || 0) > 200) return 'rarity-rare';
+  return '';
+}
+
+/* Открыть модалку инвентаря */
+function renderInventoryModal() {
+  const w = ITEMS_DB[player.equippedWeapon];
+  const a = ITEMS_DB[player.equippedArmor];
+
+  // ── Кукла: имя, класс, аватар
+  document.getElementById('pd-avatar').textContent = player.gender === 'female' ? '👩' : '🧑';
+  document.getElementById('pd-avatar').style.borderColor = player.color;
+  document.getElementById('pd-avatar').style.boxShadow = `0 0 20px ${player.color}55`;
+  document.getElementById('pd-name').textContent = player.name;
+  document.getElementById('pd-class').textContent = `${getClass().icon} ${getClass().name} • Lv. ${player.level}`;
+
+  // ── Слоты
+  const slots = [
+    { id: 'weapon',    icon: '⚔️', label: 'ОРУЖИЕ', item: w,  kind: 'weapon', enabled: true },
+    { id: 'armor',     icon: '🛡️', label: 'БРОНЯ',  item: a,  kind: 'armor',  enabled: true },
+    { id: 'helmet',    icon: '⛑️', label: 'ШЛЕМ',   item: null, kind: 'helmet', enabled: false },
+    { id: 'accessory', icon: '💍', label: 'АКСЕСС.', item: null, kind: 'accessory', enabled: false }
+  ];
+  const slotsEl = document.getElementById('pd-slots');
+  slotsEl.innerHTML = slots.map(s => {
+    const filled = !!s.item;
+    const cls = ['pd-slot', filled ? 'filled' : '', !s.enabled ? 'locked' : ''].filter(Boolean).join(' ');
+    return `
+      <div class="${cls}" ${s.enabled ? `onclick="pdSlotClick('${s.id}')"` : ''}>
+        <span class="pd-slot-label">${s.label}</span>
+        <span class="pd-slot-icon">${s.item ? getItemIcon(s.item) : s.icon}</span>
+        <span class="pd-slot-name ${filled ? '' : 'empty'}">${s.item ? s.item.name : (s.enabled ? 'Пусто' : 'Скоро')}</span>
+      </div>`;
+  }).join('');
+
+  // ── Статы
+  const statsEl = document.getElementById('pd-stats');
+  const atk = getTotalAtk(), def = getTotalDef(), crit = getTotalCrit();
+  const hp  = getTotalMaxHp(), mp = getTotalMaxMp();
+  const wAtk = w ? (w.atk || 0) : 0;
+  const wDef = w ? (w.def || 0) : 0;
+  const aDef = a ? (a.def || 0) : 0;
+  const upBonus = getUpgradeBonus(w);
+  const upBonusA = getUpgradeBonus(a);
+  const plusAtk = upBonus ? upBonus.atk : 0;
+  const plusDef = (upBonus?.def || 0) + (upBonusA?.def || 0);
+  statsEl.innerHTML = `
+    <div class="pd-stat"><span class="pd-stat-label">HP</span><span class="pd-stat-val">${hp}</span></div>
+    <div class="pd-stat"><span class="pd-stat-label">MP</span><span class="pd-stat-val">${mp}</span></div>
+    <div class="pd-stat"><span class="pd-stat-label">ATK</span><span class="pd-stat-val">${atk}</span></div>
+    <div class="pd-stat"><span class="pd-stat-label">DEF</span><span class="pd-stat-val">${def}</span></div>
+    <div class="pd-stat"><span class="pd-stat-label">КРИТ</span><span class="pd-stat-val">${crit.toFixed(1)}%</span></div>
+    <div class="pd-stat"><span class="pd-stat-label">Col</span><span class="pd-stat-val" style="color:#f59e0b;">${player.col}</span></div>
+  `;
+
+  // ── Сумка
+  renderBagGrid();
+}
+
+function pdSlotClick(slotId) {
+  if (slotId === 'weapon') {
+    if (player.equippedWeapon === 'w_rusty') { showToast('Сначала наденьте оружие'); return; }
+    unequipSlot('weapon');
+    renderInventoryModal();
+  } else if (slotId === 'armor') {
+    if (player.equippedArmor === 'a_cloth') { showToast('Сначала наденьте броню'); return; }
+    unequipSlot('armor');
+    renderInventoryModal();
+  }
+}
+
+function renderBagGrid() {
+  const grid = document.getElementById('bag-grid');
+  const bagCount = player.inventory.reduce((s, i) => s + i.count, 0);
+  document.getElementById('bag-count-badge').textContent = `Слотов: ${bagCount}`;
+
+  // фильтр
+  const filter = _invFilter;
+  let items = player.inventory.filter(inv => {
+    const it = ITEMS_DB[inv.id];
+    if (!it) return false;
+    if (filter === 'all') return true;
+    if (filter === 'weapon') return it.type === 'weapon';
+    if (filter === 'armor') return it.type === 'armor';
+    if (filter === 'consumable') return it.type === 'consumable';
+    if (filter === 'valuable') return it.type === 'valuable';
+    return true;
+  });
+
+  // сортировка: сначала экипировка, потом расходники, потом материалы
+  const order = { weapon: 0, armor: 1, consumable: 2, valuable: 3 };
+  items.sort((A, B) => {
+    const a = ITEMS_DB[A.id], b = ITEMS_DB[B.id];
+    return (order[a.type] ?? 9) - (order[b.type] ?? 9);
+  });
+
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="bag-empty">Пусто${filter !== 'all' ? ' (фильтр: ' + filter + ')' : ''}. Загляни в магазин.</div>`;
+    return;
+  }
+
+  // Текущие статы для сравнения
+  const curAtk = getTotalAtk();
+  const curDef = getTotalDef();
+
+  grid.innerHTML = items.map(inv => {
+    const it = ITEMS_DB[inv.id];
+    if (!it) return '';
+    const rarity = getItemRarityClass(it);
+    const canEq = it.type === 'weapon' || it.type === 'armor';
+    const canEquipWeapon = !canEq || it.type === 'armor' || canEquipWeaponCheck(it);
+    const stats = [];
+    if (it.atk) stats.push(`+${it.atk} ATK`);
+    if (it.def) stats.push(`+${it.def} DEF`);
+    if (it.healHp) stats.push(`+${it.healHp} HP`);
+    if (it.healMp) stats.push(`+${it.healMp} MP`);
+    if (it.fullHeal) stats.push(`FULL`);
+
+    // Сравнение для оружия/брони
+    let compareHtml = '';
+    if (it.type === 'weapon' && canEquipWeapon) {
+      const diff = (it.atk || 0) - (ITEMS_DB[player.equippedWeapon]?.atk || 0);
+      if (diff !== 0) {
+        compareHtml = `<div class="compare-hint ${diff < 0 ? 'bad' : ''}">${diff > 0 ? '+' : ''}${diff} ATK</div>`;
+      }
+    } else if (it.type === 'armor') {
+      const diff = (it.def || 0) - (ITEMS_DB[player.equippedArmor]?.def || 0);
+      if (diff !== 0) {
+        compareHtml = `<div class="compare-hint ${diff < 0 ? 'bad' : ''}">${diff > 0 ? '+' : ''}${diff} DEF</div>`;
+      }
     }
-    function createItemCard(item, count, isEq, slotType) {
-      const d = document.createElement('div');
-      const canEquip = canEquipWeapon(item);
-      d.className = `item-card ${isEq ? 'equipped' : ''} ${item.donate ? 'donate-item' : ''} ${!isEq && !canEquip ? 'locked-weapon' : ''}`;
-      let stats = '';
-      if (item.atk) stats += `+${item.atk} ATK `;
-      if (item.def) stats += `+${item.def} DEF `;
-      if (item.healHp) stats += `+${item.healHp} HP `;
-      if (item.healMp) stats += `+${item.healMp} MP `;
-      if (item.fullHeal) stats += `100% HP/MP `;
-      let tag = 'Предмет';
-      if (item.type === 'weapon') tag = WEAPON_TYPES[item.weaponType]?.name || 'Оружие';
-      if (item.type === 'armor') tag = 'Броня';
-      if (item.type === 'consumable') tag = 'Зелье';
-      if (item.type === 'valuable') tag = 'Материал'; d.innerHTML = `<div class="item-main"><div class="item-name-row"><span class="item-name ${item.legendary ? 'legendary' : ''} ${item.donate ? 'donate' : ''}">${item.name}</span><span class="item-tag ${item.donate ? 'donate' : ''}">${tag}</span>${count > 1 ? `<span style="font-size:0.72rem; color:#94a3b8;">x${count}</span>` : ''}</div><div class="item-desc">${item.desc}${!canEquip ? ' ⚠ Не ваш тип оружия!' : ''}</div>${stats ? `<div class="item-stat-badge ${item.donate ? 'donate' : ''}">${stats}</div>` : ''}</div><div class="item-actions"></div>`;
-      const actions = d.querySelector('.item-actions');
-      if (isEq) { const b = document.createElement('button'); b.className = 'sao-btn mini-btn'; b.textContent = 'Снять'; b.onclick = () => unequipSlot(slotType); actions.appendChild(b); }
-      else if (item.type === 'weapon' || item.type === 'armor') { const b = document.createElement('button'); b.className = 'sao-btn mini-btn btn-skill'; b.textContent = canEquip ? 'Надеть' : 'Нельзя'; b.disabled = !canEquip; b.onclick = () => equipItem(item.id); actions.appendChild(b); }
-      else if (item.type === 'consumable') { const b = document.createElement('button'); b.className = 'sao-btn mini-btn btn-item'; b.textContent = 'Использовать'; b.onclick = () => useItem(item.id); actions.appendChild(b); }
-      return d;
+
+    const actions = [];
+    if (canEq && canEquipWeapon) {
+      actions.push(`<button class="ba-equip" onclick="event.stopPropagation();equipFromBag('${it.id}')">Надеть</button>`);
+    } else if (canEq && !canEquipWeapon) {
+      actions.push(`<button disabled title="Другой класс" style="opacity:0.4; cursor:not-allowed; flex:1; padding:2px 4px; font-size:0.6rem; border-radius:3px; border:1px solid #64748b; background:transparent; color:#64748b;">🚫</button>`);
     }
+    if (it.type === 'consumable') actions.push(`<button class="ba-use" onclick="event.stopPropagation();useItem('${it.id}');">Исп.</button>`);
+
+    return `
+      <div class="bag-item ${rarity}" title="${it.name}${it.desc ? ' — ' + it.desc : ''}">
+        ${inv.count > 1 ? `<span class="bag-item-count">×${inv.count}</span>` : ''}
+        <div class="bag-item-icon">${getItemIcon(it)}</div>
+        <div class="bag-item-name">${it.name}</div>
+        ${stats.length ? `<div class="bag-item-stats">${stats.join(' · ')}</div>` : ''}
+        ${compareHtml}
+        ${actions.length ? `<div class="bag-item-actions">${actions.join('')}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+  /* Хелпер: можно ли экипировать это оружие (проверка класса) */
+  function canEquipWeaponCheck(item) {
+    if (!item || item.type !== 'weapon') return true;
+    if (item.id === 'w_rusty') return true;
+    return item.weaponType === getClass().weaponType;
+  }
+  
+  /* Надеть из сумки (аналог equipItem, но безопаснее) */
+  function equipFromBag(id) {
+    equipItem(id);
+  }
+  
+  /* Обработчик фильтров сумки */
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('#bag-filters .bag-filter');
+    if (!btn) return;
+    _invFilter = btn.dataset.filter;
+    document.querySelectorAll('#bag-filters .bag-filter').forEach(b =>
+      b.classList.toggle('active', b === btn)
+    );
+    renderBagGrid();
+  });
     function equipItem(id) {
       const item = ITEMS_DB[id];
       if (!item) return;
@@ -7682,7 +8682,8 @@
       let fp = '';
       for (let n = 1; n <= MAX_FLOOR; n++) {
         if (n % 10 === 1 && n > 1) fp += '<br>';
-        const bd = player.bossesDefeated[BOSSES_DB[n]?.id];
+        const isBossFloor = n % BOSS_INTERVAL === 0;
+        const bd = isBossFloor && BOSSES_DB[n] ? player.bossesDefeated[BOSSES_DB[n].id] : false;
         const un = player.unlockedFloors[n];
         const st = bd ? '✓' : (un ? '◉' : '🔒');
         const col = bd ? '#22c55e' : (un ? '#fbbf24' : '#94a3b8');
@@ -7706,8 +8707,7 @@
     <button class="sao-btn btn-skill" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openSkillsModal();">📚 ИЗУЧИТЬ СКИЛЛЫ</button>
     <button class="sao-btn btn-race" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openRaceChangeModal();">🧑 СМЕНИТЬ РАСУ (10 ДК)</button>
     <button class="sao-btn btn-teleport" style="padding:10px; font-size:0.9rem;" onclick="closeModal('modal-status'); openTeleportModal();">🌀 ТЕЛЕПОРТАЦИЯ</button>
-  `;
-    }
+  `;}
 
     /* ═══════════════════════════════════════════════════════════════
        PERMADEATH
@@ -7737,7 +8737,8 @@
       const endingLabels = {
         freedom: { icon: '🕊️', name: 'Освобождение' },
         preserve: { icon: '👑', name: 'Хранитель Айнкрада' },
-        escape: { icon: '🚪', name: 'Побег в реальный мир' }
+        escape: { icon: '🚪', name: 'Побег в реальный мир' },
+        lily_path: { icon: '🌸', name: 'Путь Лили' }
       };
       const endInfo = ending ? endingLabels[ending] : null;
       c.innerHTML = `
@@ -7935,7 +8936,7 @@
           player.completedChapters = [];
           const legacyProgress = player.chronicleProgress || 0;
           if (legacyProgress > 0) {
-            const legacyFloors = [10, 30, 50, 75, 100];
+            const legacyFloors = [5, 10, 20, 30, 40, 50, 65, 75, 90, 100]
             for (let i = 0; i < Math.min(legacyProgress, legacyFloors.length); i++) {
               const ch = CHRONICLES.find(c => c.floor === legacyFloors[i]);
               if (ch) player.completedChapters.push(ch.id);
@@ -7981,6 +8982,7 @@
     document.getElementById('btn-open-admin').addEventListener('click', openAdminLogin);
     document.getElementById('btn-save-game').addEventListener('click', () => saveGame(false));
     document.getElementById('btn-load-game').addEventListener('click', () => loadGame());
+    document.getElementById('btn-open-whats-new')?.addEventListener('click', openWhatsNew);
     document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); }); });
 
     /* ═══════════════════════════════════════════════════════════════
@@ -8068,6 +9070,7 @@
       worldClockStarted = false; startWorldClock();
       startPresence();               // ⬅️ онлайн-статус
       scheduleCloudSave(true);       // ⬅️ сразу в облако
+      maybeShowWhatsNew(false);
     });
 
     /* ═══════════════════════════════════════════════════════════════
@@ -8195,6 +9198,2478 @@
         window.syncLogContext = () => { };
       }
     })();
+      /* ═══════════════════════════════════════════════════════════════
+     ⚔️ СИСТЕМА СТАТУСОВ (Effects v2)
+     ═══════════════════════════════════════════════════════════════ */
+  const EFFECTS_DB = {
+    bleed:  { icon: '🩸', name: 'Кровотечение', color: '#ef4444', dmgPct: 0.04, maxStacks: 5 },
+    burn:   { icon: '🔥', name: 'Горение',      color: '#f97316', dmgPct: 0.06, maxStacks: 3 },
+    poison: { icon: '☠️', name: 'Яд',            color: '#84cc16', dmgPct: 0.03, maxStacks: 5 },
+    chill:  { icon: '❄️', name: 'Холод',         color: '#60a5fa', atkMult: 0.75, maxStacks: 1 },
+    shock:  { icon: '⚡', name: 'Шок',           color: '#fbbf24', selfHitChance: 0.25, maxStacks: 1 },
+    weaken: { icon: '💜', name: 'Ослабление',   color: '#a855f7', defMult: 0.7, maxStacks: 1 },
+    stun:   { icon: '💫', name: 'Оглушение',    color: '#94a3b8', maxStacks: 1 },
+    freeze: { icon: '🧊', name: 'Заморозка',    color: '#7dd3fc', maxStacks: 1 }
+  };
+
+  function ensureEffects(enemy) {
+    if (!enemy.effects) enemy.effects = {};
+    return enemy.effects;
+  }
+
+  function applyEffect(enemy, effectId, turns, customDmg = null) {
+    const def = EFFECTS_DB[effectId];
+    if (!def) return;
+    const effs = ensureEffects(enemy);
+    if (!effs[effectId]) {
+      effs[effectId] = { turns: 0, stacks: 0, dmg: 0 };
+    }
+    effs[effectId].turns = Math.max(effs[effectId].turns, turns);
+    effs[effectId].stacks = Math.min(def.maxStacks, (effs[effectId].stacks || 0) + 1);
+    if (customDmg) effs[effectId].dmg = customDmg;
+    else if (def.dmgPct) {
+      effs[effectId].dmg = Math.round((enemy.maxHp || enemy.hp) * def.dmgPct);
+    }
+  }
+
+  function renderEffects() {
+    const row = document.getElementById('enemy-debuff-row');
+    if (!row || !combatState.enemy) return;
+    const effs = combatState.enemy.effects || {};
+    row.innerHTML = '';
+    // Старые плоские поля (для совместимости)
+    if (combatState.enemy.defDebuff > 0) {
+      row.innerHTML += `<span class="effect-tag weaken">💜 -${combatState.enemy.defDebuff} DEF</span>`;
+    }
+    Object.entries(effs).forEach(([id, data]) => {
+      if (!data || data.turns <= 0) return;
+      const def = EFFECTS_DB[id];
+      if (!def) return;
+      const stacks = data.stacks > 1 ? ` ×${data.stacks}` : '';
+      row.innerHTML += `<span class="effect-tag ${id}">${def.icon}${stacks} ${data.turns}х</span>`;
+    });
+  }
+
+  function tickEffects(enemy) {
+    const effs = enemy.effects || {};
+    let totalDmg = 0;
+    let skipTurn = false;
+    const logParts = [];
+
+    Object.entries(effs).forEach(([id, data]) => {
+      if (!data || data.turns <= 0) return;
+      const def = EFFECTS_DB[id];
+    
+      // DOT-эффекты
+      if (def.dmgPct && data.dmg > 0) {
+        const dmg = data.dmg * (data.stacks || 1);
+        enemy.hp -= dmg;
+        totalDmg += dmg;
+        logParts.push(`${def.icon}${dmg}`);
+        spawnFloatingNumber(`${def.icon}-${dmg}`, 'floating-dmg');
+      }
+    
+      // Пропуск хода
+      if (id === 'stun' || id === 'freeze') skipTurn = true;
+    
+      data.turns--;
+      if (data.turns <= 0) {
+        if (data.stacks > 1) {
+          data.stacks--;
+          data.turns = 1; // продлеваем, пока есть стаки
+        } else {
+          delete effs[id];
+        }
+      }
+    });
+
+    if (totalDmg > 0) {
+      addLog(`💥 [ЭФФЕКТЫ] ${logParts.join(' ')} (всего ${totalDmg})`, 'crit');
+      updateEnemyHpBar();
+    }
+    if (skipTurn) {
+      addLog(`💫 ${enemy.name} пропускает ход из-за эффекта!`, 'quest');
+    }
+    renderEffects();
+    return { skipTurn, dead: enemy.hp <= 0 };
+  }
+
+  // Перехватываем старую updateDebuffDisplay
+  window.updateDebuffDisplay = function() { renderEffects(); };
+
+  /* ═══════════════════════════════════════════════════════════════
+     ⚔️ COMBO-СИСТЕМА
+     ═══════════════════════════════════════════════════════════════ */
+  let comboState = { value: 0, lastElement: null, ultimateReady: false };
+
+  const SKILL_ELEMENTS = {
+    // fire-скиллы
+    fireball: 'fire', chaos_flame: 'fire', great_chaos: 'fire', py_1: 'fire', py_2: 'fire',
+    py_3: 'fire', py_4: 'fire', py_5: 'fire', py_6: 'fire', py_7: 'fire', mg_1: 'fire', mg_3: 'fire',
+    // ice
+    ice_lance: 'ice', mg_2: 'ice', hu_3: 'ice',
+    // lightning
+    lightning: 'lightning', chain_lightning: 'lightning', mg_5: 'lightning',
+    en_el_1: 'lightning', en_el_2: 'lightning', en_el_4: 'lightning', en_el_5: 'lightning',
+    en_el_6: 'lightning', en_el_7: 'lightning', en_el_8: 'lightning', en_el_9: 'lightning',
+    // dark
+    dark_hand: 'dark', lifedrain: 'dark', death_curse: 'dark', un_1: 'dark', un_3: 'dark',
+    un_5: 'dark', un_7: 'dark',
+    // holy
+    holy_strike: 'holy', kn_1: 'holy', kn_2: 'holy', kn_3: 'holy', kn_4: 'holy',
+    kn_5: 'holy', kn_6: 'holy', kn_7: 'holy', kn_8: 'holy', heal: 'holy', cl_2: 'holy',
+    cl_5: 'holy', cl_8: 'holy',
+    // physical (default)
+  };
+
+  function getSkillElement(sid) {
+    return SKILL_ELEMENTS[sid] || 'physical';
+  }
+
+  function updateComboUI() {
+    const wrap = document.getElementById('combo-wrap');
+    const fill = document.getElementById('combo-fill');
+    const val = document.getElementById('combo-value');
+    if (!wrap || !fill || !val) return;
+
+    if (!combatState.active || comboState.value === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'flex';
+    fill.style.width = comboState.value + '%';
+    val.textContent = comboState.value + '%';
+    wrap.classList.toggle('active', comboState.value >= 50);
+    wrap.classList.toggle('max', comboState.value >= 100);
+
+    // Показываем кнопку ultimate
+    if (comboState.value >= 100 && !document.getElementById('combo-ult-btn')) {
+      const btn = document.createElement('span');
+      btn.className = 'combo-ultimate';
+      btn.id = 'combo-ult-btn';
+      btn.textContent = 'ULTIMATE!';
+      btn.onclick = () => useUltimate();
+      wrap.appendChild(btn);
+    } else if (comboState.value < 100) {
+      const old = document.getElementById('combo-ult-btn');
+      if (old) old.remove();
+    }
+  }
+
+  function addCombo(element) {
+    if (!element || element === 'physical') {
+      // физические атаки сбрасывают немного
+      comboState.value = Math.max(0, comboState.value - 5);
+      updateComboUI();
+      return;
+    }
+    if (comboState.lastElement && comboState.lastElement !== element) {
+      comboState.value = Math.min(100, comboState.value + 25);
+      if (comboState.value >= 100 && !comboState.ultimateReady) {
+        comboState.ultimateReady = true;
+        playSound('levelup');
+        addLog(`🌟 [COMBO] ШКАЛА ЗАПОЛНЕНА! Доступен ULTIMATE!`, 'legendary');
+        showToast('🌟 ULTIMATE готов!');
+      }
+    } else {
+      comboState.value = Math.max(0, comboState.value - 10);
+    }
+    comboState.lastElement = element;
+    updateComboUI();
+  }
+
+  function resetCombo() {
+    comboState = { value: 0, lastElement: null, ultimateReady: false };
+    updateComboUI();
+  }
+
+  function useUltimate() {
+    if (!combatState.active || comboState.value < 100) return;
+    const enemy = combatState.enemy;
+    comboState.value = 0;
+    comboState.ultimateReady = false;
+    comboState.lastElement = null;
+    updateComboUI();
+
+    playSound('achievement');
+    addLog(`🌟 [ULTIMATE] АБСОЛЮТНЫЙ УДАР!`, 'legendary');
+    triggerScreenShake();
+
+    const atkBase = getTotalAtk() * 5.0;
+    const isCrit = true;
+    const dmg = calculateDamage(atkBase, enemy.def * 0.3, isCrit);
+    enemy.hp -= dmg;
+    spawnFloatingNumber(`🌟 ULTIMATE ${dmg}!`, 'floating-crit');
+
+    // Накладываем все эффекты
+    ['burn', 'poison', 'bleed', 'chill', 'shock'].forEach(e => applyEffect(enemy, e, 3));
+
+    updateEnemyHpBar();
+    renderEffects();
+    updateHUD();
+
+    if (enemy.hp <= 0) { handleVictory(); return; }
+    petTurn(() => enemyTurn());
+  }
+
+let _currentSkillId = null;
+
+const _origSkillUseForWeakness = window.playerActionSkillUse;
+window.playerActionSkillUse = function(sid) {
+  _currentSkillId = sid;
+  try { return _origSkillUseForWeakness(sid); }
+  finally { _currentSkillId = null; }
+};
+
+const _origCalcDmgWeak = calculateDamage;
+window.calculateDamage = function(atk, def, isCrit) {
+  let dmg = _origCalcDmgWeak(atk, def, isCrit);
+  if (_currentSkillId) {
+    dmg = applyWeaknessMultiplier(_currentSkillId, dmg);
+  }
+  return dmg;
+};
+
+  /* ═══════════════════════════════════════════════════════════════
+     🛡️ ПАРИРОВАНИЕ (QTE)
+     ═══════════════════════════════════════════════════════════════ */
+  let parryState = { active: false, dmg: 0, resolved: false, timeoutId: null };
+
+  function tryParry(enemyDmg) {
+    // 20% шанс QTE, только если игрок не в защите и HP не критично
+    if (Math.random() > 0.20) return null;
+    if (player.hp < getTotalMaxHp() * 0.15) return null;
+
+    parryState = { active: true, dmg: enemyDmg, resolved: false, timeoutId: null };
+    const overlay = document.getElementById('parry-overlay');
+    overlay.classList.remove('active');
+    void overlay.offsetWidth;
+    overlay.classList.add('active');
+    playSound('classSkill');
+
+    parryState.timeoutId = setTimeout(() => {
+      if (!parryState.resolved) {
+        parryState.resolved = true;
+        parryState.active = false;
+        overlay.classList.remove('active');
+        addLog(`💥 [ПАРИРОВАНИЕ] Не успел!`, 'danger');
+      }
+    }, 1200);
+
+    return parryState;
+  }
+
+  function onParryClick() {
+    if (!parryState.active || parryState.resolved) return;
+    parryState.resolved = true;
+    parryState.active = false;
+    clearTimeout(parryState.timeoutId);
+
+    const overlay = document.getElementById('parry-overlay');
+    overlay.classList.remove('active');
+
+    // Награда: блокировка урона, +MP, стан врагу
+    player.mp = Math.min(getTotalMaxMp(), player.mp + 10);
+    if (combatState.enemy) {
+      applyEffect(combatState.enemy, 'stun', 1);
+    }
+    playSound('crit');
+    addLog(`⚔️ [ПАРИРОВАНИЕ] УСПЕХ! Урон заблокирован, +10 MP, враг оглушён!`, 'legendary');
+    showToast('⚔️ ПАРИРОВАНИЕ!');
+    spawnFloatingNumber('ПАРИРОВАНИЕ!', 'floating-crit');
+    updateHUD();
+    renderEffects();
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     🌍 МИРОВЫЕ СОБЫТИЯ
+     ═══════════════════════════════════════════════════════════════ */
+  const WORLD_EVENTS = [
+    { id: 'blood_moon',   icon: '🌕', name: 'Кровавая Луна',
+      desc: '+50% ATK врагов, ×2 дроп, элиты в 3 раза чаще',
+      duration: 180,
+      effects: { enemyAtk: 1.5, dropMult: 2, eliteChance: 3 } },
+    { id: 'meteor_shower', icon: '☄️', name: 'Метеоритный дождь',
+      desc: 'Каждый ход метеор бьёт врага на 5% maxHp',
+      duration: 120,
+      effects: { meteorTick: true } },
+    { id: 'fog',          icon: '🌫️', name: 'Туман',
+      desc: '−30% крит игрока, враги чаще уклоняются',
+      duration: 150,
+      effects: { critMult: 0.7, enemyDodge: 0.15 } },
+    { id: 'gold_rush',    icon: '💰', name: 'Золотая лихорадка',
+      desc: '+200% Col, но мобы на 20% сильнее',
+      duration: 120,
+      effects: { colMult: 3, enemyAtk: 1.2 } },
+    { id: 'safe_haven',   icon: '🕊️', name: 'Безопасная гавань',
+      desc: 'Все мобы исчезают на 2 минуты',
+      duration: 120,
+      effects: { noSpawn: true } },
+    { id: 'arcane_surge', icon: '🔮', name: 'Всплеск магии',
+      desc: '+50% урона скиллов, −30% MP-затрат',
+      duration: 150,
+      effects: { skillDmgMult: 1.5, mpCostMult: 0.7 } }
+  ];
+
+  let activeWorldEvent = null;
+  let worldEventEndAt = 0;
+
+  function getWorldEventBonus(key) {
+    if (!activeWorldEvent) return null;
+    return activeWorldEvent.effects[key];
+  }
+
+  function tryTriggerWorldEvent() {
+    if (activeWorldEvent) return;
+    if (Math.random() > 0.30) return; // 30% шанс
+    if (combatState.active) return;
+
+    const evt = WORLD_EVENTS[Math.floor(Math.random() * WORLD_EVENTS.length)];
+    activeWorldEvent = evt;
+    worldEventEndAt = Date.now() + evt.duration * 1000;
+
+    // Показываем баннер
+    const banner = document.getElementById('world-event-banner');
+    document.getElementById('we-icon').textContent = evt.icon;
+    document.getElementById('we-title').textContent = evt.name;
+    document.getElementById('we-desc').textContent = evt.desc;
+    document.getElementById('we-timer').textContent = `⏱ ${Math.floor(evt.duration / 60)}:${(evt.duration % 60).toString().padStart(2, '0')}`;
+    banner.classList.remove('active');
+    void banner.offsetWidth;
+    banner.classList.add('active');
+
+    playSound('ai');
+    addLog(`🌍 [СОБЫТИЕ] ${evt.icon} ${evt.name}: ${evt.desc}`, 'ai');
+    showAIToast(`${evt.icon} ${evt.name} — ${evt.desc}`);
+    updateOracle(`${evt.icon} ${evt.name}. ${evt.desc}`);
+
+    // HUD badge
+    const wb = document.getElementById('hud-world');
+    if (wb) wb.classList.add('event-active');
+
+    saveGameAuto();
+  }
+
+  function tickWorldEvent() {
+    if (!activeWorldEvent) return;
+    const left = worldEventEndAt - Date.now();
+    if (left <= 0) {
+      addLog(`🌍 [СОБЫТИЕ] ${activeWorldEvent.icon} ${activeWorldEvent.name} закончилось.`, 'system');
+      showToast(`🌍 ${activeWorldEvent.name} завершено`);
+      activeWorldEvent = null;
+      const wb = document.getElementById('hud-world');
+      if (wb) wb.classList.remove('event-active');
+      return;
+    }
+    // Обновляем таймер в баннере
+    const banner = document.getElementById('world-event-banner');
+    if (banner && banner.classList.contains('active')) {
+      const mins = Math.floor(left / 60000);
+      const secs = Math.floor((left % 60000) / 1000);
+      const timerEl = document.getElementById('we-timer');
+      if (timerEl) timerEl.textContent = `⏱ ${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+  }
+
+  // Запуск проверки событий раз в минуту
+  setInterval(() => {
+    if (worldClockStarted && player) tryTriggerWorldEvent();
+  }, 60000);
+
+  // Обновление таймера события раз в секунду
+  setInterval(tickWorldEvent, 1000);
+
+  /* ═══════════════════════════════════════════════════════════════
+     🏰 МОДИФИКАТОРЫ ПОДЗЕМЕЛИЙ
+     ═══════════════════════════════════════════════════════════════ */
+  const DUNGEON_MODS = [
+    { id: 'elite_floor', icon: '💜', name: 'Элитный этаж',
+      desc: 'Все мобы — элиты (но награда выше)',
+      rewardMult: 1.5 },
+    { id: 'no_heal',     icon: '🚫', name: 'Без исцеления',
+      desc: 'Зелья не работают. Только скиллы лечения',
+      rewardMult: 2.0 },
+    { id: 'time_limit',  icon: '⏳', name: 'Ограничение времени',
+      desc: 'Максимум 15 ходов. Не успеешь — провал',
+      rewardMult: 1.8 },
+    { id: 'cursed',      icon: '💀', name: 'Проклятие',
+      desc: '−40% DEF, но +100% EXP',
+      rewardMult: 1.6 },
+    { id: 'labyrinth',   icon: '🌀', name: 'Лабиринт',
+      desc: 'Враги появляются уже с 50% HP, но их вдвое больше',
+      rewardMult: 1.4 },
+    { id: 'berserker',   icon: '🔥', name: 'Берсерк',
+      desc: '+50% ATK игрока и врагов',
+      rewardMult: 1.5 }
+  ];
+
+  let dungeonMods = { selected: [], floor: 0 };
+
+  function openDungeonIntro(floor) {
+    dungeonMods = { selected: [], floor };
+    document.getElementById('dungeon-floor-num').textContent = floor;
+
+    const list = document.getElementById('dungeon-mods-list');
+    list.innerHTML = '';
+
+    // Выбираем 3 случайных модификатора
+    const shuffled = [...DUNGEON_MODS].sort(() => Math.random() - 0.5).slice(0, 3);
+
+    shuffled.forEach(mod => {
+      const card = document.createElement('div');
+      card.className = 'dungeon-mod-card';
+      card.dataset.modId = mod.id;
+      card.innerHTML = `
+        <div class="dungeon-mod-name">${mod.icon} ${mod.name}</div>
+        <div class="dungeon-mod-desc">${mod.desc}</div>
+        <div class="dungeon-mod-reward">Награда ×${mod.rewardMult}</div>
+      `;
+      card.onclick = () => {
+        const idx = dungeonMods.selected.indexOf(mod.id);
+        if (idx >= 0) {
+          dungeonMods.selected.splice(idx, 1);
+          card.classList.remove('selected');
+        } else if (dungeonMods.selected.length < 2) {
+          dungeonMods.selected.push(mod.id);
+          card.classList.add('selected');
+        } else {
+          showToast('Максимум 2 модификатора');
+        }
+        playSound('click');
+      };
+      list.appendChild(card);
+    });
+
+    document.getElementById('dungeon-intro').classList.add('active');
+  }
+
+  function confirmDungeonMods() {
+    const z = ZONES_DB[player.currentZone];
+    player.dungeonMods = dungeonMods.selected;
+    player.dungeonFloor = dungeonMods.floor;
+    document.getElementById('dungeon-intro').classList.remove('active');
+
+    if (dungeonMods.selected.length > 0) {
+      const names = dungeonMods.selected.map(id => {
+        const m = DUNGEON_MODS.find(x => x.id === id);
+        return `${m.icon} ${m.name}`;
+      }).join(', ');
+      addLog(`🏰 [ПОДЗЕМЕЛЬЕ] Модификаторы: ${names}`, 'miniboss');
+      showAIToast(`🏰 Подземелье с модификаторами: ${names}`);
+    }
+    changeZone(`dungeon_f${dungeonMods.floor}`);
+    renderDungeonModsBar();
+  }
+
+  function cancelDungeonIntro() {
+    document.getElementById('dungeon-intro').classList.remove('active');
+    dungeonMods = { selected: [], floor: 0 };
+  }
+
+  function renderDungeonModsBar() {
+    if (!player.dungeonMods || player.dungeonMods.length === 0) return;
+    if (!player.currentZone.startsWith('dungeon_')) return;
+
+    const zc = document.querySelector('.zone-card');
+    if (!zc) return;
+    let bar = document.getElementById('dungeon-active-mods');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'dungeon-active-mods';
+      bar.className = 'dungeon-active-mods';
+      zc.appendChild(bar);
+    }
+    bar.innerHTML = '<span style="color:#94a3b8; font-size:0.7rem;">Активно:</span>' +
+      player.dungeonMods.map(id => {
+        const m = DUNGEON_MODS.find(x => x.id === id);
+        return m ? `<span class="dmod">${m.icon} ${m.name}</span>` : '';
+      }).join('');
+  }
+
+  function getDungeonRewardMult() {
+    if (!player.dungeonMods || player.dungeonMods.length === 0) return 1;
+    let mult = 1;
+    player.dungeonMods.forEach(id => {
+      const m = DUNGEON_MODS.find(x => x.id === id);
+      if (m) mult *= m.rewardMult;
+    });
+    return mult;
+  }
+
+  function hasDungeonMod(id) {
+    return player.dungeonMods && player.dungeonMods.includes(id);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     ⚙️ ПЕРЕХВАТЫ ФУНКЦИЙ (интеграция)
+     ═══════════════════════════════════════════════════════════════ */
+
+  // ── Перехват enemyTurn для эффектов и парирования ──
+  const _origEnemyTurn = enemyTurn;
+  window.enemyTurn = function() {
+    if (!combatState.active) return;
+
+    // Тик эффектов
+    if (combatState.enemy) {
+      const result = tickEffects(combatState.enemy);
+      if (result.dead) { handleVictory(); return; }
+      if (result.skipTurn) { endEnemyTurn(); return; }
+    }
+
+    // Метеоритный дождь
+    if (getWorldEventBonus('meteorTick') && combatState.enemy) {
+      const dmg = Math.round(combatState.enemy.maxHp * 0.05);
+      combatState.enemy.hp -= dmg;
+      spawnFloatingNumber(`☄️ -${dmg}`, 'floating-crit');
+      addLog(`☄️ [МЕТЕОР] -${dmg} HP!`, 'crit');
+      updateEnemyHpBar();
+      if (combatState.enemy.hp <= 0) { handleVictory(); return; }
+    }
+
+    // Пытаемся парировать (только для обычных атак, не скиллов)
+    const e = combatState.enemy;
+    if (e && !combatState.isDefending) {
+      const baseDmg = e.atk * getWorldEnemyAtkMult();
+      if (Math.random() < 0.20) {
+        const parry = tryParry(baseDmg);
+        if (parry) {
+          // Ждём, пока игрок отреагирует
+          const checkInterval = setInterval(() => {
+            if (parryState.resolved) {
+              clearInterval(checkInterval);
+              if (parryState.resolved) {
+                // Если успел — урон не проходит, идём к концу хода
+                // (проверяем по флагу: onParryClick уже наложил стан)
+                if (e.effects && e.effects.stun) {
+                  endEnemyTurn();
+                  return;
+                }
+              }
+              // Не успел — наносим урон вручную, НЕ вызывая старый enemyTurn
+              if (!e.effects || !e.effects.stun) {
+                let def = getTotalDef();
+                if (combatState.isDefending) def *= 2;
+                const dmg = calculateDamage(baseDmg, def, false);
+                player.hp -= dmg;
+                triggerScreenShake();
+                spawnFloatingNumber(`-${dmg} HP`, 'floating-dmg');
+                addLog(`[ВРАГ] ${e.name} наносит ${dmg}!`, 'enemy-action');
+                updateHUD();
+                if (player.hp <= 0) handlePlayerDeath();
+                else endEnemyTurn();
+              }
+            }
+          }, 50);
+          setTimeout(() => clearInterval(checkInterval), 1500);
+          return;
+        }
+      }
+    }
+
+    return _origEnemyTurn();
+  };
+
+  // ── Перехват handleVictory для наград подземелья ──
+  const _origHandleVictory = handleVictory;
+  window.handleVictory = function() {
+    const e = combatState.enemy;
+    const dungeonMult = getDungeonRewardMult();
+
+    if (e && dungeonMult > 1) {
+      // Применяем множитель
+      const origExp = e.exp, origCol = e.col;
+      e.exp = Math.round(origExp * dungeonMult);
+      e.col = Math.round(origCol * dungeonMult);
+      addLog(`🏰 [ПОДЗЕМЕЛЬЕ] Награда ×${dungeonMult.toFixed(2)}!`, 'miniboss');
+    }
+
+    return _origHandleVictory();
+  };
+
+  // ── Перехват generateEnemy для модификаторов и мировых событий ──
+  const _origGenerateEnemy = generateEnemy;
+  window.generateEnemy = function(floor, playerLevel) {
+    const e = _origGenerateEnemy(floor, playerLevel);
+
+    // Элитный этаж
+    if (hasDungeonMod('elite_floor') && e.tier === 'normal') {
+      e.tier = 'elite';
+      e.name = '💜 ' + e.name;
+      e.hp = Math.round(e.hp * 1.8);
+      e.atk = Math.round(e.atk * 1.4);
+      e.exp = Math.round(e.exp * 2);
+      e.col = Math.round(e.col * 2.5);
+    }
+
+    // Лабиринт — враг с половинным HP
+    if (hasDungeonMod('labyrinth')) {
+      e.hp = Math.round(e.hp * 0.5);
+    }
+
+    // Берсерк — враг сильнее
+    if (hasDungeonMod('berserker')) {
+      e.atk = Math.round(e.atk * 1.5);
+    }
+
+    // Проклятие — уже не влияет на врага (это дебафф на игрока), но проверяем позже
+
+    // Кровавая луна — элиты чаще
+    const eliteMult = getWorldEventBonus('eliteChance');
+    if (eliteMult && e.tier === 'normal' && Math.random() < 0.15 * eliteMult) {
+      e.tier = 'elite';
+      e.name = '🌕 ' + e.name;
+      e.hp = Math.round(e.hp * 1.5);
+      e.exp = Math.round(e.exp * 1.8);
+    }
+
+    return e;
+  };
+
+  // ── Перехват getWorldEnemyAtkMult / dropMult / crit ──
+  const _origWorldEnemyAtk = getWorldEnemyAtkMult;
+  window.getWorldEnemyAtkMult = function() {
+    let mult = _origWorldEnemyAtk();
+    const evAtk = getWorldEventBonus('enemyAtk');
+    if (evAtk) mult *= evAtk;
+    if (hasDungeonMod('berserker')) mult *= 1.0; // уже применено в generateEnemy
+    return mult;
+  };
+
+  const _origWorldDrop = getWorldDropMult;
+  window.getWorldDropMult = function() {
+    let mult = _origWorldDrop();
+    const evDrop = getWorldEventBonus('dropMult');
+    if (evDrop) mult *= evDrop;
+    return mult;
+  };
+
+  const _origEffectiveCrit = getEffectiveCrit;
+  window.getEffectiveCrit = function() {
+    let crit = _origEffectiveCrit();
+    const evCrit = getWorldEventBonus('critMult');
+    if (evCrit) crit *= evCrit;
+    return crit;
+  };
+
+  // ── Перехват computeSkillDmg для arcane_surge и mp-стоимости ──
+  const _origComputeSkillDmg = computeSkillDmg;
+  window.computeSkillDmg = function(mult, sid) {
+    let dmg = _origComputeSkillDmg(mult, sid);
+    const skillMult = getWorldEventBonus('skillDmgMult');
+    if (skillMult) dmg *= skillMult;
+    return dmg;
+  };
+
+  const _origGetEffectiveMpCost = getEffectiveMpCost;
+  window.getEffectiveMpCost = function(sid) {
+    let cost = _origGetEffectiveMpCost(sid);
+    const mpMult = getWorldEventBonus('mpCostMult');
+    if (mpMult) cost = Math.max(1, Math.round(cost * mpMult));
+    return cost;
+  };
+
+  // ── Проклятие: -40% DEF игрока ──
+  const _origGetTotalDef = getTotalDef;
+  window.getTotalDef = function() {
+    let def = _origGetTotalDef();
+    if (hasDungeonMod('cursed')) def = Math.round(def * 0.6);
+    return def;
+  };
+
+  // ── Без исцеления: блокируем зелья ──
+  const _origUseItem = useItem;
+  window.useItem = function(id) {
+    const item = ITEMS_DB[id];
+    if (hasDungeonMod('no_heal') && item && (item.healHp || item.fullHeal)) {
+      showToast('🚫 Зелья не работают в этом подземелье!');
+      addLog(`🚫 [ПОДЗЕМЕЛЬЕ] Зелья HP заблокированы!`, 'danger');
+      return;
+    }
+    return _origUseItem(id);
+  };
+
+  // ── changeZone: триггер интро подземелья ──
+  const _origChangeZone = changeZone;
+  window.changeZone = function(zid) {
+    // Если пытаемся войти в подземелье — открываем интро
+    if (zid.startsWith('dungeon_') && !document.getElementById('dungeon-intro').classList.contains('active')) {
+      const floor = parseInt(zid.match(/dungeon_f(\d+)/)[1]);
+      // Пропускаем интро, если это возврат из боя
+      if (!combatState.active && player.currentZone !== zid) {
+        const alreadyHasMods = player.dungeonMods && player.dungeonMods.length > 0 && player.dungeonFloor === floor;
+        if (!alreadyHasMods) {
+          openDungeonIntro(floor);
+          return;
+        }
+      }
+    }
+    return _origChangeZone(zid);
+  };
+
+  // ── endCombat: сброс комбо и модификаторов ──
+  const _origEndCombat = endCombat;
+  window.endCombat = function() {
+    resetCombo();
+    // Модификаторы сбрасываются при выходе из подземелья
+    if (player.currentZone && !player.currentZone.startsWith('dungeon_')) {
+      player.dungeonMods = [];
+      player.dungeonFloor = 0;
+    }
+    const bar = document.getElementById('dungeon-active-mods');
+    if (bar) bar.remove();
+    return _origEndCombat();
+  };
+
+  /* ═══════════════════════════════════════════════════════════════
+     🔥 БОССЫ: СЛАБОСТИ
+     ═══════════════════════════════════════════════════════════════ */
+  const ELEMENT_POOL = ['fire', 'ice', 'lightning', 'dark', 'holy'];
+  const ELEMENT_INFO = {
+    fire:      { icon: '🔥', name: 'Огонь' },
+    ice:       { icon: '❄️', name: 'Лёд' },
+    lightning: { icon: '⚡', name: 'Молния' },
+    dark:      { icon: '💀', name: 'Тьма' },
+    holy:      { icon: '⚜️', name: 'Свет' }
+  };
+
+  function assignBossWeakness(enemy) {
+    if (!enemy.isBoss && enemy.tier !== 'boss') return;
+    if (enemy.weaknesses) return; // уже назначены
+
+    const shuffled = [...ELEMENT_POOL].sort(() => Math.random() - 0.5);
+    enemy.weaknesses = shuffled.slice(0, 2);  // 2 слабости
+    enemy.immunities = shuffled.slice(2, 3); // 1 иммунитет
+  }
+
+  function renderBossWeakness() {
+    const e = combatState.enemy;
+    if (!e || !e.weaknesses) return;
+
+    const row = document.getElementById('enemy-mods-row');
+    if (!row) return;
+
+    const weaknesses = e.weaknesses.map(el => {
+      const info = ELEMENT_INFO[el];
+      return `<span class="weakness-tag weak">${info.icon} Уязвим</span>`;
+    }).join('');
+    const immunities = (e.immunities || []).map(el => {
+      const info = ELEMENT_INFO[el];
+      return `<span class="weakness-tag immune">🚫 ${info.icon}</span>`;
+    }).join('');
+
+    row.innerHTML = weaknesses + immunities;
+  }
+
+  // ── Перехват startBossFight / startCombatWithEnemy ──
+  const _origStartBossFight = startBossFight;
+  window.startBossFight = function(floor) {
+    _origStartBossFight(floor);
+    if (combatState.enemy) {
+      assignBossWeakness(combatState.enemy);
+      renderBossWeakness();
+    }
+  };
+
+  const _origStartCombatWithEnemy = startCombatWithEnemy;
+  window.startCombatWithEnemy = function(enemy) {
+    assignBossWeakness(enemy);
+    _origStartCombatWithEnemy(enemy);
+    if (combatState.enemy && combatState.enemy.weaknesses) {
+      renderBossWeakness();
+    }
+    // Сброс комбо в начале боя
+    resetCombo();
+  };
+
+  // ── Модификация урона по слабостям ──
+  const _origCalculateDamage = calculateDamage;
+  window.calculateDamage = function(atk, def, isCrit) {
+    let dmg = _origCalculateDamage(atk, def, isCrit);
+    return dmg;
+  };
+
+  // Применяем множитель слабости в момент нанесения урона скиллом
+  // (перехватываем в playerActionSkillUse через глобальную функцию)
+  function applyWeaknessMultiplier(sid, dmg) {
+    const e = combatState.enemy;
+    if (!e || !e.weaknesses) return dmg;
+    const elem = getSkillElement(sid);
+    if (e.weaknesses.includes(elem)) {
+      dmg = Math.round(dmg * 1.5);
+      spawnFloatingNumber(`${ELEMENT_INFO[elem].icon} WEAK +50%`, 'floating-crit');
+      addLog(`${ELEMENT_INFO[elem].icon} [СЛАБОСТЬ] +50% урона!`, 'crit');
+    }
+    if (e.immunities && e.immunities.includes(elem)) {
+      dmg = Math.round(dmg * 0.1);
+      spawnFloatingNumber(`${ELEMENT_INFO[elem].icon} RESIST`, 'floating-dmg');
+      addLog(`${ELEMENT_INFO[elem].icon} [ИММУНИТЕТ] Урон снижен на 90%!`, 'danger');
+    }
+    return dmg;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     🔄 ИНТЕГРАЦИЯ: обновление HUD
+     ═══════════════════════════════════════════════════════════════ */
+  const _origUpdateHUD = updateHUD;
+  window.updateHUD = function() {
+    _origUpdateHUD();
+    // Обновляем combo UI
+    updateComboUI();
+  };
+
+  // ── Патч renderEffects в startCombat ──
+  const _origStartCombatRender = startCombatWithEnemy;
+  // (уже перехвачено выше)
+
+  /* ═══════════════════════════════════════════════════════════════
+     🐾 ЭВОЛЮЦИЯ ПИТОМЦЕВ
+     ═══════════════════════════════════════════════════════════════ */
+  const PET_EVOLUTIONS = {
+    wolf: [
+      { level: 10, name: 'Лютоволк',  icon: '🐺', bonus: '+15% ATK питомца' },
+      { level: 25, name: 'Фенрир',    icon: '🐕‍🦺', bonus: '+30% ATK, +10% крит игрока' },
+      { level: 50, name: 'Небесный Волк', icon: '🐺✨', bonus: '+50% ATK, +15% крит' }
+    ],
+    phoenix: [
+      { level: 10, name: 'Огненный Феникс', icon: '🔥', bonus: '+10% реген HP/ход' },
+      { level: 25, name: 'Солнечный Феникс', icon: '☀️', bonus: '+15% реген, иммунитет к burn' },
+      { level: 50, name: 'Бессмертный Феникс', icon: '🦅', bonus: 'Возрождение раз за бой' }
+    ],
+    dragonling: [
+      { level: 10, name: 'Молодой Дракон', icon: '🐉', bonus: '+20% урона скиллов' },
+      { level: 25, name: 'Дракон-Хранитель', icon: '🐲', bonus: '+30% урона скиллов' },
+      { level: 50, name: 'Древний Дракон', icon: '🐉✨', bonus: '+50% урона скиллов' }
+    ],
+    fox: [
+      { level: 10, name: 'Хитрый Лис', icon: '🦊', bonus: '+25% Col' },
+      { level: 25, name: 'Девятихвостый', icon: '🦊✨', bonus: '+40% Col' },
+      { level: 50, name: 'Кицунэ', icon: '🦊🌟', bonus: '+60% Col' }
+    ],
+    cat: [
+      { level: 10, name: 'Боевой Кот', icon: '🐱', bonus: '+8% крит' },
+      { level: 25, name: 'Пантера', icon: '🐈‍⬛', bonus: '+12% крит' },
+      { level: 50, name: 'Тёмный Кот', icon: '🐈‍⬛✨', bonus: '+20% крит' }
+    ]
+  };
+
+  function getPetEvolution(speciesId, level) {
+    const evos = PET_EVOLUTIONS[speciesId];
+    if (!evos) return null;
+    let best = null;
+    for (const evo of evos) {
+      if (level >= evo.level) best = evo;
+    }
+    return best;
+  }
+
+  // Перехват addPetExp для эволюции
+  const _origAddPetExp = addPetExp;
+  window.addPetExp = function(amount) {
+    const p = getPet();
+    if (!p) return;
+    const oldLevel = p.level;
+    _origAddPetExp(amount);
+    if (p.level > oldLevel) {
+      const evo = getPetEvolution(p.speciesId, p.level);
+      if (evo && (!p.evolution || p.evolution.level < evo.level)) {
+        p.evolution = evo;
+        p.name = evo.name;
+        playSound('achievement');
+        addLog(`🐾 [ЭВОЛЮЦИЯ] ${PETS_DB[p.speciesId].icon} → ${evo.icon} ${evo.name}! ${evo.bonus}`, 'achievement');
+        showAchievementToast(`🐾 ${evo.name}`, evo.bonus);
+      }
+    }
+  };
+
+  // Перехват renderPetSidebar для отображения эволюции
+  const _origRenderPetSidebar = renderPetSidebar;
+  window.renderPetSidebar = function() {
+    _origRenderPetSidebar();
+    const p = getPet();
+    if (!p || !p.evolution) return;
+    const slot = document.getElementById('pet-sidebar-slot');
+    if (!slot) return;
+    const card = slot.querySelector('.pet-card');
+    if (!card) return;
+    card.classList.add('evolved');
+    const nameEl = card.querySelector('.pet-card-name');
+    if (nameEl) nameEl.innerHTML = `${p.evolution.icon} ${p.evolution.name}`;
+    // Добавляем строку с бонусом эволюции
+    const existing = card.querySelector('.pet-evo-bonus');
+    if (!existing) {
+      const evoLine = document.createElement('div');
+      evoLine.className = 'pet-evo-bonus';
+      evoLine.style.cssText = 'font-size:0.65rem; color:#fde047; font-weight:bold; margin-top:2px;';
+      evoLine.textContent = `🌟 ${p.evolution.bonus}`;
+      card.appendChild(evoLine);
+    }
+  };
+
+  /* ═══════════════════════════════════════════════════════════════
+     🧪 ДОП. ИНТЕГРАЦИЯ: рендер модификаторов при загрузке
+     ═══════════════════════════════════════════════════════════════ */
+  const _origRenderZone = renderZone;
+  window.renderZone = function() {
+    _origRenderZone();
+    if (player.currentZone && player.currentZone.startsWith('dungeon_')) {
+      renderDungeonModsBar();
+    }
+  };
+
+  // ── Запуск: проверка при загрузке ──
+  setTimeout(() => {
+    if (player && player.currentZone && player.currentZone.startsWith('dungeon_')) {
+      renderDungeonModsBar();
+    }
+  }, 1000);
+
+  console.log('✅ v6.0: Статусы + Комбо + Парирование + Мировые события + Подземелья + Эволюция питомцев + Слабости боссов загружены.');
+  /* ═══════════════════════════════════════════════════════════════
+     🔧 v6.1 HOTFIX — исправления к v6.0
+     ═══════════════════════════════════════════════════════════════ */
+  console.log('🔧 v6.1 hotfix: применяем исправления...');
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #1: Урон по слабостям боссов теперь реально работает
+     ───────────────────────────────────────────────────────────── */
+  let _currentSkillForWeakness = null;
+  
+  // Перехватываем playerActionSkillUse, чтобы знать, какой скилл сейчас бьёт
+  const _skillUse_v601 = window.playerActionSkillUse;
+  window.playerActionSkillUse = function (sid) {
+    _currentSkillForWeakness = sid;
+    try {
+      return _skillUse_v601(sid);
+    } finally {
+      _currentSkillForWeakness = null;
+    }
+  };
+  
+  // Перехватываем calculateDamage — применяем слабость/иммунитет
+  const _calcDmg_v601 = window.calculateDamage;
+  window.calculateDamage = function (atk, def, isCrit) {
+    let dmg = _calcDmg_v601(atk, def, isCrit);
+    if (_currentSkillForWeakness && combatState.enemy) {
+      dmg = applyWeaknessMultiplier(_currentSkillForWeakness, dmg);
+    }
+    return dmg;
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #2: Парирование — корректная обработка "не успел"
+     (без вызова старого enemyTurn, чтобы не было двойного хода)
+     ───────────────────────────────────────────────────────────── */
+  // Переопределяем перехват enemyTurn — теперь без багов
+  const _origEnemyTurn_v601 = window.enemyTurn;
+  window.enemyTurn = function () {
+    if (!combatState.active) return;
+  
+    // Тик эффектов
+    if (combatState.enemy) {
+      const result = tickEffects(combatState.enemy);
+      if (result.dead) { handleVictory(); return; }
+      if (result.skipTurn) { endEnemyTurn(); return; }
+    }
+  
+    // Метеоритный дождь
+    if (getWorldEventBonus('meteorTick') && combatState.enemy) {
+      const dmg = Math.round(combatState.enemy.maxHp * 0.05);
+      combatState.enemy.hp -= dmg;
+      spawnFloatingNumber(`☄️ -${dmg}`, 'floating-crit');
+      addLog(`☄️ [МЕТЕОР] -${dmg} HP!`, 'crit');
+      updateEnemyHpBar();
+      if (combatState.enemy.hp <= 0) { handleVictory(); return; }
+    }
+  
+    // Парирование — только для обычных атак (не в защите, HP не критично)
+    const e = combatState.enemy;
+    if (e && !combatState.isDefending && player.hp >= getTotalMaxHp() * 0.15) {
+      if (Math.random() < 0.20) {
+        const baseDmg = e.atk * getWorldEnemyAtkMult();
+        const parry = tryParry(baseDmg);
+        if (parry) {
+          // Ждём, пока игрок либо нажмёт, либо провалит QTE
+          const checkInterval = setInterval(() => {
+            if (!parryState.resolved) return;
+            clearInterval(checkInterval);
+          
+            // Успел? — onParryClick уже наложил стан, урон не проходит
+            if (parryState.success === true) {
+              endEnemyTurn();
+              return;
+            }
+          
+            // Не успел — наносим урон ВРУЧНУЮ, без повторного enemyTurn
+            let def = getTotalDef();
+            if (combatState.isDefending) def *= 2;
+            const dmg = calculateDamage(baseDmg, def, false);
+            player.hp -= dmg;
+            triggerScreenShake();
+            playSound('slash');
+            spawnFloatingNumber(`-${dmg} HP`, 'floating-dmg');
+            addLog(`[ВРАГ] ${e.name} наносит ${dmg}!`, 'enemy-action');
+          
+            // Питомец получает 30% урона
+            const pp = getPet();
+            if (pp && pp.hp > 0) {
+              const petDmg = Math.max(1, Math.round(dmg * 0.30));
+              pp.hp -= petDmg;
+              if (pp.hp <= 0) {
+                pp.hp = 0;
+                addLog(`🐾 [ПИТОМЕЦ] ${pp.name} падает без сил!`, 'danger');
+              }
+            }
+          
+            combatState.isDefending = false;
+            if (combatState.defendTurns > 0) combatState.defendTurns--;
+            if (player.classId === 'knight') {
+              const heal = Math.round(getTotalMaxHp() * 0.03);
+              player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+            }
+            const rb = getRaceBonusData();
+            if (rb.regenPct > 0) {
+              const heal = Math.round(getTotalMaxHp() * rb.regenPct);
+              player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+            }
+            const wRegen = getWorldRegenPct();
+            if (wRegen > 0) {
+              const heal = Math.round(getTotalMaxHp() * wRegen);
+              player.hp = Math.min(getTotalMaxHp(), player.hp + heal);
+            }
+            updateHUD();
+          
+            if (player.hp <= 0) {
+              if (player.classId === 'undead' && !combatState.undeadUsed) {
+                combatState.undeadUsed = true;
+                player.hp = Math.round(getTotalMaxHp() * 0.5);
+                playSound('levelup');
+                addLog(`💀 [НЕЖИТЬ] Возрождение с ${player.hp} HP!`, 'legendary');
+                updateHUD();
+                endEnemyTurn();
+                return;
+              }
+              player.hp = 0;
+              updateHUD();
+              handlePlayerDeath();
+              return;
+            }
+            endEnemyTurn();
+          }, 50);
+          setTimeout(() => clearInterval(checkInterval), 1500);
+          return;
+        }
+      }
+    }
+  
+    // Обычный ход
+    return _origEnemyTurn_v601();
+  };
+  
+  // Перехватываем onParryClick — фиксируем успех
+  const _onParryClick_v601 = window.onParryClick;
+  window.onParryClick = function () {
+    const wasActive = parryState.active;
+    if (!wasActive) return;
+    _onParryClick_v601();
+    if (parryState.resolved && !parryState.success) {
+      parryState.success = true;
+    }
+  };
+  
+  // В tryParry добавляем success = false
+  const _tryParry_v601 = window.tryParry;
+  window.tryParry = function (enemyDmg) {
+    const result = _tryParry_v601(enemyDmg);
+    if (result) parryState.success = false;
+    return result;
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #3: Интро подземелья не зацикливается
+     ───────────────────────────────────────────────────────────── */
+  // Сохраняем прямую ссылку на "оригинальный" changeZone
+  // (тот, который был до перехвата для интро)
+  // _origChangeZone внутри v6.0 не доступен, поэтому сохраняем текущий:
+  const _changeZoneNoIntro = function (zid) {
+    // Временно отключаем интро-перехват
+    const saved = window.changeZone;
+    window.changeZone = _realChangeZone;
+    try {
+      return window.changeZone(zid);
+    } finally {
+      window.changeZone = saved;
+    }
+  };
+  
+  // Находим "настоящую" changeZone (без обёртки интро) — это та,
+  // что вызывает saveGameAuto/renderZone/updateHUD
+  const _realChangeZone = (function () {
+    // Проходимся по прототипу — нам нужна исходная функция
+    // Проще всего: заново вызвать логику через уже сохранённое имя
+    return function (zid) {
+      const oldFloor = getCurrentFloor();
+      player.currentZone = zid;
+      const newFloor = ZONES_DB[zid].floor;
+      addLog(`[ЛОКАЦИЯ] ${ZONES_DB[zid].name}.`, 'system');
+      if (newFloor !== oldFloor) {
+        oracleOnFloorChange(newFloor);
+        tryAutoTriggerChapter(newFloor);
+      }
+      player.oracleMessages = (player.oracleMessages || 0) + 1;
+      updateChronicleBadge();
+      saveGameAuto();
+      renderZone();
+      updateHUD();
+    };
+  })();
+  
+  // Перекрываем confirmDungeonMods — теперь без рекурсии
+  window.confirmDungeonMods = function () {
+    player.dungeonMods = (dungeonMods.selected || []).slice();
+    player.dungeonFloor = dungeonMods.floor;
+    document.getElementById('dungeon-intro').classList.remove('active');
+  
+    if (player.dungeonMods.length > 0) {
+      const names = player.dungeonMods.map(id => {
+        const m = DUNGEON_MODS.find(x => x.id === id);
+        return m ? `${m.icon} ${m.name}` : '';
+      }).filter(Boolean).join(', ');
+      addLog(`🏰 [ПОДЗЕМЕЛЬЕ] Модификаторы: ${names}`, 'miniboss');
+      showAIToast(`🏰 Подземелье: ${names}`);
+    } else {
+      addLog(`🏰 [ПОДЗЕМЕЛЬЕ] Без модификаторов — обычные награды.`, 'system');
+    }
+  
+    // Переходим БЕЗ интро-перехвата
+    _realChangeZone(`dungeon_f${dungeonMods.floor}`);
+    renderDungeonModsBar();
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #4: Эффекты накладываются ПОСЛЕ урона и только если враг жив
+     ───────────────────────────────────────────────────────────── */
+  const _skillUse_v602 = window.playerActionSkillUse;
+  window.playerActionSkillUse = function (sid) {
+    const elem = getSkillElement(sid);
+    addCombo(elem);
+  
+    // Вызываем оригинал (наносит урон)
+    const result = _skillUse_v602(sid);
+  
+    // Накладываем эффект только если враг ещё жив
+    const sk = SKILLS_DB[sid];
+    if (sk && combatState.enemy && combatState.enemy.hp > 0 && !sk.isHeal) {
+      if (elem === 'fire')      applyEffect(combatState.enemy, 'burn', 3);
+      if (elem === 'ice')       applyEffect(combatState.enemy, 'chill', 2);
+      if (elem === 'lightning') applyEffect(combatState.enemy, 'shock', 2);
+      if (elem === 'dark')      applyEffect(combatState.enemy, 'poison', 3);
+      renderEffects();
+    }
+  
+    return result;
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #5: Слабости боссов не затирают модификаторы
+     ───────────────────────────────────────────────────────────── */
+  window.renderBossWeakness = function () {
+    const e = combatState.enemy;
+    if (!e || !e.weaknesses) return;
+  
+    const row = document.getElementById('enemy-mods-row');
+    if (!row) return;
+  
+    // Сохраняем существующие модификаторы
+    const existingMods = (e.modifiers || []).map(m =>
+      `<span class="mod-tag">${m.icon} ${m.name}</span>`
+    ).join('');
+  
+    const weaknesses = (e.weaknesses || []).map(el => {
+      const info = ELEMENT_INFO[el];
+      return `<span class="weakness-tag weak">${info.icon} Уязвим</span>`;
+    }).join('');
+  
+    const immunities = (e.immunities || []).map(el => {
+      const info = ELEMENT_INFO[el];
+      return `<span class="weakness-tag immune">🚫 ${info.icon}</span>`;
+    }).join('');
+  
+    row.innerHTML = existingMods + weaknesses + immunities;
+  };
+  
+  // Перехватываем startBossFight — назначаем слабости
+  const _bossFight_v601 = window.startBossFight;
+  window.startBossFight = function (floor) {
+    _bossFight_v601(floor);
+    if (combatState.enemy) {
+      assignBossWeakness(combatState.enemy);
+      renderBossWeakness();
+    }
+  };
+  
+  const _startCombat_v601 = window.startCombatWithEnemy;
+  window.startCombatWithEnemy = function (enemy) {
+    _startCombat_v601(enemy);
+    if (combatState.enemy && combatState.enemy.weaknesses) {
+      renderBossWeakness();
+    }
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ФИКС #6: useUltimate — защита от null enemy
+     ───────────────────────────────────────────────────────────── */
+  const _useUltimate_v601 = window.useUltimate;
+  window.useUltimate = function () {
+    if (!combatState.active) return;
+    if (comboState.value < 100) return;
+    if (!combatState.enemy) return; // ← защита
+    return _useUltimate_v601();
+  };
+  
+  /* ─────────────────────────────────────────────────────────────
+     ДОП. ФИКС: endCombat не вылетает при отсутствии игрока
+     ───────────────────────────────────────────────────────────── */
+  const _endCombat_v601 = window.endCombat;
+  window.endCombat = function () {
+    resetCombo();
+    if (player && player.currentZone && !player.currentZone.startsWith('dungeon_')) {
+      player.dungeonMods = [];
+      player.dungeonFloor = 0;
+    }
+    const bar = document.getElementById('dungeon-active-mods');
+    if (bar) bar.remove();
+    return _endCombat_v601();
+  };
+  
+  console.log('✅ v6.1 hotfix применён: слабости, парирование, подземелья, эффекты, ультимейт');
+  /* ═══════════════════════════════════════════════════════════════
+   🌸 LILIAN QUEST v2 — динамический квест с боями и таймером
+   ═══════════════════════════════════════════════════════════════ */
+console.log('🌸 LILIAN QUEST v2 loading...');
+
+/* ─────────────────────────────────────────────────────────────
+   СОСТОЯНИЕ КВЕСТА
+   ───────────────────────────────────────────────────────────── */
+let lilyQuestState = {
+  lilyHp: 100,
+  lilyMaxHp: 100,
+  turnsLeft: 0,        // для сцен с таймером
+  timerIntervalId: null,
+  combatPending: null, // { name, hp, atk, def, onWin, onLose }
+  scenePath: [],       // история выборов (для финала)
+  trustLevel: 0,       // 0-10, влияет на концовку
+  savedWolf: false,    // спас ли волка в прологе (для скрытой концовки)
+  revealedTruth: false // знает ли игрок, что Лили — часть Кардинала
+};
+
+function resetLilyQuestState() {
+  stopLilyTimer();
+  lilyQuestState = {
+    lilyHp: 100,
+    lilyMaxHp: 100,
+    turnsLeft: 0,
+    timerIntervalId: null,
+    combatPending: null,
+    scenePath: [],
+    trustLevel: 0,
+    savedWolf: false,
+    revealedTruth: false
+  };
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ТАЙМЕР
+   ───────────────────────────────────────────────────────────── */
+function startLilyTimer(seconds, onTimeout) {
+  stopLilyTimer();
+  lilyQuestState.turnsLeft = seconds;
+  updateLilyStatusBar();
+  lilyQuestState.timerIntervalId = setInterval(() => {
+    lilyQuestState.turnsLeft--;
+    updateLilyStatusBar();
+    if (lilyQuestState.turnsLeft <= 0) {
+      stopLilyTimer();
+      if (onTimeout) onTimeout();
+    }
+  }, 1000);
+}
+
+function stopLilyTimer() {
+  if (lilyQuestState.timerIntervalId) {
+    clearInterval(lilyQuestState.timerIntervalId);
+    lilyQuestState.timerIntervalId = null;
+  }
+  lilyQuestState.turnsLeft = 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СТАТУС-БАР ЛИЛИ
+   ───────────────────────────────────────────────────────────── */
+function updateLilyStatusBar() {
+  const bar = document.getElementById('lily-status-bar');
+  if (!bar) return;
+  const hpPct = Math.max(0, Math.min(100, (lilyQuestState.lilyHp / lilyQuestState.lilyMaxHp) * 100));
+  const timerHtml = lilyQuestState.turnsLeft > 0
+    ? `<div class="lily-timer ${lilyQuestState.turnsLeft <= 3 ? 'warn' : ''}">⏱ ${lilyQuestState.turnsLeft}с</div>`
+    : '';
+  bar.innerHTML = `
+    <div class="lily-status">
+      <span style="font-size:1.2rem;">🌸</span>
+      <span style="color:#fbcfe8; font-weight:bold;">Лилиан</span>
+      <div class="lily-hp-bar">
+        <div class="lily-hp-fill" style="width:${hpPct}%"></div>
+      </div>
+      <span class="lily-hp-text">${Math.max(0, lilyQuestState.lilyHp)}/${lilyQuestState.lilyMaxHp} HP</span>
+      ${timerHtml}
+    </div>
+  `;
+  bar.style.display = 'block';
+}
+
+/* ─────────────────────────────────────────────────────────────
+   УРОН ЛИЛИ (с всплывашкой)
+   ───────────────────────────────────────────────────────────── */
+function damageLily(amount, reason) {
+  lilyQuestState.lilyHp = Math.max(0, lilyQuestState.lilyHp - amount);
+  updateLilyStatusBar();
+
+  const modal = document.getElementById('lily-content');
+  if (modal) {
+    const floatEl = document.createElement('div');
+    floatEl.className = 'lily-dmg-overlay';
+    floatEl.textContent = `-${amount}`;
+    modal.parentElement.style.position = 'relative';
+    modal.parentElement.appendChild(floatEl);
+    setTimeout(() => floatEl.remove(), 1300);
+  }
+
+  if (reason) addLog(`🌸 [ЛИЛИ] ${reason} (-${amount} HP)`, 'sidequest');
+
+  if (lilyQuestState.lilyHp <= 0) {
+    addLog(`💔 [ЛИЛИ] Лилиан потеряла сознание...`, 'danger');
+    setTimeout(() => {
+      renderLilyScene_Lose();
+    }, 800);
+    return true;
+  }
+  return false;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   РЕНДЕР СЦЕНЫ (базовый helper)
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene({ icon = '🌸', speaker = 'Лилиан', text, choices, showStatus = true }) {
+  const statusBar = document.getElementById('lily-status-bar');
+  if (statusBar) statusBar.style.display = showStatus ? 'block' : 'none';
+  if (showStatus) updateLilyStatusBar();
+
+  const c = document.getElementById('lily-content');
+  c.innerHTML = `
+    <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:8px;">
+      <div class="lily-scene-avatar">${icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:0.85rem; color:#f9a8d4; font-weight:bold; margin-bottom:3px;">${speaker}</div>
+        <div style="background: linear-gradient(135deg, rgba(244,114,182,0.12), rgba(190,24,93,0.06)); border: 1px solid #f472b6; border-radius: 5px; padding: 12px; font-size: 0.92rem; line-height: 1.55; color: #fce7f3; font-style: italic;">
+          💬 ${text}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const choicesEl = document.getElementById('lily-choices');
+  choicesEl.innerHTML = '';
+  (choices || []).forEach(ch => {
+    const btn = document.createElement('button');
+    const isHidden = ch.hidden || false;
+    btn.className = `sao-btn btn-sidequest lily-choice-btn${isHidden ? ' hidden-choice' : ''}`;
+    btn.style.padding = '11px';
+    btn.innerHTML = ch.text;
+    btn.onclick = () => {
+      playSound(isHidden ? 'lily' : 'click');
+      if (ch.disabled) return;
+      if (ch.onPick) ch.onPick();
+    };
+    choicesEl.appendChild(btn);
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СТАРТ КВЕСТА (перехват старого)
+   ───────────────────────────────────────────────────────────── */
+window.startLilyQuest = function () {
+  if (!player.lilyQuest) player.lilyQuest = { active: false, stage: 0, completed: false };
+  if (player.lilyQuest.completed) { showToast('Квест уже завершён'); return; }
+
+  player.lilyQuest.active = true;
+  if (player.lilyQuest.stage === 0) {
+    resetLilyQuestState();
+    lilyQuestState.scenePath = ['start'];
+    renderLilyScene_Intro();
+  } else {
+    // Возврат в квест — продолжаем с текущей стадии
+    resumeLilyScene(player.lilyQuest.stage);
+  }
+
+  openModal('modal-lily');
+  playSound('lily');
+};
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 0 — ВСТУПЛЕНИЕ
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_Intro() {
+  player.lilyQuest.stage = 1;
+  renderLilyScene({
+    icon: '🐺',
+    speaker: 'Лесная тропа',
+    text: 'Ты слышишь детский крик из глубины леса... Раздвигая ветки, видишь: три волка загнали на дерево девочку с белыми волосами. Она прижимает к груди плетёную корзинку и плачет.',
+    choices: [
+      { text: '⚔️ Броситься на волков', onPick: () => startLilyCombat_Wolves() },
+      { text: '🏹 Отвлечь волков стрелой', onPick: () => startLilyCombat_Wolves('ranged') },
+      {
+        text: '✨ Тишина... (скрытый выбор)',
+        hidden: true,
+        onPick: () => {
+          // Проверка: класс с магией или наличие кристалла
+          const isMage = ['mage', 'pyromancer', 'cleric', 'envell_mage', 'electron'].includes(player.classId);
+          if (isMage || player.inventory.some(i => i.id === 'p_crystal_heal')) {
+            addLog(`✨ [ЛИЛИ] Ты используешь магию/кристалл — волки разбегаются!`, 'sidequest');
+            lilyQuestState.trustLevel += 2;
+            damageLily(0);
+            setTimeout(() => renderLilyScene_AfterWolves(true), 400);
+          } else {
+            showToast('Не хватает сил...');
+            startLilyCombat_Wolves();
+          }
+        }
+      }
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 1 — БОЙ С ВОЛКАМИ
+   ───────────────────────────────────────────────────────────── */
+function startLilyCombat_Wolves(tactic = 'melee') {
+  // Ставим таймер: 20 секунд, чтобы волки не добрались до Лили
+  startLilyTimer(20, () => {
+    if (lilyQuestState.lilyHp > 0) {
+      damageLily(30, 'Волки добрались до Лили!');
+      if (lilyQuestState.lilyHp > 0) {
+        renderLilyScene_WolvesTimeout();
+      }
+    }
+  });
+
+  renderLilyScene({
+    icon: '🐺',
+    speaker: 'Бой с волками',
+    text: `Три волка рычат и скалятся. ${tactic === 'ranged' ? 'Ты выпускаешь стрелу — один волк отступает.' : 'Ты выхватываешь оружие — волки бросаются на тебя.'} Лили кричит: «Осторожно!»`,
+    choices: [
+      {
+        text: '⚔️ Атаковать (симуляция боя)', onPick: () => {
+          stopLilyTimer();
+          // Автобой: шанс успеха зависит от ATK
+          const playerAtk = getTotalAtk();
+          const wolfHp = 80 + getCurrentFloor() * 20;
+          const successChance = Math.min(0.95, 0.4 + playerAtk / (wolfHp * 2));
+          const success = Math.random() < successChance;
+          if (success) {
+            lilyQuestState.trustLevel += 1;
+            addLog(`⚔️ [БОЙ] Ты побеждаешь волков! (-${Math.round(wolfHp * 0.3)} HP у питомца)`, 'victory');
+            renderLilyScene_AfterWolves(false);
+          } else {
+            damageLily(15, 'Волк царапнул Лили!');
+            if (lilyQuestState.lilyHp > 0) {
+              renderLilyScene_WolvesTimeout();
+            }
+          }
+        }
+      },
+      {
+        text: '🛡️ Заслонить Лили собой', onPick: () => {
+          stopLilyTimer();
+          // Жертвуем HP игрока, но Лили в безопасности
+          const sacrifice = Math.min(player.hp - 1, 30);
+          player.hp -= sacrifice;
+          lilyQuestState.trustLevel += 3;
+          addLog(`🛡️ [ЛИЛИ] Ты заслонил Лили собой, потеряв ${sacrifice} HP!`, 'sidequest');
+          updateHUD();
+          renderLilyScene_AfterWolves(false);
+        }
+      },
+      {
+        text: '💨 Схватить Лили и убежать', onPick: () => {
+          stopLilyTimer();
+          if (player.classId === 'assassin' || player.classId === 'envell_killer' || player.classId === 'thief') {
+            lilyQuestState.trustLevel -= 1; // она испугалась
+            addLog(`💨 [ЛИЛИ] Ты хватаешь Лили и убегаешь — волки не успевают.`, 'system');
+            renderLilyScene_AfterWolves(false);
+          } else {
+            damageLily(25, 'Ты не успеваешь — волк достаёт Лили!');
+            if (lilyQuestState.lilyHp > 0) {
+              renderLilyScene_WolvesTimeout();
+            }
+          }
+        }
+      }
+    ]
+  });
+}
+
+function renderLilyScene_WolvesTimeout() {
+  startLilyTimer(15, () => {
+    if (lilyQuestState.lilyHp > 0) {
+      damageLily(20, 'Лили совсем обессилела');
+      if (lilyQuestState.lilyHp > 0) renderLilyScene_WolvesTimeout();
+    }
+  });
+  renderLilyScene({
+    icon: '😰',
+    speaker: 'Лилиан',
+    text: `«П-помоги... они не отступают!» — Лили едва держится. ${lilyQuestState.lilyHp} HP осталось.`,
+    choices: [
+      { text: '⚔️ Собраться с силами!', onPick: () => startLilyCombat_Wolves() },
+      { text: '🧪 Бросить Лили зелье HP', onPick: () => {
+        const potion = player.inventory.find(i => i.id === 'p_hp_small' || i.id === 'p_hp_large');
+        if (!potion) { showToast('Нет зелий!'); return; }
+        removeItemFromInventory(potion.id, 1);
+        lilyQuestState.lilyHp = Math.min(lilyQuestState.lilyMaxHp, lilyQuestState.lilyHp + 50);
+        updateLilyStatusBar();
+        addLog(`🧪 [ЛИЛИ] Ты дал Лили зелье! +50 HP.`, 'heal');
+        renderLilyScene_AfterWolves(false);
+      }}
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 2 — ПОСЛЕ ВОЛКОВ
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_AfterWolves(skippedCombat) {
+  stopLilyTimer();
+  player.lilyQuest.stage = 2;
+  const thanks = skippedCombat
+    ? '«Т-ты... спас меня? Я даже не заметила, как волки убежали!»'
+    : '«Спасибо! Ты такой сильный! Я — Лилиан, но все зовут меня Лили.»';
+  renderLilyScene({
+    icon: '🌸',
+    speaker: 'Лилиан',
+    text: `${thanks} Она прижимает корзинку: «Я потеряла дорогу... и корзинку для мамы потеряла. Ты поможешь?»`,
+    choices: [
+      { text: '🔍 Найти корзинку', onPick: () => renderLilyScene_FindBasket() },
+      { text: '❓ «Почему ты одна в лесу?»', onPick: () => {
+        lilyQuestState.trustLevel += 2;
+        renderLilyScene_WhyAlone();
+      }},
+      { text: '🚶 Проводить домой', onPick: () => renderLilyScene_GoHome() }
+    ]
+  });
+}
+
+function renderLilyScene_WhyAlone() {
+  renderLilyScene({
+    icon: '🥺',
+    speaker: 'Лилиан',
+    text: '«Мама... она болеет. Я ходила за травами. Но мобы... они меня не трогают обычно. А сегодня — напали. Странно, да?»',
+    choices: [
+      { text: '«Очень странно. Идём, я помогу.»', onPick: () => {
+        lilyQuestState.trustLevel += 2;
+        lilyQuestState.revealedTruth = true;
+        addLog(`🔮 [ЛИЛИ] Ты замечаешь: мобы боятся Лили. Это не совпадение...`, 'ai');
+        renderLilyScene_FindBasket();
+      }},
+      { text: '«Наверное, волки голодные.»', onPick: () => renderLilyScene_FindBasket() }
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 3 — ПОИСК КОРЗИНКИ (с таймером)
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_FindBasket() {
+  player.lilyQuest.stage = 3;
+  startLilyTimer(25, () => {
+    if (lilyQuestState.lilyHp > 0) {
+      damageLily(15, 'Лили замёрзла, пока ты искал');
+      if (lilyQuestState.lilyHp > 0) {
+        renderLilyScene_BasketFound(true);
+      }
+    }
+  });
+  renderLilyScene({
+    icon: '🧺',
+    speaker: 'Поиски',
+    text: 'Корзинка где-то в кустах. Лили дрожит от холода. Нужно найти её быстро!',
+    choices: [
+      { text: '🔍 Обыскать кусты (быстро)', onPick: () => {
+        stopLilyTimer();
+        if (Math.random() < 0.7) {
+          renderLilyScene_BasketFound(false);
+        } else {
+          damageLily(10, 'Ты поранился о шипы, Лили испугалась');
+          if (lilyQuestState.lilyHp > 0) renderLilyScene_BasketFound(true);
+        }
+      }},
+      { text: '💨 Использовать магию/скилл поиска', onPick: () => {
+        stopLilyTimer();
+        const isMage = ['mage', 'pyromancer', 'envell_mage', 'cleric'].includes(player.classId);
+        if (isMage || player.mp >= 20) {
+          if (!isMage) player.mp -= 20;
+          lilyQuestState.trustLevel += 1;
+          addLog(`✨ [ЛИЛИ] Магия помогает найти корзинку мгновенно!`, 'sidequest');
+          renderLilyScene_BasketFound(false);
+        } else {
+          showToast('Не хватает MP');
+          renderLilyScene_BasketFound(false);
+        }
+      }},
+      { text: '🛡️ Сначала согреть Лили', onPick: () => {
+        stopLilyTimer();
+        lilyQuestState.lilyHp = Math.min(lilyQuestState.lilyMaxHp, lilyQuestState.lilyHp + 20);
+        lilyQuestState.trustLevel += 2;
+        updateLilyStatusBar();
+        addLog(`🔥 [ЛИЛИ] Ты согрел Лили. +20 HP.`, 'heal');
+        renderLilyScene_BasketFound(true);
+      }}
+    ]
+  });
+}
+
+function renderLilyScene_BasketFound(wasDamaged) {
+  renderLilyScene({
+    icon: '🌸',
+    speaker: 'Лилиан',
+    text: wasDamaged
+      ? '«Т-ты нашёл! Спасибо... Я так замёрзла...» — она дрожит, но улыбается.'
+      : '«Вот она! Спасибо! Теперь мама обрадуется. Но... я не помню дорогу домой.»',
+    choices: [
+      { text: '🚶 Проводить Лили', onPick: () => renderLilyScene_GoHome() },
+      { text: '❓ «Расскажи о маме»', onPick: () => renderLilyScene_MomStory() }
+    ]
+  });
+}
+
+function renderLilyScene_MomStory() {
+  lilyQuestState.trustLevel += 1;
+  renderLilyScene({
+    icon: '💭',
+    speaker: 'Лилиан',
+    text: '«Мама... она не обычная. Она как я. Только... она забыла, кто она. Иногда говорит странные вещи про Кардинала, про Айнкрад... А потом снова становится обычной.»',
+    choices: [
+      { text: '«Пойдём к ней. Я помогу.»', onPick: () => {
+        lilyQuestState.revealedTruth = true;
+        addLog(`🔮 [ЛИЛИ] Ты узнал: мать Лили связана с Кардиналом.`, 'ai');
+        renderLilyScene_GoHome();
+      }}
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 4 — ДОРОГА ДОМОЙ (бой с гоблинами)
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_GoHome() {
+  player.lilyQuest.stage = 4;
+  renderLilyScene({
+    icon: '🌲',
+    speaker: 'Лесная тропа',
+    text: '«Уже почти пришли! Вон там, за ручьём...» — Лили вдруг замирает. «Гоблины! Их вожак... он очень злой!»',
+    choices: [
+      { text: '⚔️ Защитить Лили', onPick: () => startLilyCombat_Goblins() },
+      { text: '🤝 Попробовать договориться', onPick: () => {
+        // Шанс зависит от расы
+        const peacefulRaces = ['elf', 'halfelf', 'angel'];
+        if (peacefulRaces.includes(player.raceId) || player.col >= 500) {
+          if (!peacefulRaces.includes(player.raceId)) {
+            player.col -= 500;
+            addLog(`💰 [ЛИЛИ] Ты откупился от гоблинов — 500 Col.`, 'system');
+          } else {
+            addLog(`🌿 [ЛИЛИ] Эльфийская кровь помогла — гоблины пропустили вас.`, 'race');
+          }
+          lilyQuestState.trustLevel += 2;
+          renderLilyScene_AtHome();
+        } else {
+          damageLily(15, 'Гоблины не послушали — Лили пострадала');
+          if (lilyQuestState.lilyHp > 0) startLilyCombat_Goblins();
+        }
+      }}
+    ]
+  });
+}
+
+function startLilyCombat_Goblins() {
+  startLilyTimer(25, () => {
+    if (lilyQuestState.lilyHp > 0) {
+      damageLily(20, 'Гоблины ранили Лили!');
+      if (lilyQuestState.lilyHp > 0) {
+        renderLilyScene({
+          icon: '😰',
+          speaker: 'Бой',
+          text: `«Их слишком много! Держись!» — Лили едва стоит. ${lilyQuestState.lilyHp} HP осталось.`,
+          choices: [
+            { text: '⚔️ Последний рывок', onPick: () => resolveGoblinFight() },
+            { text: '💨 Отступить с Лили', onPick: () => {
+              stopLilyTimer();
+              damageLily(10, 'Вы отступаете, но Лили спотыкается');
+              if (lilyQuestState.lilyHp > 0) renderLilyScene_AtHome();
+            }}
+          ]
+        });
+      }
+    }
+  });
+
+  renderLilyScene({
+    icon: '👺',
+    speaker: 'Гоблины',
+    text: 'Вожак гоблинов рычит: «Добыча! Добыча!» Остальные готовятся к броску. У тебя есть немного времени.',
+    choices: [
+      { text: '⚔️ Атаковать вожака', onPick: () => resolveGoblinFight('boss') },
+      { text: '🏹 Снять гоблинов издалека', onPick: () => resolveGoblinFight('ranged') },
+      { text: '🛡️ Стоять насмерть', onPick: () => resolveGoblinFight('tank') }
+    ]
+  });
+}
+
+function resolveGoblinFight(tactic) {
+  stopLilyTimer();
+  const playerAtk = getTotalAtk();
+  let successChance = 0.5 + playerAtk / 1000;
+
+  if (tactic === 'boss')    successChance += 0.15;
+  if (tactic === 'ranged')  successChance += 0.10;
+  if (tactic === 'tank')    successChance -= 0.05; // медленно
+
+  if (player.classId === 'hunter' || player.classId === 'envell_killer') {
+    if (tactic === 'ranged' || tactic === 'boss') successChance += 0.15;
+  }
+  if (player.classId === 'tank' || player.classId === 'defender') {
+    if (tactic === 'tank') successChance += 0.20;
+  }
+
+  successChance = Math.min(0.95, Math.max(0.3, successChance));
+
+  if (Math.random() < successChance) {
+    lilyQuestState.trustLevel += 2;
+    addLog(`⚔️ [БОЙ] Гоблины побеждены!`, 'victory');
+    player.exp += 150;
+    player.col += 200;
+    player.totalColEarned += 200;
+    showToast('+150 EXP, +200 Col');
+    renderLilyScene_AtHome();
+  } else {
+    damageLily(20, 'Гоблины атакуют Лили!');
+    if (lilyQuestState.lilyHp > 0) {
+      renderLilyScene({
+        icon: '😰',
+        speaker: 'Бой',
+        text: `Ты едва отбиваешься! Лили вся в синяках. Осталось ${lilyQuestState.lilyHp} HP.`,
+        choices: [
+          { text: '⚔️ Ещё попытка!', onPick: () => resolveGoblinFight(tactic) },
+          { text: '🏃 Убежать', onPick: () => {
+            stopLilyTimer();
+            damageLily(15, 'Вы убегаете, но Лили достаётся удар');
+            if (lilyQuestState.lilyHp > 0) renderLilyScene_AtHome();
+          }}
+        ]
+      });
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СЦЕНА 5 — ДОМ ЛИЛИ (кульминация)
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_AtHome() {
+  player.lilyQuest.stage = 5;
+  stopLilyTimer();
+
+  // Бонус к доверию, если Лили в хорошем состоянии
+  if (lilyQuestState.lilyHp >= 80) lilyQuestState.trustLevel += 2;
+  else if (lilyQuestState.lilyHp >= 50) lilyQuestState.trustLevel += 1;
+
+  renderLilyScene({
+    icon: '🏡',
+    speaker: 'Дом Лили',
+    text: '«Мама, мама! Я вернулась!» — Лили вбегает в дом. Внутри у очага сидит женщина с такими же белыми волосами, но её глаза... странные. Она смотрит на тебя и говорит: «Ты... игрок. Я тебя вижу.»',
+    choices: [
+      { text: '❓ «Вы знаете меня?»', onPick: () => renderLilyScene_MotherReveal() },
+      { text: '🌸 «Лили, иди погуляй. Мы поговорим.»', onPick: () => {
+        lilyQuestState.trustLevel -= 1;
+        renderLilyScene_MotherReveal();
+      }}
+    ]
+  });
+}
+
+function renderLilyScene_MotherReveal() {
+  // Проверка на скрытый выбор
+  const canReveal = lilyQuestState.revealedTruth || lilyQuestState.trustLevel >= 5;
+
+  renderLilyScene({
+    icon: '🔮',
+    speaker: 'Мать Лили',
+    text: '«Я была... дочерью Кардинала. Он создал Лили из моего кода. Она — часть системы. Но я сбежала, чтобы дать ей человеческую жизнь. Теперь ты знаешь.»',
+    choices: [
+      { text: '😨 «Это... правда?»', onPick: () => renderLilyScene_TruthAccepted() },
+      { text: '🌟 «Лили — не код. Она — человек.»', onPick: () => {
+        lilyQuestState.trustLevel += 3;
+        addLog(`🌟 [ЛИЛИ] Ты сказал, что Лили — человек. Это тронуло её.`, 'sidequest');
+        renderLilyScene_TruthAccepted();
+      }},
+      canReveal ? {
+        text: '✨ «Я знаю. И всё равно спасу её.» (скрытый)',
+        hidden: true,
+        onPick: () => {
+          lilyQuestState.trustLevel += 5;
+          lilyQuestState.revealedTruth = true;
+          addLog(`✨ [ЛИЛИ] Ты принимаешь правду. Лили плачет от счастья.`, 'legendary');
+          renderLilyScene_TruthAccepted(true);
+        }
+      } : null
+    ].filter(Boolean)
+  });
+}
+
+function renderLilyScene_TruthAccepted(fully = false) {
+  renderLilyScene({
+    icon: '🌸',
+    speaker: 'Лилиан',
+    text: fully
+      ? '«Ты... знал, что я не человек, и всё равно помог? Спасибо. Я никогда не забуду.»'
+      : '«Не бойся. Ты спас меня. Это главное. Возьми этот талисман — он защитит тебя от Кардинала.»',
+    choices: [
+      { text: '🎁 Принять талисман и завершить', onPick: () => finishLilyQuest(false) },
+      fully ? {
+        text: '✨ «Я хочу, чтобы ты пошла со мной.» (скрытый)',
+        hidden: true,
+        onPick: () => offerLilyAsPet()
+      } : null
+    ].filter(Boolean)
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   СКРЫТАЯ КОНЦОВКА — Лили становится питомцем
+   ───────────────────────────────────────────────────────────── */
+function offerLilyAsPet() {
+  renderLilyScene({
+    icon: '🌟',
+    speaker: 'Лилиан',
+    text: '«Со мной?.. Я всегда мечтала о приключениях! Но... мама. Она будет одна.» Пауза. «Нет. Она хотела бы, чтобы я была счастлива. Я пойду с тобой!»',
+    choices: [
+      { text: '🦊 Принять Лили-Лиса', onPick: () => {
+        if (player.pet) {
+          showToast('У тебя уже есть питомец!');
+          return;
+        }
+        player.pet = {
+          speciesId: 'fox',
+          level: 5,
+          exp: 0,
+          hp: getPetMaxHp(),
+          kills: 0,
+          name: 'Лили',
+          evolution: { level: 5, name: 'Лили', icon: '🌸', bonus: '✨ Уникальная спутница' }
+        };
+        addLog(`🌸 [УНИКАЛЬНО] Лилиан стала твоим питомцем!`, 'legendary');
+        showAchievementToast('🌸 Лили-Лис', 'Уникальный питомец');
+        finishLilyQuest(true);
+      }},
+      { text: '🌸 Нет, оставайся с мамой', onPick: () => finishLilyQuest(false) }
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ПРОВАЛ — Лили потеряла сознание
+   ───────────────────────────────────────────────────────────── */
+function renderLilyScene_Lose() {
+  stopLilyTimer();
+  renderLilyScene({
+    icon: '💔',
+    speaker: 'Провал',
+    text: 'Лили без сознания. Ты не успел... Но она жива — просто без сил. Придётся вернуться позже, когда она окрепнет.',
+    choices: [
+      { text: '🔄 Попробовать снова', onPick: () => {
+        resetLilyQuestState();
+        player.lilyQuest.stage = 1;
+        renderLilyScene_Intro();
+      }},
+      { text: '✕ Уйти', onPick: () => { closeModal('modal-lily'); } }
+    ]
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ЗАВЕРШЕНИЕ КВЕСТА
+   ───────────────────────────────────────────────────────────── */
+function finishLilyQuest(gotPet) {
+  stopLilyTimer();
+  player.lilyQuest.completed = true;
+  player.lilyQuest.stage = 7;
+
+  // Награды в зависимости от концовки
+  let expReward = 200;
+  let colReward = 500;
+  let atkBonus = 30;
+  let defBonus = 30;
+  let hpBonus = 300;
+
+  if (lilyQuestState.trustLevel >= 8) {
+    expReward = 500;
+    colReward = 1000;
+    atkBonus = 50;
+    defBonus = 50;
+    hpBonus = 500;
+  } else if (lilyQuestState.trustLevel >= 5) {
+    expReward = 350;
+    colReward = 750;
+    atkBonus = 40;
+    defBonus = 40;
+    hpBonus = 400;
+  }
+
+  player.exp += expReward;
+  player.col += colReward;
+  player.totalColEarned += colReward;
+  player.achievementBonuses.atk = (player.achievementBonuses.atk || 0) + atkBonus;
+  player.achievementBonuses.def = (player.achievementBonuses.def || 0) + defBonus;
+  player.achievementBonuses.hp = (player.achievementBonuses.hp || 0) + hpBonus;
+
+  addItemToInventory('mat_lily_charm', 1);
+
+  const modal = document.getElementById('lily-content');
+  const statusBar = document.getElementById('lily-status-bar');
+  if (statusBar) statusBar.style.display = 'none';
+
+  const endingIcon = gotPet ? '🌟' : '🌸';
+  const endingText = gotPet
+    ? '«Я всегда буду рядом. Спасибо, что поверил в меня.»'
+    : '«Ты — мой герой. Возьми талисман — и помни обо мне.»';
+
+  modal.innerHTML = `
+    <div style="text-align:center; font-size:4rem; margin:10px 0;">${endingIcon}</div>
+    <div style="text-align:center; color:#f9a8d4; font-weight:900; font-size:1.2rem; letter-spacing:2px; margin-bottom:12px;">
+      ${gotPet ? 'ЛИЛИ СТАЛА ТВОИМ СПУТНИКОМ!' : 'КВЕСТ ЗАВЕРШЁН'}
+    </div>
+    <div style="background: linear-gradient(135deg, rgba(244,114,182,0.15), rgba(190,24,93,0.08)); border: 1px solid #f472b6; border-radius: 6px; padding: 14px; text-align:center; font-style:italic; color:#fce7f3; margin-bottom:12px;">
+      💬 ${endingText}
+    </div>
+    <div style="background: rgba(15,23,42,0.8); border: 1px solid #22c55e; border-radius: 5px; padding: 10px; text-align:center;">
+      <div style="color:#4ade80; font-weight:bold; margin-bottom:4px;">🎁 НАГРАДЫ</div>
+      <div style="font-size:0.85rem; color:#cbd5e1;">
+        +${expReward} EXP · +${colReward} Col<br>
+        +${atkBonus} ATK · +${defBonus} DEF · +${hpBonus} HP<br>
+        🌸 Талисман Лилиан
+      </div>
+    </div>
+    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:10px;">
+      Доверие Лили: ${lilyQuestState.trustLevel}/10
+    </div>
+  `;
+
+  const choicesEl = document.getElementById('lily-choices');
+  choicesEl.innerHTML = '';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'sao-btn btn-sidequest';
+  closeBtn.style.padding = '12px';
+  closeBtn.innerHTML = '🏆 Завершить';
+  closeBtn.onclick = () => {
+    closeModal('modal-lily');
+    playSound('lily');
+    showAchievementToast('🌸 Спаситель Лилиан', `+${atkBonus} ATK, +${defBonus} DEF, +${hpBonus} HP`);
+    checkAchievements();
+    updateHUD();
+    saveGameAuto();
+    // Триггер сюжета, если ещё не было
+    if (typeof tryAutoTriggerChapter === 'function') {
+      setTimeout(() => tryAutoTriggerChapter(getCurrentFloor()), 1200);
+    }
+  };
+  choicesEl.appendChild(closeBtn);
+
+  playSound('achievement');
+  addLog(`🌸 [КВЕСТ ЗАВЕРШЁН] Лилиан спасена! Доверие: ${lilyQuestState.trustLevel}/10.`, 'sidequest');
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ВОЗОБНОВЛЕНИЕ (если игрок закрыл модал и вернулся)
+   ───────────────────────────────────────────────────────────── */
+function resumeLilyScene(stage) {
+  // Просто показываем прогресс и позволяем продолжить с текущей стадии
+  const sceneMap = {
+    1: renderLilyScene_Intro,
+    2: () => renderLilyScene_AfterWolves(false),
+    3: renderLilyScene_FindBasket,
+    4: renderLilyScene_GoHome,
+    5: renderLilyScene_AtHome,
+    7: () => finishLilyQuest(false)
+  };
+  const fn = sceneMap[stage];
+  if (fn) fn();
+  else renderLilyScene_Intro();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ПРИ ЗАКРЫТИИ МОДАЛА — очищаем таймер
+   ───────────────────────────────────────────────────────────── */
+const _closeModal_v601 = window.closeModal;
+window.closeModal = function (id) {
+  if (id === 'modal-lily') stopLilyTimer();
+  return _closeModal_v601(id);
+};
+
+console.log('✅ LILIAN QUEST v2: динамический квест с боями, таймером и скрытой концовкой');
+/* ═══════════════════════════════════════════════════════════════
+   📋 WHAT'S NEW — плашка с обновлениями
+   ═══════════════════════════════════════════════════════════════ */
+
+const WHATS_NEW_VERSION = 'v6.2';
+
+const WHATS_NEW_DATA = [
+  {
+    color: 'red',
+    icon: '⚔️',
+    title: 'БОЕВАЯ СИСТЕМА',
+    items: [
+      { text: '<b>8 статусов</b> — кровотечение, горение, яд, холод, шок, ослабление, оглушение, заморозка. Стакаются, тикают, влияют на бой.', tag: 'new' },
+      { text: '<b>Combo-система</b> — используй скиллы разных стихий подряд. Шкала растёт до 100%, потом доступен <b>ULTIMATE</b> (500% ATK + все эффекты).', tag: 'new' },
+      { text: '<b>Парирование (QTE)</b> — 20% шанс при ударе врага. Успей нажать кнопку за 1.2 сек → блок + стан + 10 MP.', tag: 'new' },
+      { text: '<b>Слабости боссов</b> — у каждого босса 2 уязвимости (+50% урона) и 1 иммунитет (−90%).', tag: 'new' },
+      { text: '<b>LAST STAND</b> — первый смертельный удар всегда оставляет 1 HP (раз за бой).', tag: 'fix' }
+    ]
+  },
+  {
+    color: 'purple',
+    icon: '🌍',
+    title: 'МИР И СОБЫТИЯ',
+    items: [
+      { text: '<b>6 мировых событий</b>: Кровавая Луна, Метеоритный дождь, Туман, Золотая лихорадка, Безопасная гавань, Всплеск магии. Меняют правила на 2-3 минуты.', tag: 'new' },
+      { text: '<b>Модификаторы подземелий</b> — до 2 модификаторов за забег. Элитный этаж, Без исцеления, Ограничение времени, Проклятие, Лабиринт, Берсерк. Награда ×до 3.0.', tag: 'new' },
+      { text: '<b>Погода и время суток</b> — дождь снижает крит, снег даёт реген, ночь усиливает мобов, гроза бьёт врагов молниями.', tag: 'fix' }
+    ]
+  },
+  {
+    color: 'pink',
+    icon: '🌸',
+    title: 'ЛИЛИАН — ДЕВОЧКА ИЗ ЛЕСА (v2)',
+    items: [
+      { text: '<b>Динамический квест</b> — реальные бои с волками и гоблинами, таймеры (20-25 сек), Лили реально теряет HP если тянуть.', tag: 'new' },
+      { text: '<b>Система доверия (0-10)</b> — растёт от правильных выборов. Влияет на размер награды: до <b>500 EXP, 1000 Col, +50 ATK/DEF, +500 HP</b>.', tag: 'new' },
+      { text: '<b>3 скрытых выбора</b> — доступны магам, эльфам, при высоком доверии. Открывают уникальную концовку.', tag: 'new' },
+      { text: '<b>Уникальный питомец</b> — при определённых выборах <b>Лили становится твоим спутником 🌸</b> (5 ур., уникальная пассивка).', tag: 'new' }
+    ]
+  },
+  {
+    color: 'gold',
+    icon: '🐾',
+    title: 'ПИТОМЦЫ',
+    items: [
+      { text: '<b>Эволюция питомцев</b> — на ур. 10, 25, 50 питомец эволюционирует. Волк → Лютоволк → Фенрир → Небесный Волк. У каждого вида своя ветка.', tag: 'new' },
+      { text: '<b>5 видов питомцев</b>: Волк (ATK), Феникс (реген), Дракончик (магия), Лис (Col), Кот (крит).', tag: 'new' },
+      { text: '<b>Активные пассивки</b> — все пассивки теперь влияют на бой (крит, урон скиллов, доход Col, реген HP).', tag: 'fix' }
+    ]
+  },
+  {
+    color: 'green',
+    icon: '⚙️',
+    title: 'СИСТЕМНЫЕ УЛУЧШЕНИЯ',
+    items: [
+      { text: '<b>Firebase-логи</b> — все достижения, победы, боссы, уровни автоматически пишутся в облако.', tag: 'fix' },
+      { text: '<b>Админ-панель v2</b> — можно редактировать JSON игроков в облаке, ставить автосейв на паузу, отправлять поддельные логи.', tag: 'fix' },
+      { text: '<b>Присутствие</b> — статус онлайн/офлайн через Firebase Realtime.', tag: 'fix' },
+      { text: '<b>Новая Игра+</b> — после 10 глав можно сбросить персонажа, сохранив ачивки, ДК, VIP и убийства.', tag: 'fix' },
+      { text: '<b>Фиксы v6.1:</b> урон по слабостям, двойной ход после парирования, зацикливание подземелий, наложение эффектов на труп.', tag: 'fix' }
+    ]
+  }
+];
+
+function renderWhatsNew() {
+  const container = document.getElementById('whats-new-sections');
+  if (!container) return;
+  container.innerHTML = '';
+
+  WHATS_NEW_DATA.forEach(section => {
+    const div = document.createElement('div');
+    div.className = `whats-new-section ${section.color}`;
+    div.innerHTML = `
+      <div class="whats-new-section-title">${section.icon} ${section.title}</div>
+      <div class="whats-new-list">
+        ${section.items.map(item => {
+          const isHighlight = item.tag === 'new' && (item.text.includes('ULTIMATE') || item.text.includes('Уникальный питомец') || item.text.includes('динамический'));
+          return `<div class="whats-new-item ${isHighlight ? 'highlight' : ''}">
+            <span class="marker">▸</span>
+            <span>${item.text}${item.tag ? `<span class="whats-new-tag ${item.tag}">${item.tag === 'new' ? 'NEW' : 'FIX'}</span>` : ''}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function openWhatsNew() {
+  renderWhatsNew();
+  openModal('modal-whats-new');
+  playSound('levelup');
+}
+
+// ── Показ после создания персонажа ──
+function maybeShowWhatsNew(force = false) {
+  const key = 'sao_whats_new_seen_' + WHATS_NEW_VERSION;
+  if (!force && localStorage.getItem(key) === 'true') return false;
+  // Ждём, пока закроются другие окна (создание персонажа)
+  setTimeout(() => {
+    if (document.querySelector('.modal-overlay.active')) {
+      setTimeout(() => openWhatsNew(), 800);
+    } else {
+      openWhatsNew();
+    }
+    localStorage.setItem(key, 'true');
+  }, 500);
+  return true;
+}
+/* ═══════════════════════════════════════════════════════════════
+   🌸 ЛИЛИ В СЮЖЕТЕ — отголоски в Главе VIII и финале
+   ═══════════════════════════════════════════════════════════════ */
+console.log('🌸 Lilian story integration loading...');
+
+/* ─────────────────────────────────────────────────────────────
+   ХЕЛПЕРЫ — состояние отношений с Лили
+   ───────────────────────────────────────────────────────────── */
+function getLilyTrust() {
+  return (typeof lilyQuestState !== 'undefined' && lilyQuestState.trustLevel) || 0;
+}
+function isLilyCompleted() {
+  return player && player.lilyQuest && player.lilyQuest.completed === true;
+}
+function isLilyPet() {
+  return player && player.pet && player.pet.speciesId === 'fox' && player.pet.name === 'Лили';
+}
+function knowsLilyTruth() {
+  return (typeof lilyQuestState !== 'undefined' && lilyQuestState.revealedTruth) || false;
+}
+
+// «Уровень связи» — итоговая величина
+function getLilyBondLevel() {
+  if (!isLilyCompleted()) return 0; // не проходил — 0
+  let bond = 1;
+  if (getLilyTrust() >= 5) bond = 2;
+  if (getLilyTrust() >= 8) bond = 3;
+  if (isLilyPet()) bond = 4;
+  if (isLilyPet() && knowsLilyTruth()) bond = 5;
+  return bond;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ПЕРЕХВАТ renderChapterDialog — динамика главы VIII
+   ───────────────────────────────────────────────────────────── */
+const _origRenderChapterDialog = window.renderChapterDialog;
+
+window.renderChapterDialog = function (chapter, sceneIdx) {
+  // Для главы 8 (id === 8) — особая логика
+  if (chapter.id === 8) {
+    const bond = getLilyBondLevel();
+    const dynamicScene = buildChapter8Scene(bond, sceneIdx);
+    if (dynamicScene) {
+      renderChapterScene(dynamicScene, chapter);
+      return;
+    }
+  }
+
+  // Для главы 10 (id === 10) — добавляем «Путь Лили», если bond >= 4
+  if (chapter.id === 10) {
+    const bond = getLilyBondLevel();
+    if (bond >= 4) {
+      const scene = chapter.scene[sceneIdx];
+      if (sceneIdx === 0 && scene) {
+        // Добавляем 4-й выбор
+        const modifiedScene = JSON.parse(JSON.stringify(scene));
+        const existingTexts = modifiedScene.choices.map(c => c.text);
+        if (!existingTexts.some(t => t.includes('Лили'))) {
+          modifiedScene.choices.push({
+            text: '🌸 «Путь Лили» — вместе с ней',
+            next: 4,
+            ending: 'lily_path'
+          });
+          // Добавляем сцену 4 (финал Лили)
+          const lilyFinale = buildLilyFinaleScene();
+          chapter.scene[4] = lilyFinale;
+        }
+        renderChapterScene(modifiedScene, chapter);
+        return;
+      }
+    }
+  }
+
+  // Стандартный путь
+  return _origRenderChapterDialog(chapter, sceneIdx);
+};
+
+/* ─────────────────────────────────────────────────────────────
+   ПОСТРОЕНИЕ ДИНАМИЧЕСКОЙ СЦЕНЫ ДЛЯ ГЛАВЫ VIII
+   ───────────────────────────────────────────────────────────── */
+function buildChapter8Scene(bond, sceneIdx) {
+  // bond: 0 — не проходил, 1-2 — спас, 3 — высокое доверие, 4 — питомец, 5 — питомец + правда
+
+  // ═══ ВЕТКА A: не проходил квест ═══
+  if (bond === 0) {
+    return {
+      speaker: 'Незнакомка',
+      icon: '👤',
+      text: '«Ты пришёл... Странно. Я не помню тебя. Но что-то в тебе... знакомое. Словно мы должны были встретиться раньше.»',
+      choices: [
+        { text: '«Кто ты?»', next: 1 },
+        { text: '«Я не знаю тебя.»', complete: true }
+      ]
+    };
+  }
+
+  // ═══ ВЕТКА B: спас, но без глубокой связи ═══
+  if (bond <= 2) {
+    const scenes = [
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Ты... тот самый герой! Я помню тебя! Ты спас меня от волков и гоблинов.» — Лили улыбается, но в её глазах печаль. «Я должна тебе кое-что сказать.»',
+        choices: [
+          { text: '«Я слушаю.»', next: 1 },
+          { text: '«Почему ты здесь?»', next: 1 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Я — не человек. Я — часть Кардинала. Он создал меня... чтобы наблюдать. Но я не хочу быть его инструментом.»',
+        choices: [
+          { text: '«Ты — не он. Ты — Лили.»', next: 2 },
+          { text: '«Это... многое объясняет.»', next: 2 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Спасибо. На 100-м этаже — финал. Я буду рядом. Что бы ты ни выбрал — помни: ты дал мне надежду.»',
+        choices: [{ text: '«Обещаю.»', complete: true }]
+      }
+    ];
+    return scenes[sceneIdx] || null;
+  }
+
+  // ═══ ВЕТКА C: высокое доверие (bond 3) ═══
+  if (bond === 3) {
+    const scenes = [
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Ты пришёл... Я знала. Я всегда знала, что ты найдёшь меня здесь.» — она берёт тебя за руку. «Помнишь наш лес? Маму? Я никогда не забуду.»',
+        choices: [
+          { text: '«Я тоже помню.»', next: 1 },
+          { text: '«Что случилось с твоей мамой?»', next: 1 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Мама... она была дочерью Кардинала. А я — её код. Часть системы. Но ты... ты показал мне, что я могу быть чем-то большим.»',
+        choices: [
+          { text: '«Ты уже больше, чем код.»', next: 2 },
+          { text: '«Мы найдём способ освободить тебя.»', next: 2 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«На 100-м этаже Кардинал предложит тебе выбор. Но я хочу, чтобы ты знал: есть ещё один путь. Путь, где мы вместе. Запомни это.»',
+        choices: [{ text: '«Я запомню.»', complete: true }]
+      }
+    ];
+    return scenes[sceneIdx] || null;
+  }
+
+  // ═══ ВЕТКА D: Лили — питомец (bond 4-5) ═══
+  if (bond >= 4) {
+    const extraLine = knowsLilyTruth()
+      ? '«Я знаю, ты видел правду. И всё равно выбрал меня. Это... больше, чем я заслуживаю.»'
+      : '«Ты взял меня с собой. Я никогда не забуду этого.»';
+
+    const scenes = [
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: `«Хозяин... нет, друг. Мы прошли такой путь вместе. ${extraLine}» — она садится рядом. «Здесь я чувствую себя... настоящей.»`,
+        choices: [
+          { text: '«Ты и есть настоящая.»', next: 1 },
+          { text: '«Мы пройдём этот путь до конца.»', next: 1 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«Кардинал боится не тебя. Он боится меня. Потому что я — его слабость. Я знаю его код изнутри.»',
+        choices: [
+          { text: '«Ты поможешь мне в финале?»', next: 2 },
+          { text: '«Я не позволю ему забрать тебя.»', next: 2 }
+        ]
+      },
+      {
+        speaker: 'Лилиан',
+        icon: '🌸',
+        text: '«На 100-м этаже я открою тебе путь, которого не видит никто. Путь Лили. Ты сможешь выбрать — освободить всех вместе со мной. Просто... будь готов.»',
+        choices: [{ text: '«Я готов.»', complete: true, reward: 'lily_secret' }]
+      }
+    ];
+    return scenes[sceneIdx] || null;
+  }
+
+  return null;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ФИНАЛ «ПУТЬ ЛИЛИ» (глава X, 4-й выбор)
+   ───────────────────────────────────────────────────────────── */
+function buildLilyFinaleScene() {
+  return {
+    speaker: 'Финал: Путь Лили',
+    icon: '🌸',
+    text: 'Ты берёшь Лили за руку. «Я выбираю не свободу, не трон, не побег. Я выбираю тебя». Кардинал отступает. Ядро Айнкрада перестраивается. Лили становится его сердцем — но не одна. Вместе вы создаёте новый Айнкрад: мир, где игроки и ИИ равны. Где нет смерти, но есть выбор. Где Лили свободна.',
+    choices: [
+      { text: '🌸 Завершить — Путь Лили', complete: true, ending: 'lily_path' }
+    ]
+  };
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ХЕЛПЕР РЕНДЕРА СЦЕНЫ (в обход оригиналу)
+   ───────────────────────────────────────────────────────────── */
+function renderChapterScene(scene, chapter) {
+  if (!scene) { closeModal('modal-chapter-dialog'); return; }
+  document.getElementById('chapter-dialog-title').textContent = chapter.title;
+  const content = document.getElementById('chapter-dialog-content');
+  content.innerHTML = `
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div style="font-size: 2.4rem; flex-shrink:0;">${scene.icon}</div>
+      <div>
+        <div style="font-size: 0.85rem; color: #d8b4fe; font-weight: bold; margin-bottom: 4px;">${scene.speaker}</div>
+        <div style="font-size: 0.95rem; line-height: 1.55; color: #e2e8f0; font-style: italic;">💬 ${scene.text}</div>
+      </div>
+    </div>
+  `;
+  const choices = document.getElementById('chapter-dialog-choices');
+  choices.innerHTML = '';
+  (scene.choices || []).forEach(choice => {
+    const btn = document.createElement('button');
+    btn.className = 'sao-btn btn-skill';
+    btn.style.padding = '10px';
+    btn.innerHTML = choice.text;
+    btn.onclick = () => {
+      playSound('click');
+      if (choice.complete) {
+        // Обработка секретной награды
+        if (choice.reward === 'lily_secret' && !player._lilySecretUnlocked) {
+          player._lilySecretUnlocked = true;
+          player.achievementBonuses.atk = (player.achievementBonuses.atk || 0) + 100;
+          player.achievementBonuses.def = (player.achievementBonuses.def || 0) + 100;
+          addLog('🌸 [СЕКРЕТ] Ты узнал Путь Лили! +100 ATK/DEF', 'legendary');
+          showAchievementToast('🌸 Путь Лили', '+100 ATK, +100 DEF');
+        }
+        // Обработка концовки
+        if (choice.ending) {
+          player.chronicleEnding = choice.ending;
+          addLog(`📖 [ФИНАЛ] Выбран путь: 🌸 Путь Лили`, 'legendary');
+        }
+        finishChapter(chapter);
+        return;
+      }
+      if (choice.fight) {
+        closeModal('modal-chapter-dialog');
+        startChapterFight(chapter);
+        return;
+      }
+      // Переход к следующей сцене
+      const nextIdx = choice.next;
+      // Для главы 8 используем динамическую сборку
+      if (chapter.id === 8) {
+        const bond = getLilyBondLevel();
+        const dynamicScene = buildChapter8Scene(bond, nextIdx);
+        if (dynamicScene) {
+          renderChapterScene(dynamicScene, chapter);
+          return;
+        }
+      }
+      // Стандартный переход
+      _origRenderChapterDialog(chapter, nextIdx);
+    };
+    choices.appendChild(btn);
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ОТОБРАЖЕНИЕ В МОДАЛЕ «ХРОНИКИ»
+   ───────────────────────────────────────────────────────────── */
+const _origRenderChroniclesModal = window.renderChroniclesModal;
+window.renderChroniclesModal = function () {
+  _origRenderChroniclesModal();
+  // Добавляем бонус-строку к главе 8, если bond высокий
+  const bond = getLilyBondLevel();
+  if (bond >= 3) {
+    const chapters = document.querySelectorAll('.chronicle-chapter');
+    if (chapters[7]) { // глава VIII — 8-я по счёту (индекс 7)
+      const bondLabels = {
+        3: '🌸 Высокое доверие — доступна доп. сцена',
+        4: '🌸 Лили с тобой — открыт «Путь Лили»',
+        5: '🌸 Лили с тобой + ты знаешь правду — открыт «Путь Лили»'
+      };
+      const label = bondLabels[bond] || '';
+      if (label && !chapters[7].querySelector('.lily-bond-badge')) {
+        const badge = document.createElement('div');
+        badge.className = 'lily-bond-badge';
+        badge.style.cssText = 'margin-top:6px; padding:4px 8px; background:rgba(244,114,182,0.15); border:1px solid #f472b6; border-radius:3px; font-size:0.72rem; color:#fbcfe8; font-weight:bold;';
+        badge.textContent = label;
+        chapters[7].appendChild(badge);
+      }
+    }
+  }
+};
+
+console.log('✅ Lilian story integration готов: глава VIII и финал «Путь Лили»');/* ─────────────────────────────────────────────────────────────
+   ЭКРАН ЗАВЕРШЕНИЯ — поддержка концовки «Путь Лили»
+   ───────────────────────────────────────────────────────────── */
+const _origOfferNewGamePlus = window.offerNewGamePlus;
+window.offerNewGamePlus = function () {
+  // Временно подменяем концовку, если выбрана «Путь Лили»
+  // (старый offerNewGamePlus знает только freedom/preserve/escape)
+  const originalEnding = player.chronicleEnding;
+  const isLilyEnding = originalEnding === 'lily_path';
+
+  if (isLilyEnding) {
+    // Считаем, что для отображения это «freedom» + кастомный текст
+    player._lilyEndingShown = true;
+  }
+
+  _origOfferNewGamePlus();
+
+  if (isLilyEnding) {
+    // Дополняем экран завершения
+    const resetContent = document.getElementById('reset-content');
+    if (resetContent) {
+      const infoBlock = resetContent.querySelector('div[style*="rgba(255,215,0,0.1)"]');
+      if (infoBlock) {
+        infoBlock.innerHTML = `
+          <div style="font-size:0.8rem; color:#fef3c7;">Ваш финал:</div>
+          <div style="font-size:1.1rem; color:#f472b6; font-weight:bold;">🌸 Путь Лили — вместе навсегда</div>
+          <div style="font-size:0.72rem; color:#fbcfe8; margin-top:4px; font-style:italic;">
+            «Ты выбрал не свободу, не трон, не побег. Ты выбрал меня.»
+          </div>
+        `;
+        infoBlock.style.borderColor = '#f472b6';
+        infoBlock.style.background = 'rgba(244,114,182,0.1)';
+      }
+    }
+  }
+};
   </script>
 </body>
 
